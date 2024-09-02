@@ -11,9 +11,9 @@ export default StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   title: {
-    fontSize: 35,
+    fontSize: 40,
     fontWeight: '800',
-    padding: 15,
+    padding: 10,
     textAlign: 'center',
     marginBottom: 3,
     color: '#000000',
