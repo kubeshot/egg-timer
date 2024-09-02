@@ -1,12 +1,14 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import Component1 from './components/Component1';
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View } from "react-native";
+import Component1 from "./components/Component1";
+import SubscribeScreen from "./components/News Letter Signup/newsLetterSignup";
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Egg Timer App</Text>
-      <Component1 />
+      {/* <Text>Egg Timer App</Text>
+      <Component1 /> */}
+      <SubscribeScreen />
       <StatusBar style="auto" />
     </View>
   );
@@ -15,8 +17,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
