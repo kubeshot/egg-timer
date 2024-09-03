@@ -173,7 +173,7 @@ const SoftBoiled = () => {
                     <Text style={styles.eggsTimerButtonText}>Jammy Eggs</Text>
                   </View>
 
-                  <Text style={styles.eggsTimerButtonText}>3:00</Text>
+                  <Text style={styles.eggsTimerButtonText}>6:00</Text>
                 </TouchableOpacity>
               </View>
 

@@ -5,6 +5,7 @@ import Home from "../components/Home";
 import HardBoiled from "../components/HardBoiled";
 import SoftBoiled from "../components/SoftBoiled";
 import PoachedEggs from "../components/PoachedEggs";
+import Timer from "../components/Timer";
 
 export default function (Stack) {
   return (
@@ -28,6 +29,12 @@ export default function (Stack) {
       <Stack.Screen
         name="PoachedEggs"
         component={PoachedEggs}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="Timer"
+        component={Timer}
         options={{ headerShown: false }}
       />
     </>

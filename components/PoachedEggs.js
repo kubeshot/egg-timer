@@ -32,7 +32,7 @@ const PoachedEggs = () => {
   return (
     <>
       <ImageBackground
-        source={require("../assets/images/hardboiledbackground-2.png")}
+        source={require("../assets/images/hardboiledbackground-1.png")}
         style={styles.imageBackground}
       >
         <View style={styles.container}>
@@ -197,7 +197,16 @@ const PoachedEggs = () => {
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity style={styles.startTimerButton}>
+              <TouchableOpacity
+                style={styles.startTimerButton}
+                onPress={() => {
+                  navigation.navigate("Timer", {
+                    eggStyle: "Poached",
+                    time: "4.00",
+                    doneNess:"Medium"
+                  });
+                }}
+              >
                 <Image source={require("../assets/images/basic--clock.png")} />
                 <Text style={[styles.eggsTimerButtonText, { color: "white" }]}>
                   Start Timer
@@ -249,7 +258,8 @@ const PoachedEggs = () => {
                           for a slighlty set yolk and{" "}
                           <Text style={{ fontFamily: "Inter-Bold" }}>
                             5 minutes
-                          </Text>{" "} for a firm yolk
+                          </Text>{" "}
+                          for a firm yolk
                         </>
                       ) : (
                         step
