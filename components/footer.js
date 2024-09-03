@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   copyright: {
-    fontSize: 14,
+    fontSize: 15,
     color: "#000",
     marginBottom: 10,
     textAlign: "center",
@@ -220,6 +220,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#000",
     marginHorizontal: 10,
+    marginBottom:40,
   },
 });
 
