@@ -61,7 +61,7 @@ const SoftBoiled = () => {
             style={{
               justifyContent: "space-between",
               flex: 1,
-              marginBottom: "25%",
+              marginBottom: "30%",
             }}
           >
             <View style={{}}>
@@ -171,7 +171,7 @@ const SoftBoiled = () => {
                 <Text
                   style={{
                     fontSize: 20,
-                    fontWeight: "bold",
+                    fontFamily: "Inter-Bold",
                     textAlign: "center",
                   }}
                 >
@@ -192,14 +192,17 @@ const SoftBoiled = () => {
                   <View
                     style={{
                       flexDirection: "row",
+                      gap: 8,
                     }}
                   >
                     <Image
                       source={require("../assets/images/checkcircle.png")}
                     />
-                    <Text>3-Minute Eggs</Text>
+                    <Text style={styles.eggsTimerButtonText}>
+                      3-Minute Eggs
+                    </Text>
                   </View>
-                  <Text>3:00</Text>
+                  <Text style={styles.eggsTimerButtonText}>3:00</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{
@@ -209,13 +212,13 @@ const SoftBoiled = () => {
                     paddingHorizontal: 24,
                     paddingVertical: 16,
                     borderRadius: 100,
-                    marginTop: 16,
+                    marginVertical: 16,
                     justifyContent: "space-between",
                   }}
                 >
-                  <Text>3-Minute Eggs</Text>
+                  <Text style={styles.eggsTimerButtonText}>Jammy Eggs</Text>
 
-                  <Text>3:00</Text>
+                  <Text style={styles.eggsTimerButtonText}>3:00</Text>
                 </TouchableOpacity>
               </View>
 
@@ -225,40 +228,22 @@ const SoftBoiled = () => {
                   borderRadius: 100,
                   backgroundColor: "black",
                   flexDirection: "row",
-                  justifyContent: "space-between",
+                  justifyContent: "center",
                   alignItems: "center",
                   paddingHorizontal: 24,
                   paddingVertical: 16,
+                  gap: 8,
                 }}
               >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 8,
-                  }}
-                >
-                  <Image
-                    source={require("../assets/images/basic--clock.png")}
-                  />
-                  <Text
-                    style={{
-                      color: "white",
-                      fontSize: 16,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Start Timer
-                  </Text>
-                </View>
+                <Image source={require("../assets/images/basic--clock.png")} />
                 <Text
                   style={{
                     color: "white",
                     fontSize: 16,
-                    fontWeight: "bold",
+                    fontFamily: "Inter-SemiBold",
                   }}
                 >
-                  12:00
+                  Start Timer
                 </Text>
               </TouchableOpacity>
             </View>
@@ -340,13 +325,9 @@ const styles = StyleSheet.create({
 
   heading: {
     fontSize: 32,
-    fontWeight: "bold",
+    fontFamily: "Inter-Bold",
     textAlign: "center",
     marginTop: 48,
-  },
-  subHeading: {
-    fontSize: 16,
-    fontWeight: "semibold",
   },
 
   buttonContainer: {
@@ -364,7 +345,7 @@ const styles = StyleSheet.create({
   },
   instructionsText: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "Inter-Bold",
   },
 
   sizeSelectorButton: {
@@ -386,7 +367,7 @@ const styles = StyleSheet.create({
   },
   sizeLabel: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: "Inter-Bold",
   },
   sizeButton: {
     backgroundColor: "white",
@@ -398,9 +379,13 @@ const styles = StyleSheet.create({
   },
   sizeText: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "Inter-Bold",
   },
 
+  eggsTimerButtonText: {
+    fontSize: 16,
+    fontFamily: "Inter-SemiBold",
+  },
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -420,7 +405,7 @@ const styles = StyleSheet.create({
 
   modalTitle: {
     fontSize: 32,
-    fontWeight: "bold",
+    fontFamily: "Inter-Bold",
     textAlign: "center",
     marginBottom: 24,
   },
@@ -445,7 +430,7 @@ const styles = StyleSheet.create({
   modalStepNumberText: {
     color: "black",
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "Inter-Bold",
   },
   modalStepTextContainer: {
     flex: 0.9, // 70% of the width
@@ -453,16 +438,7 @@ const styles = StyleSheet.create({
   modalStepText: {
     flex: 1,
     fontSize: 16,
-    fontWeight: "400",
-  },
-  modalOpenButton: {
-    padding: 10,
-    backgroundColor: "#f9b233",
-    borderRadius: 5,
-  },
-  modalOpenButtonText: {
-    color: "white",
-    fontWeight: "bold",
+    fontFamily: "Inter-Regular",
   },
 });
 

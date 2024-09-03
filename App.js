@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -15,10 +15,14 @@ export default function App() {
     "Inter-SemiBold": require("./assets/fonts/Inter-SemiBold.ttf"),
   });
 
-  // if (!fontsLoaded) {
-  //   return <></>;
-  // }
-
+  if (!fontsLoaded) {
+    // Display a loading indicator while fonts are loading
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
   return (
     <>
       <NavigationContainer>
