@@ -19,6 +19,7 @@ const SoftBoiled = () => {
 
   const [selectedSize, setSelectedSize] = useState("L");
   const [showSizeSelection, setShowSizeSelection] = useState(false);
+  const [selectedEggType, setSelectedEggType] = useState(0);
 
   const steps = [
     "In a saucepan, bring 4 inches of water to a boil and then reduce to a simmer.",
@@ -31,17 +32,9 @@ const SoftBoiled = () => {
     <>
       <ImageBackground
         source={require("../assets/images/hardboiledbackground-2.png")}
-        style={{
-          flex: 1,
-          resizeMode: "cover",
-        }}
+        style={styles.imageBackground}
       >
-        <View
-          style={{
-            flex: 1,
-            paddingTop: 48,
-          }}
-        >
+        <View style={styles.container}>
           <View style={styles.header}>
             <TouchableOpacity
               onPress={() => {
@@ -57,14 +50,8 @@ const SoftBoiled = () => {
             <View style={styles.placeholder} />
           </View>
 
-          <View
-            style={{
-              justifyContent: "space-between",
-              flex: 1,
-              marginBottom: "30%",
-            }}
-          >
-            <View style={{}}>
+          <View style={styles.innerContainer}>
+            <View style={styles.uppperButtonsContainer}>
               <Text style={styles.heading}>Soft Boiled Eggs</Text>
               <View style={styles.buttonContainer}>
                 <TouchableOpacity
@@ -88,14 +75,7 @@ const SoftBoiled = () => {
                 </View>
               </View>
               {showSizeSelection && (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignSelf: "flex-end",
-                    gap: 10,
-                    marginRight: 16,
-                  }}
-                >
+                <View style={styles.sizeSelectionButonContainer}>
                   <TouchableOpacity
                     style={[
                       styles.sizeSelectorButton,
@@ -109,14 +89,7 @@ const SoftBoiled = () => {
                       setShowSizeSelection(false);
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 24,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      M
-                    </Text>
+                    <Text style={styles.sizeSelectorButonText}>M</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[
@@ -131,14 +104,7 @@ const SoftBoiled = () => {
                       setShowSizeSelection(false);
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 24,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      L
-                    </Text>
+                    <Text style={styles.sizeSelectorButonText}>L</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[
@@ -153,14 +119,7 @@ const SoftBoiled = () => {
                       setShowSizeSelection(false);
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 24,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      XL
-                    </Text>
+                    <Text style={styles.sizeSelectorButonText}>XL</Text>
                   </TouchableOpacity>
                 </View>
               )}
@@ -168,33 +127,21 @@ const SoftBoiled = () => {
 
             <View>
               <View>
-                <Text
-                  style={{
-                    fontSize: 20,
-                    fontFamily: "Inter-Bold",
-                    textAlign: "center",
-                  }}
-                >
+                <Text style={styles.subHeading}>
                   How do you like your eggs?
                 </Text>
                 <TouchableOpacity
-                  style={{
-                    flexDirection: "row",
-                    backgroundColor: "white",
-                    marginHorizontal: 16,
-                    paddingHorizontal: 24,
-                    paddingVertical: 16,
-                    borderRadius: 100,
-                    marginTop: 16,
-                    justifyContent: "space-between",
+                  onPress={() => {
+                    setSelectedEggType(0);
                   }}
+                  style={[
+                    styles.threeMinuteEggsButton,
+                    {
+                      borderWidth: selectedEggType === 0 ? 2 : 0,
+                    },
+                  ]}
                 >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      gap: 8,
-                    }}
-                  >
+                  <View style={styles.threeMinuteEggsButtonInnerContainer}>
                     <Image
                       source={require("../assets/images/checkcircle.png")}
                     />
@@ -205,16 +152,15 @@ const SoftBoiled = () => {
                   <Text style={styles.eggsTimerButtonText}>3:00</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={{
-                    flexDirection: "row",
-                    backgroundColor: "white",
-                    marginHorizontal: 16,
-                    paddingHorizontal: 24,
-                    paddingVertical: 16,
-                    borderRadius: 100,
-                    marginVertical: 16,
-                    justifyContent: "space-between",
+                  onPress={() => {
+                    setSelectedEggType(1);
                   }}
+                  style={[
+                    styles.jammyEggsButton,
+                    {
+                      borderWidth: selectedEggType === 1 ? 2 : 0,
+                    },
+                  ]}
                 >
                   <Text style={styles.eggsTimerButtonText}>Jammy Eggs</Text>
 
@@ -222,27 +168,9 @@ const SoftBoiled = () => {
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity
-                style={{
-                  marginHorizontal: 16,
-                  borderRadius: 100,
-                  backgroundColor: "black",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  paddingHorizontal: 24,
-                  paddingVertical: 16,
-                  gap: 8,
-                }}
-              >
+              <TouchableOpacity style={styles.startTimerButton}>
                 <Image source={require("../assets/images/basic--clock.png")} />
-                <Text
-                  style={{
-                    color: "white",
-                    fontSize: 16,
-                    fontFamily: "Inter-SemiBold",
-                  }}
-                >
+                <Text style={[styles.eggsTimerButtonText, { color: "white" }]}>
                   Start Timer
                 </Text>
               </TouchableOpacity>
@@ -304,6 +232,15 @@ const SoftBoiled = () => {
 };
 
 const styles = StyleSheet.create({
+  imageBackground: {
+    flex: 1,
+    resizeMode: "cover",
+  },
+  container: {
+    flex: 1,
+    paddingTop: 48,
+  },
+
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -322,7 +259,23 @@ const styles = StyleSheet.create({
   placeholder: {
     width: 50, // Same width as the back button to keep the balance
   },
+  innerContainer: {
+    justifyContent: "space-between",
+    flex: 1,
+    marginBottom: "30%",
+  },
+  uppperButtonsContainer: {},
 
+  sizeSelectionButonContainer: {
+    flexDirection: "row",
+    alignSelf: "flex-end",
+    gap: 10,
+    marginRight: 16,
+  },
+  sizeSelectorButonText: {
+    fontSize: 24,
+    fontFamily: "Inter-Bold",
+  },
   heading: {
     fontSize: 32,
     fontFamily: "Inter-Bold",
@@ -330,6 +283,11 @@ const styles = StyleSheet.create({
     marginTop: 48,
   },
 
+  subHeading: {
+    fontSize: 20,
+    fontFamily: "Inter-Bold",
+    textAlign: "center",
+  },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -380,6 +338,44 @@ const styles = StyleSheet.create({
   sizeText: {
     fontSize: 16,
     fontFamily: "Inter-Bold",
+  },
+
+  threeMinuteEggsButton: {
+    flexDirection: "row",
+    backgroundColor: "white",
+    marginHorizontal: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    borderRadius: 100,
+    marginTop: 16,
+    justifyContent: "space-between",
+  },
+  threeMinuteEggsButtonInnerContainer: {
+    flexDirection: "row",
+    gap: 8,
+  },
+
+  jammyEggsButton: {
+    flexDirection: "row",
+    backgroundColor: "white",
+    marginHorizontal: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    borderRadius: 100,
+    marginVertical: 16,
+    justifyContent: "space-between",
+  },
+
+  startTimerButton: {
+    marginHorizontal: 16,
+    borderRadius: 100,
+    backgroundColor: "black",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    gap: 8,
   },
 
   eggsTimerButtonText: {
