@@ -10,7 +10,7 @@ import {
   ScrollView,
   SafeAreaView,
 } from "react-native";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 import Header from "../TopHeadingBar.js";
 import Navbar from "../Navbar.js";
 import Footer from "../footer.js";
@@ -97,11 +97,7 @@ export default function RecipeScreen({ onClose }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Header
-        title="Recipes"
-        logoSource={image1}
-        onClose={onClose}
-      />
+      <Header title="Recipes" logoSource={image1} onClose={onClose} />
 
       <Navbar onMenuPress={handleMenuPress} onSearchPress={handleSearchPress} />
 
@@ -256,9 +252,7 @@ export default function RecipeScreen({ onClose }) {
             <View style={styles.halloweenContent}>
               <Image source={image8} style={styles.halloweenImage} />
               <View style={styles.halloweenDescription}>
-                <Text style={styles.articleTitle}>
-                  Egg and Bacon Canapes
-                </Text>
+                <Text style={styles.articleTitle}>Egg and Bacon Canapes</Text>
                 <Text style={styles.articleSubtitle}>
                   Dress up bacon and eggs by making these easy and elegant
                   canapes.
@@ -270,9 +264,7 @@ export default function RecipeScreen({ onClose }) {
             <View style={styles.halloweenContent}>
               <Image source={image9} style={styles.halloweenImage} />
               <View style={styles.halloweenDescription}>
-                <Text style={styles.articleTitle}>
-                  Mean Green Cheezy Bites
-                </Text>
+                <Text style={styles.articleTitle}>Mean Green Cheezy Bites</Text>
                 <Text style={styles.articleSubtitle}>
                   With kale and spinach, these savory bites loaded with italian
                   cheeses are a delicious way to eat your greens. They make a
@@ -346,8 +338,8 @@ export default function RecipeScreen({ onClose }) {
             <Text style={styles.moreEggsText}>Explore Recipe Categories</Text>
           </TouchableOpacity>
         </View>
+        <Footer />
       </ScrollView>
-      <Footer />
     </SafeAreaView>
   );
 }
@@ -633,7 +625,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFD700",
     width: 220,
     borderRadius: 5,
-   marginTop:30,
+    marginTop: 30,
     paddingVertical: 10,
     alignItems: "center",
     alignSelf: "center",

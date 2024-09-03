@@ -9,10 +9,12 @@ const BottomBar = () => {
   const navigation = useNavigation();
   const [isSignUpModalVisible, setIsSignUpModalVisible] = useState(false);
   const [isHowToModalVisible, setIsHowToModalVisible] = useState(false);
+  const [isRecipeModalVisible, setIsRecipeModalVisible] = useState(false);
 
   const handleClose = () => {
     setIsSignUpModalVisible(false);
     setIsHowToModalVisible(false);
+    setIsRecipeModalVisible(false)
   };
 
   return (
@@ -27,7 +29,7 @@ const BottomBar = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navigationButton}
-          onPress={() => navigation.navigate("Recipe")}
+          onPress={() => setIsRecipeModalVisible(true)}
         >
           <Image source={require("../assets/images/frame-190.png")} />
           <Text style={styles.navigationButtonText}>RECIPES</Text>
@@ -68,7 +70,7 @@ const BottomBar = () => {
       <Modal
         animationType="slide"
         transparent={false}
-        visible={isHowToModalVisible}
+        visible={isRecipeModalVisible}
         onRequestClose={handleClose}
       >
         <RecipeScreen onClose={handleClose} />
