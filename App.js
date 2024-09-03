@@ -1,33 +1,38 @@
-import * as React from "react";
+import React from "react";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { StatusBar } from "expo-status-bar";
-import HowTo from "./components/How-To's/howTosPage";
-import VideoPlayerScreen from "./components/videoPlayerScreen"; // Add this screen if you have one
-import RecipeScreen from "./components/Recipe/recipe";
-
-const Stack = createStackNavigator();
+import { useFonts } from "expo-font";
+import NavigationStack from "./navigation/NavigationStack";
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    "Inter-Bold": require("./assets/fonts/Inter-Bold.ttf"),
+    "Inter-Medium": require("./assets/fonts/Inter-Medium.ttf"),
+    "Inter-Regular": require("./assets/fonts/Inter-Regular.ttf"),
+    "Inter-SemiBold": require("./assets/fonts/Inter-SemiBold.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    // Display a loading indicator while fonts are loading
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer>
-      {/* <Stack.Navigator initialRouteName="HowTo">
-        <Stack.Screen 
-          name="HowTo" 
-          component={HowTo} 
-          options={{ headerShown: false }} // Hide header if using custom header
-        />
-        <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
-      </Stack.Navigator> */}
-      <Stack.Navigator initialRouteName="Recipe">
-        <Stack.Screen 
-          name="Recipe" 
-          component={RecipeScreen} 
-          options={{ headerShown: false }} // Hide header if using custom header
-        />
-        {/* <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} /> */}
-      </Stack.Navigator>
-      <StatusBar style="auto" />
+      <NavigationStack />
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
