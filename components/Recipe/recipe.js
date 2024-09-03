@@ -9,6 +9,7 @@ import {
   Linking,
   ScrollView,
 } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
 import Header from "../TopHeadingBar.js"; // Import the Header component
 import Navbar from "../Navbar.js"; // Import the Navbar component
 import image1 from "../../assets/images/file02.png";
@@ -254,7 +255,9 @@ export default function RecipeScreen() {
             <View style={styles.halloweenContent}>
               <Image source={image8} style={styles.halloweenImage} />
               <View style={styles.halloweenDescription}>
-                <Text style={styles.articleTitle}>Egg and Bacon Canapes{"    "} </Text>
+                <Text style={styles.articleTitle}>
+                  Egg and Bacon Canapes{"    "}{" "}
+                </Text>
 
                 <Text style={styles.articleSubtitle}>
                   Dress up bacon and eggs by making these easy and elegant
@@ -279,7 +282,72 @@ export default function RecipeScreen() {
             </View>
           </View>
         </View>
-        <Footer/>
+        <View style={styles.categorySection}>
+          <Text style={styles.categoryTitle}>Recipe Categories</Text>
+          <View style={styles.categoryGrid}>
+            <TouchableOpacity style={styles.categoryCard}>
+              <Image
+                source={require("../../assets/images/image8.png")}
+                style={styles.categoryImage}
+              />
+              <Text style={styles.categoryText}>Sandwiches & Wraps</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.categoryCard}>
+              <Image
+                source={require("../../assets/images/image9.png")}
+                style={styles.categoryImage}
+              />
+              <Text style={styles.categoryText}>Brunch</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.categoryCard}>
+              <Image
+                source={require("../../assets/images/image10.png")}
+                style={styles.categoryImage}
+              />
+              <Text style={styles.categoryText}>Boiled Eggs</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.categoryCard}>
+              <Image
+                source={require("../../assets/images/image11.png")}
+                style={styles.categoryImage}
+              />
+              <Text style={styles.categoryText}>Lunch</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.categoryCard}>
+              <Image
+                source={require("../../assets/images/image12.png")}
+                style={styles.categoryImage}
+              />
+              <Text style={styles.categoryText}>Nutritious Bowl Recipies</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.categoryCard}>
+              <Image
+                source={require("../../assets/images/image13.png")}
+                style={styles.categoryImage}
+              />
+              <Text style={styles.categoryText}>Poached Eggs</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.categoryCard}>
+              <Image
+                source={require("../../assets/images/image14.png")}
+                style={styles.categoryImage}
+              />
+              <Text style={styles.categoryText}>Appetizers and Canapes</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.categoryCard}>
+              <Image
+                source={require("../../assets/images/image15.png")}
+                style={styles.categoryImage}
+              />
+              <Text style={styles.categoryText}>Vegetarian</Text>
+            </TouchableOpacity>
+            
+          </View>
+          <TouchableOpacity style={styles.moreEggsButton}>
+            <Text style={styles.moreEggsText}>Explore Recipe Categories</Text>
+          </TouchableOpacity>
+        </View>
+        <Footer />
       </ScrollView>
     </View>
   );
@@ -290,11 +358,10 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: "#fff",
-    
   },
   title: {
-    fontSize: 28,
-    fontWeight: "bold",
+    fontSize: 40,
+    fontWeight: "800",
     textAlign: "center",
     marginVertical: 8,
   },
@@ -305,12 +372,23 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   searchBar: {
-    padding: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 25,
+    borderColor: "#E5E5E5", // Light grey border similar to modern designs
+    borderRadius: 30, // A higher border radius for a more rounded effect
+    backgroundColor: "#F8F8F8", // Slightly off-white background for the input
+    color: "#333", // Darker text color
+    fontSize: 16,
     marginBottom: 16,
-    textAlign: "center",
+    shadowColor: "#000", // Subtle shadow for a slight elevation effect
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 3, // This creates the shadow effect on Android
   },
   tabs: {
     flexDirection: "row",
@@ -515,7 +593,59 @@ const styles = StyleSheet.create({
     color: "#555",
     marginBottom: 16,
   },
-  appetizerSection:{ 
-  backgroundColor:"white"
-  }
+  appetizerSection: {
+    backgroundColor: "white",
+  },
+  categorySection: {
+    padding: 16,
+    backgroundColor: "#fff",
+    marginBottom: 16,
+  },
+  categoryTitle: {
+    fontSize: 28,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 16,
+  },
+  categoryGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+  },
+  categoryCard: {
+    width: "47%",
+    marginBottom: 16,
+  },
+  categoryImage: {
+    width: "100%",
+    height: 120,
+    borderRadius: 10,
+    marginBottom: 8,
+  },
+  categoryText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  moreEggsButton: {
+    backgroundColor: "#FFD700",
+    width: 220,
+    borderRadius: 5,
+   marginTop:30,
+    paddingVertical: 10,
+    alignItems: "center",
+    alignSelf: "center",
+    marginBottom: 20,
+  },
+  moreEggsText: {
+    color: "#000",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  searchBarWithIcon: {
+    flex: 1,
+    color: "#333",
+    fontSize: 16,
+    marginLeft: 10, // Space between icon and text
+  },
 });
