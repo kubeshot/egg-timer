@@ -11,6 +11,7 @@ import {
 import styles from "./styles.js"; // Import the styles from styles.js
 import Header from "../TopHeadingBar.js"; // Import the Header component
 import Navbar from "../Navbar.js"; // Import the Navbar component
+import image1 from "../../assets/images/clipboard.png";
 
 export default function SubscribeScreen() {
   const handleMenuPress = () => {
@@ -28,7 +29,7 @@ export default function SubscribeScreen() {
   return (
     <View style={{ flex: 1 }}>
       {/* Ensure the Header component does not have any stray text */}
-      <Header title="Newsletter Sign-up" onClose={handleClose} />
+      <Header title="Newsletter Sign-up" logoSource={image1} onClose={handleClose} />
 
       {/* Ensure the Navbar component is also free of unwrapped text */}
       <Navbar onMenuPress={handleMenuPress} onSearchPress={handleSearchPress} />

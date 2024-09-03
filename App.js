@@ -1,24 +1,24 @@
+import * as React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import Component1 from "./components/Component1";
-import SubscribeScreen from "./components/News Letter Signup/newsLetterSignup";
+import HowTo from "./components/How-To's/howTosPage";
+import VideoPlayerScreen from "./components/videoPlayerScreen"; // Add this screen if you have one
+
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      {/* <Text>Egg Timer App</Text>
-      <Component1 /> */}
-      <SubscribeScreen />
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="HowTo">
+        <Stack.Screen 
+          name="HowTo" 
+          component={HowTo} 
+          options={{ headerShown: false }} // Hide header if using custom header
+        />
+        <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
+      </Stack.Navigator>
       <StatusBar style="auto" />
-    </View>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
