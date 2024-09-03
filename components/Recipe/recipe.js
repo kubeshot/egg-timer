@@ -8,20 +8,22 @@ import {
   StyleSheet,
   Linking,
   ScrollView,
+  SafeAreaView,
 } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
-import Header from "../TopHeadingBar.js"; // Import the Header component
-import Navbar from "../Navbar.js"; // Import the Navbar component
-import image1 from "../../assets/images/file02.png";
-import image2 from "../../assets/images/image17.png";
-import image3 from "../../assets/images/image16.png";
-import image4 from "../../assets/images/image26.png";
-import image5 from "../../assets/images/image27.png";
-import image6 from "../../assets/images/image31.png";
-import image7 from "../../assets/images/image28.png";
-import image8 from "../../assets/images/image29.png";
-import image9 from "../../assets/images/image30.png";
+import Header from "../TopHeadingBar.js";
+import Navbar from "../Navbar.js";
 import Footer from "../footer.js";
+
+const image1 = require("../../assets/images/file02.png");
+const image2 = require("../../assets/images/image17.png");
+const image3 = require("../../assets/images/image16.png");
+const image4 = require("../../assets/images/image26.png");
+const image5 = require("../../assets/images/image27.png");
+const image6 = require("../../assets/images/image31.png");
+const image7 = require("../../assets/images/image28.png");
+const image8 = require("../../assets/images/image29.png");
+const image9 = require("../../assets/images/image30.png");
 
 const recipesData = {
   Breakfast: [
@@ -82,7 +84,9 @@ const recipesData = {
   ],
 };
 
-export default function RecipeScreen() {
+export default function RecipeScreen({ onClose }) {
+  const [selectedTab, setSelectedTab] = useState("Breakfast");
+
   const handleMenuPress = () => {
     // Handle menu button press
   };
@@ -91,18 +95,16 @@ export default function RecipeScreen() {
     // Handle search button press
   };
 
-  const handleClose = () => {
-    // Handle close button press
-  };
-  const [selectedTab, setSelectedTab] = useState("Breakfast");
-
   return (
-    <View style={{ flex: 1 }}>
-      {/* Ensure the Header component does not have any stray text */}
-      <Header title="Recipes" logoSource={image1} onClose={handleClose} />
+    <SafeAreaView style={styles.safeArea}>
+      <Header
+        title="Recipes"
+        logoSource={image1}
+        onClose={onClose}
+      />
 
-      {/* Ensure the Navbar component is also free of unwrapped text */}
       <Navbar onMenuPress={handleMenuPress} onSearchPress={handleSearchPress} />
+
       <ScrollView style={styles.container}>
         <Text style={styles.title}>Recipes</Text>
         <Text style={styles.subtitle}>
@@ -205,7 +207,6 @@ export default function RecipeScreen() {
           </View>
         </View>
 
-        {/* Chef's Section */}
         <Text style={styles.chefsCornerTitle}>Chef's Corner</Text>
         <Text style={styles.chefsCornerSubtitle}>
           A new recipe every month from our Egg Farmers of Canada Ambassadors.
@@ -233,7 +234,7 @@ export default function RecipeScreen() {
         </View>
 
         <View style={styles.appetizerSection}>
-          <Text style={styles.chefsCornerTitle}>Fun & East Egg Appetizers</Text>
+          <Text style={styles.chefsCornerTitle}>Fun & Easy Egg Appetizers</Text>
           <Text style={styles.chefsCornerSubtitle}>
             Let's get creative with these fun and easy appetizer ideas!
           </Text>
@@ -256,9 +257,8 @@ export default function RecipeScreen() {
               <Image source={image8} style={styles.halloweenImage} />
               <View style={styles.halloweenDescription}>
                 <Text style={styles.articleTitle}>
-                  Egg and Bacon Canapes{"    "}{" "}
+                  Egg and Bacon Canapes
                 </Text>
-
                 <Text style={styles.articleSubtitle}>
                   Dress up bacon and eggs by making these easy and elegant
                   canapes.
@@ -271,7 +271,7 @@ export default function RecipeScreen() {
               <Image source={image9} style={styles.halloweenImage} />
               <View style={styles.halloweenDescription}>
                 <Text style={styles.articleTitle}>
-                  Mean Green Cheezy Bites{"     "}
+                  Mean Green Cheezy Bites
                 </Text>
                 <Text style={styles.articleSubtitle}>
                   With kale and spinach, these savory bites loaded with italian
@@ -318,7 +318,7 @@ export default function RecipeScreen() {
                 source={require("../../assets/images/image12.png")}
                 style={styles.categoryImage}
               />
-              <Text style={styles.categoryText}>Nutritious Bowl Recipies</Text>
+              <Text style={styles.categoryText}>Nutritious Bowl Recipes</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.categoryCard}>
               <Image
@@ -341,23 +341,25 @@ export default function RecipeScreen() {
               />
               <Text style={styles.categoryText}>Vegetarian</Text>
             </TouchableOpacity>
-            
           </View>
           <TouchableOpacity style={styles.moreEggsButton}>
             <Text style={styles.moreEggsText}>Explore Recipe Categories</Text>
           </TouchableOpacity>
         </View>
-        <Footer />
       </ScrollView>
-    </View>
+      <Footer />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#fff",
   },
   title: {
     fontSize: 40,
@@ -375,20 +377,20 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderWidth: 1,
-    borderColor: "#E5E5E5", // Light grey border similar to modern designs
-    borderRadius: 30, // A higher border radius for a more rounded effect
-    backgroundColor: "#F8F8F8", // Slightly off-white background for the input
-    color: "#333", // Darker text color
+    borderColor: "#E5E5E5",
+    borderRadius: 30,
+    backgroundColor: "#F8F8F8",
+    color: "#333",
     fontSize: 16,
     marginBottom: 16,
-    shadowColor: "#000", // Subtle shadow for a slight elevation effect
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.1,
     shadowRadius: 2,
-    elevation: 3, // This creates the shadow effect on Android
+    elevation: 3,
   },
   tabs: {
     flexDirection: "row",

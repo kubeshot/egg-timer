@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   ImageBackground,
+  SafeAreaView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../TopHeadingBar.js";
@@ -22,29 +23,27 @@ import image8 from "../../assets/images/image38.png";
 import image9 from "../../assets/images/image39.png";
 import image10 from "../../assets/images/image40.png";
 import image11 from "../../assets/images/file021.png";
-
 import videoIcon from "../../assets/images/iconplay-video.png";
 import Footer from "../footer.js";
 
-export default function HowTo() {
+export default function HowTo({ onClose }) {
   const navigation = useNavigation();
 
   const handleVideoPress = (videoUri) => {
     navigation.navigate("VideoPlayer", { videoUri });
   };
+
   const handleMenuPress = () => {
     // Handle menu button press
   };
+
   const handleSearchPress = () => {
     // Handle search button press
   };
-  const handleClose = () => {
-    // Handle close button press
-  };
 
   return (
-    <View style={{ flex: 1 }}>
-      <Header title="How-To's" logoSource={image11} onClose={handleClose} />
+    <SafeAreaView style={{ flex: 1 }}>
+      <Header title="How-To's" logoSource={image11} onClose={onClose} />
       <Navbar onMenuPress={handleMenuPress} onSearchPress={handleSearchPress} />
       <ScrollView contentContainerStyle={styles.container}>
         {/* Header Section */}
@@ -197,9 +196,9 @@ export default function HowTo() {
             <Text style={styles.moreEggsText}>More Eggs 101 Articles</Text>
           </TouchableOpacity>
         </View>
-        <Footer/>
+        <Footer />
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
