@@ -141,10 +141,12 @@ const SoftBoiled = () => {
                     },
                   ]}
                 >
-                  <View style={styles.threeMinuteEggsButtonInnerContainer}>
-                    <Image
-                      source={require("../assets/images/checkcircle.png")}
-                    />
+                  <View style={styles.eggsButtonInnerContainer}>
+                    {selectedEggType === 0 && (
+                      <Image
+                        source={require("../assets/images/checkcircle.png")}
+                      />
+                    )}
                     <Text style={styles.eggsTimerButtonText}>
                       3-Minute Eggs
                     </Text>
@@ -162,7 +164,14 @@ const SoftBoiled = () => {
                     },
                   ]}
                 >
-                  <Text style={styles.eggsTimerButtonText}>Jammy Eggs</Text>
+                  <View style={styles.eggsButtonInnerContainer}>
+                    {selectedEggType === 1 && (
+                      <Image
+                        source={require("../assets/images/checkcircle.png")}
+                      />
+                    )}
+                    <Text style={styles.eggsTimerButtonText}>Jammy Eggs</Text>
+                  </View>
 
                   <Text style={styles.eggsTimerButtonText}>3:00</Text>
                 </TouchableOpacity>
@@ -210,9 +219,13 @@ const SoftBoiled = () => {
                       {index === 2 ? (
                         <>
                           Cover and simmer for{" "}
-                          <Text style={{ fontWeight: "bold" }}>3 minutes</Text>{" "}
+                          <Text style={{ fontFamily: "Inter-Bold" }}>
+                            3 minutes
+                          </Text>{" "}
                           for a soft boil egg and{" "}
-                          <Text style={{ fontWeight: "bold" }}>6 minutes</Text>{" "}
+                          <Text style={{ fontFamily: "Inter-Bold" }}>
+                            6 minutes
+                          </Text>{" "}
                           for a jammy egg.
                         </>
                       ) : (
@@ -350,7 +363,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     justifyContent: "space-between",
   },
-  threeMinuteEggsButtonInnerContainer: {
+  eggsButtonInnerContainer: {
     flexDirection: "row",
     gap: 8,
   },
@@ -392,7 +405,7 @@ const styles = StyleSheet.create({
     width: "90%",
     backgroundColor: "#F2F2F6",
     borderRadius: 10,
-    padding: 16,
+    padding: 24,
     elevation: 10,
   },
   modalCloseButton: {
@@ -424,7 +437,6 @@ const styles = StyleSheet.create({
     // marginRight: 10,
   },
   modalStepNumberText: {
-    color: "black",
     fontSize: 16,
     fontFamily: "Inter-Bold",
   },
@@ -432,7 +444,6 @@ const styles = StyleSheet.create({
     flex: 0.9, // 70% of the width
   },
   modalStepText: {
-    flex: 1,
     fontSize: 16,
     fontFamily: "Inter-Regular",
   },

@@ -12,25 +12,27 @@ import {
 import BottomBar from "./BottomBar";
 import { useNavigation } from "@react-navigation/native";
 
-const HardBoiled = () => {
+const PoachedEggs = () => {
   const navigation = useNavigation();
 
   const [modalVisible, setModalVisible] = useState(false);
 
   const [selectedSize, setSelectedSize] = useState("L");
   const [showSizeSelection, setShowSizeSelection] = useState(false);
+  const [selectedEggType, setSelectedEggType] = useState(0);
 
   const steps = [
-    "In a saucepan, place eggs in a single layer and cover eggs with at least 1 inch of water.",
-    "Cover with a lid and bring to a boil over high heat.",
-    "Remove from heat and let stand for ",
-    "Run eggs under cold water or place in an ice bath to stop cooking.",
+    "In a saucepan, bring 3 inches of water to a gentle simmer.",
+    "Add 2 tsp of white vinegar to the water. ",
+    "One at a time, crack an egg into a bowl and gently slip into the water. ",
+    "Cook eggs for 3 minutes for a runny yolk, 4 minutes for a slightly set yolk and 5 minutes for a firm yolk. ",
+    "Remove eggs with a slotted spoon and drain on a paper towel. ",
   ];
 
   return (
     <>
       <ImageBackground
-        source={require("../assets/images/hardboiledbackground-11.png")}
+        source={require("../assets/images/hardboiledbackground-2.png")}
         style={styles.imageBackground}
       >
         <View style={styles.container}>
@@ -51,7 +53,7 @@ const HardBoiled = () => {
 
           <View style={styles.innerContainer}>
             <View style={styles.uppperButtonsContainer}>
-              <Text style={styles.heading}>Hard Boiled Eggs</Text>
+              <Text style={styles.heading}>Poached Eggs</Text>
               <View style={styles.buttonContainer}>
                 <TouchableOpacity
                   style={styles.instructionsButton}
@@ -124,19 +126,84 @@ const HardBoiled = () => {
               )}
             </View>
 
-            <TouchableOpacity style={styles.startTimerButton}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 8,
-                }}
-              >
-                <Image source={require("../assets/images/basic--clock.png")} />
-                <Text style={styles.startTimerButtonText}>Start Timer</Text>
+            <View>
+              <View>
+                <Text style={styles.subHeading}>
+                  How do you like your eggs?
+                </Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    setSelectedEggType(0);
+                  }}
+                  style={[
+                    styles.threeMinuteEggsButton,
+                    {
+                      borderWidth: selectedEggType === 0 ? 2 : 0,
+                    },
+                  ]}
+                >
+                  <View style={styles.eggsButtonInnerContainer}>
+                    {selectedEggType === 0 && (
+                      <Image
+                        source={require("../assets/images/checkcircle.png")}
+                      />
+                    )}
+                    <Text style={styles.eggsTimerButtonText}>Soft</Text>
+                  </View>
+                  <Text style={styles.eggsTimerButtonText}>3:00</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setSelectedEggType(1);
+                  }}
+                  style={[
+                    styles.threeMinuteEggsButton,
+                    {
+                      borderWidth: selectedEggType === 1 ? 2 : 0,
+                    },
+                  ]}
+                >
+                  <View style={styles.eggsButtonInnerContainer}>
+                    {selectedEggType === 1 && (
+                      <Image
+                        source={require("../assets/images/checkcircle.png")}
+                      />
+                    )}
+                    <Text style={styles.eggsTimerButtonText}>Medium</Text>
+                  </View>
+                  <Text style={styles.eggsTimerButtonText}>3:00</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setSelectedEggType(2);
+                  }}
+                  style={[
+                    styles.jammyEggsButton,
+                    {
+                      borderWidth: selectedEggType === 2 ? 2 : 0,
+                    },
+                  ]}
+                >
+                  <View style={styles.eggsButtonInnerContainer}>
+                    {selectedEggType === 2 && (
+                      <Image
+                        source={require("../assets/images/checkcircle.png")}
+                      />
+                    )}
+                    <Text style={styles.eggsTimerButtonText}>Hard</Text>
+                  </View>
+
+                  <Text style={styles.eggsTimerButtonText}>4:00</Text>
+                </TouchableOpacity>
               </View>
-              <Text style={styles.startTimerButtonText}>12:00</Text>
-            </TouchableOpacity>
+
+              <TouchableOpacity style={styles.startTimerButton}>
+                <Image source={require("../assets/images/basic--clock.png")} />
+                <Text style={[styles.eggsTimerButtonText, { color: "white" }]}>
+                  Start Timer
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </ImageBackground>
@@ -169,13 +236,23 @@ const HardBoiled = () => {
                   </View>
                   <View style={styles.modalStepTextContainer}>
                     <Text style={styles.modalStepText}>
-                      {step}
-                      {index === 2 && (
-                        <Text
-                          style={[styles.modalStepText, { fontWeight: "bold" }]}
-                        >
-                          12 minutes.
-                        </Text>
+                      {index === 3 ? (
+                        <>
+                          Cook eggs for{" "}
+                          <Text style={{ fontFamily: "Inter-Bold" }}>
+                            3 minutes
+                          </Text>{" "}
+                          for a runny yolk,{" "}
+                          <Text style={{ fontFamily: "Inter-Bold" }}>
+                            4 minutes
+                          </Text>{" "}
+                          for a slighlty set yolk and{" "}
+                          <Text style={{ fontFamily: "Inter-Bold" }}>
+                            5 minutes
+                          </Text>{" "} for a firm yolk
+                        </>
+                      ) : (
+                        step
                       )}
                     </Text>
                   </View>
@@ -199,6 +276,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 48,
   },
+
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -217,18 +295,35 @@ const styles = StyleSheet.create({
   placeholder: {
     width: 50, // Same width as the back button to keep the balance
   },
+  innerContainer: {
+    justifyContent: "space-between",
+    flex: 1,
+    marginBottom: "30%",
+  },
+  uppperButtonsContainer: {},
 
+  sizeSelectionButonContainer: {
+    flexDirection: "row",
+    alignSelf: "flex-end",
+    gap: 10,
+    marginRight: 16,
+  },
+  sizeSelectorButonText: {
+    fontSize: 24,
+    fontFamily: "Inter-Bold",
+  },
   heading: {
     fontSize: 32,
-    fontWeight: "bold",
+    fontFamily: "Inter-Bold",
     textAlign: "center",
     marginTop: 48,
   },
-  subHeading: {
-    fontSize: 16,
-    fontWeight: "semibold",
-  },
 
+  subHeading: {
+    fontSize: 20,
+    fontFamily: "Inter-Bold",
+    textAlign: "center",
+  },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -244,7 +339,7 @@ const styles = StyleSheet.create({
   },
   instructionsText: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "Inter-Bold",
   },
 
   sizeSelectorButton: {
@@ -266,7 +361,7 @@ const styles = StyleSheet.create({
   },
   sizeLabel: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: "Inter-Bold",
   },
   sizeButton: {
     backgroundColor: "white",
@@ -278,26 +373,33 @@ const styles = StyleSheet.create({
   },
   sizeText: {
     fontSize: 16,
-    fontWeight: "bold",
-  },
-
-  innerContainer: {
-    justifyContent: "space-between",
-    flex: 1,
-    marginBottom: "25%",
-  },
-
-  uppperButtonsContainer: {},
-
-  sizeSelectionButonContainer: {
-    flexDirection: "row",
-    alignSelf: "flex-end",
-    gap: 10,
-    marginRight: 16,
-  },
-  sizeSelectorButonText: {
-    fontSize: 24,
     fontFamily: "Inter-Bold",
+  },
+
+  threeMinuteEggsButton: {
+    flexDirection: "row",
+    backgroundColor: "white",
+    marginHorizontal: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    borderRadius: 100,
+    marginTop: 16,
+    justifyContent: "space-between",
+  },
+  eggsButtonInnerContainer: {
+    flexDirection: "row",
+    gap: 8,
+  },
+
+  jammyEggsButton: {
+    flexDirection: "row",
+    backgroundColor: "white",
+    marginHorizontal: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    borderRadius: 100,
+    marginVertical: 16,
+    justifyContent: "space-between",
   },
 
   startTimerButton: {
@@ -305,18 +407,17 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: "black",
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 24,
     paddingVertical: 16,
     gap: 8,
   },
-  startTimerButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontFamily: "Inter-Bold",
-  },
 
+  eggsTimerButtonText: {
+    fontSize: 16,
+    fontFamily: "Inter-SemiBold",
+  },
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -359,7 +460,6 @@ const styles = StyleSheet.create({
     // marginRight: 10,
   },
   modalStepNumberText: {
-    color: "black",
     fontSize: 16,
     fontFamily: "Inter-Bold",
   },
@@ -367,11 +467,9 @@ const styles = StyleSheet.create({
     flex: 0.9, // 70% of the width
   },
   modalStepText: {
-    flex: 1,
     fontSize: 16,
     fontFamily: "Inter-Regular",
   },
- 
 });
 
-export default HardBoiled;
+export default PoachedEggs;

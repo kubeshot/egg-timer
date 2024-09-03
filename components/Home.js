@@ -48,7 +48,12 @@ const Home = () => {
             </View>
 
             <View style={styles.row}>
-              <TouchableOpacity style={styles.eggStyleButton}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("PoachedEggs");
+                }}
+                style={styles.eggStyleButton}
+              >
                 <Image
                   source={require("../assets/images/btn--hard-boiled2.png")}
                 />
@@ -131,7 +136,7 @@ const styles = StyleSheet.create({
 
   heading: {
     fontSize: 24,
-    fontFamily:'Inter-Bold'
+    fontFamily: "Inter-Bold",
   },
 
   subHeading: {
@@ -139,7 +144,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     fontSize: 16,
     fontWeight: "400",
-    fontFamily:'Inter-Regular'
+    fontFamily: "Inter-Regular",
   },
 
   eggStyleButton: {
@@ -148,7 +153,7 @@ const styles = StyleSheet.create({
   },
   eggStyleButtonText: {
     fontSize: 16,
-    fontFamily:'Inter-Bold'
+    fontFamily: "Inter-Bold",
   },
 
   row: {
@@ -181,7 +186,7 @@ const styles = StyleSheet.create({
   },
   videoContainerText: {
     fontSize: 16,
-    fontFamily:'Inter-Bold'
+    fontFamily: "Inter-Bold",
   },
   moreVideosButton: {
     width: "95%",
