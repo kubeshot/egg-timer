@@ -48,16 +48,16 @@ const Footer = () => {
 
       {/* Footer Links */}
       <View style={styles.linksContainer}>
-        <TouchableOpacity onPress={() => handleLinkPress("#")}>
+        <TouchableOpacity onPress={() => handleLinkPress("##")}>
           <Text style={styles.linkText}>About Us</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleLinkPress("#")}>
+        <TouchableOpacity onPress={() => handleLinkPress("##")}>
           <Text style={styles.linkText}>Contact Us</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleLinkPress("#")}>
+        <TouchableOpacity onPress={() => handleLinkPress("##")}>
           <Text style={styles.linkText}>Accessibility</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleLinkPress("#")}>
+        <TouchableOpacity onPress={() => handleLinkPress("##")}>
           <Text style={styles.linkText}>FAQ</Text>
         </TouchableOpacity>
         <TouchableOpacity
