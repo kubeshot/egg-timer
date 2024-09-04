@@ -105,16 +105,13 @@ const Timer = ({ route }) => {
               <ImageBackground
                 source={getTimerBackgroundImage()}
                 style={styles.timerTextBackground}
-                imageStyle={{ resizeMode: "contain" }} // Optional: Adjust border radius if needed
+                resizeMode="contain"
               >
                 <Text style={styles.timerText}>
                   {time !== 0 && formatTime(time)}
                   {time === 0 && "Done !"}
                 </Text>
-                <TouchableOpacity
-                  onPress={() => setSoundOn(!soundOn)}
-                  style={styles.soundButton}
-                >
+                <TouchableOpacity onPress={() => setSoundOn(!soundOn)} style={styles.soundButton}>
                   <Image
                     source={
                       soundOn
@@ -141,19 +138,13 @@ const Timer = ({ route }) => {
                       setIsPaused(true);
                     }}
                   >
-                    <Text
-                      style={[styles.eggsTimerButtonText, { color: "black" }]}
-                    >
-                      Cancel
-                    </Text>
+                    <Text style={[styles.eggsTimerButtonText, { color: "black" }]}>Cancel</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.pauseTimerButton}
                     onPress={() => setIsPaused(!isPaused)}
                   >
-                    <Text
-                      style={[styles.eggsTimerButtonText, { color: "white" }]}
-                    >
+                    <Text style={[styles.eggsTimerButtonText, { color: "white" }]}>
                       {isPaused ? "Resume Timer" : "Pause Timer"}
                     </Text>
                   </TouchableOpacity>
@@ -164,11 +155,7 @@ const Timer = ({ route }) => {
                   style={styles.pauseTimerButton}
                   // onPress={() => setIsPaused(!isPaused)}
                 >
-                  <Text
-                    style={[styles.eggsTimerButtonText, { color: "white" }]}
-                  >
-                    Stop Timer
-                  </Text>
+                  <Text style={[styles.eggsTimerButtonText, { color: "white" }]}>Stop Timer</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -245,13 +232,18 @@ const styles = StyleSheet.create({
   },
   timerContainer: {
     alignItems: "center",
+    justifyContent: "center",
     marginTop: 24,
+    aspectRatio: 1, // This ensures a square container
+    width: "90%", // Use a percentage of the screen width
+    maxWidth: 400, // Optional: set a maximum width if desired
+    alignSelf: "center",
   },
   timerTextBackground: {
+    width: "100%",
+    height: "100%",
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: "23%",
-    paddingVertical: "25%",
   },
   timerCompleteTextBackground: {
     justifyContent: "center",
