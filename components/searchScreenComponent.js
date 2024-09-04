@@ -21,9 +21,8 @@ const SearchScreen = ({ navigation }) => {
       { id: "3", title: "Soft Boiled Eggs", screen: "SoftBoiled" },
       { id: "4", title: "Poached Eggs", screen: "PoachedEggs" },
       { id: "5", title: "How To's", screen: "HowTo" },
-      { id: "6", title: "Recipe", screen: "RecipeScreen" },
-      { id: "7", title: "Video Player", screen: "VideoPlayerScreen" },
-      { id: "8", title: "Newsletter Signup", screen: "SubscribeScreen" },
+      { id: "6", title: "Recipe", screen: "Recipe" },
+      { id: "8", title: "Newsletter Signup", screen: "SignUp" },
     ].filter((item) => item.title.toLowerCase().includes(query.toLowerCase()));
 
     setSearchResults(mockResults);
@@ -33,7 +32,7 @@ const SearchScreen = ({ navigation }) => {
     <View style={styles.container}>
       <TextInput
         style={styles.searchInput}
-        placeholder="Search..."
+        placeholder="Search Pages..."
         value={searchQuery}
         onChangeText={(text) => {
           setSearchQuery(text);
