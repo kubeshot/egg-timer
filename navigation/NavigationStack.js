@@ -4,6 +4,7 @@ import Home from "../components/Home";
 import HardBoiled from "../components/HardBoiled";
 import SoftBoiled from "../components/SoftBoiled";
 import PoachedEggs from "../components/PoachedEggs";
+import Timer from "../components/Timer";
 import RecipeScreen from "../components/Recipe/recipe";
 import HowTo from "../components/How-To's/howTosPage";
 import VideoPlayerScreen from "../components/videoPlayerScreen";
@@ -35,6 +36,13 @@ export default function NavigationStack() {
         component={PoachedEggs}
         options={{ headerShown: false }}
       />
+
+      <Stack.Screen
+        name="Timer"
+        component={Timer}
+        options={{ headerShown: false }}
+      />
+  
       <Stack.Screen
         name="HowTo"
         component={HowTo}

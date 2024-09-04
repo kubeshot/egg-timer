@@ -124,7 +124,16 @@ const HardBoiled = () => {
               )}
             </View>
 
-            <TouchableOpacity style={styles.startTimerButton}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Timer", {
+                  heading: "Hard Boiled",
+                  time: 720,
+                  subheading: "",
+                });
+              }}
+              style={styles.startTimerButton}
+            >
               <View
                 style={{
                   flexDirection: "row",
@@ -371,7 +380,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Inter-Regular",
   },
- 
 });
 
 export default HardBoiled;
