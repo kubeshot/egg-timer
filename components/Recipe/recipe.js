@@ -86,13 +86,14 @@ const recipesData = {
 
 export default function RecipeScreen({ onClose }) {
   const [selectedTab, setSelectedTab] = useState("Breakfast");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleMenuPress = () => {
     // Handle menu button press
   };
 
-  const handleSearchPress = () => {
-    // Handle search button press
+  const handleSearchPress = (text) => {
+    setSearchQuery(text);
   };
 
   return (
@@ -112,6 +113,7 @@ export default function RecipeScreen({ onClose }) {
           style={styles.searchBar}
           placeholder="Search our recipes"
           placeholderTextColor="#888"
+          onChangeText={handleSearchPress} // Add this line
         />
         <View style={styles.tabs}>
           {Object.keys(recipesData).map((tab) => (
@@ -131,16 +133,20 @@ export default function RecipeScreen({ onClose }) {
           ))}
         </View>
         <View style={styles.recipeList}>
-          {recipesData[selectedTab].map((item) => (
-            <TouchableOpacity
-              key={item.id}
-              onPress={() => Linking.openURL(item.link)}
-              style={styles.recipeCard}
-            >
-              <Image source={item.image} style={styles.recipeImage} />
-              <Text style={styles.recipeName}>{item.name}</Text>
-            </TouchableOpacity>
-          ))}
+          {recipesData[selectedTab]
+            .filter((item) =>
+              item.name.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+            .map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                onPress={() => Linking.openURL(item.link)}
+                style={styles.recipeCard}
+              >
+                <Image source={item.image} style={styles.recipeImage} />
+                <Text style={styles.recipeName}>{item.name}</Text>
+              </TouchableOpacity>
+            ))}
         </View>
 
         <View style={styles.seriesSection}>

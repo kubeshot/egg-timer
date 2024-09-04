@@ -7,8 +7,11 @@ import {
   StyleSheet,
   Image,
 } from "react-native";
-
+import { Linking } from "react-native";
 const Footer = () => {
+  const handleLinkPress = (Uri) => {
+    Linking.openURL(Uri);
+  };
   return (
     <View style={styles.container}>
       {/* Newsletter Subscription Section */}
@@ -45,19 +48,22 @@ const Footer = () => {
 
       {/* Footer Links */}
       <View style={styles.linksContainer}>
-        <TouchableOpacity onPress={() => {/* Add navigation logic */}}>
+        <TouchableOpacity onPress={() => handleLinkPress("##")}>
           <Text style={styles.linkText}>About Us</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {/* Add navigation logic */}}>
+        <TouchableOpacity onPress={() => handleLinkPress("##")}>
           <Text style={styles.linkText}>Contact Us</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {/* Add navigation logic */}}>
+        <TouchableOpacity onPress={() => handleLinkPress("##")}>
           <Text style={styles.linkText}>Accessibility</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {/* Add navigation logic */}}>
+        <TouchableOpacity onPress={() => handleLinkPress("##")}>
           <Text style={styles.linkText}>FAQ</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {/* Add navigation logic */}} style={styles.internationalContainer}>
+        <TouchableOpacity
+          onPress={() => handleLinkPress("#")}
+          style={styles.internationalContainer}
+        >
           <Text style={styles.linkText}>International</Text>
           <Text style={styles.dropdownIcon}>▼</Text>
         </TouchableOpacity>
@@ -65,37 +71,55 @@ const Footer = () => {
 
       {/* Social Media Logos */}
       <View style={styles.socialContainer}>
-        <TouchableOpacity onPress={() => {/* Add link to Twitter */}}>
+        <TouchableOpacity
+          onPress={() => handleLinkPress("https://x.com/eggsoeufs")}
+        >
           <Image
             source={require("../assets/images/twitter-x.png")}
             style={styles.socialLogo}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {/* Add link to Facebook */}}>
+        <TouchableOpacity
+          onPress={() => handleLinkPress("https://www.facebook.com/eggs")}
+        >
           <Image
             source={require("../assets/images/iconfacebook.png")}
             style={styles.socialLogo}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {/* Add link to Instagram */}}>
+        <TouchableOpacity
+          onPress={() =>
+            handleLinkPress("https://www.instagram.com/eggsoeufs/")
+          }
+        >
           <Image
             source={require("../assets/images/iconinstagram.png")}
             style={styles.socialLogo}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {/* Add link to Pinterest */}}>
+        <TouchableOpacity
+          onPress={() => handleLinkPress("https://www.pinterest.com/eggs/")}
+        >
           <Image
             source={require("../assets/images/iconpinterest.png")}
             style={styles.socialLogo}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {/* Add link to YouTube */}}>
+        <TouchableOpacity
+          onPress={() =>
+            handleLinkPress(
+              "https://www.youtube.com/channel/UCq6p--GVSjdVKp_B4zQbqgQ"
+            )
+          }
+        >
           <Image
             source={require("../assets/images/iconyoutube.png")}
             style={styles.socialLogo}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {/* Add link to TikTok */}}>
+        <TouchableOpacity
+          onPress={() => handleLinkPress("https://www.tiktok.com/@getcracking")}
+        >
           <Image
             source={require("../assets/images/icontiktok.png")}
             style={styles.socialLogo}
@@ -108,10 +132,18 @@ const Footer = () => {
         © 2023 Egg Farmers of Canada. All rights reserved.
       </Text>
       <View style={styles.legalLinksContainer}>
-        <TouchableOpacity onPress={() => {/* Add link to Privacy Policy */}}>
+        <TouchableOpacity
+          onPress={() => {
+            /* Add link to Privacy Policy */
+          }}
+        >
           <Text style={styles.legalLinkText}>Privacy Policy</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {/* Add link to Terms & Conditions */}}>
+        <TouchableOpacity
+          onPress={() => {
+            /* Add link to Terms & Conditions */
+          }}
+        >
           <Text style={styles.legalLinkText}>Terms & Conditions</Text>
         </TouchableOpacity>
       </View>
@@ -220,7 +252,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#000",
     marginHorizontal: 10,
-    marginBottom:40,
+    marginBottom: 40,
   },
 });
 

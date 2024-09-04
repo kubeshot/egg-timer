@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../TopHeadingBar.js";
+import { Linking } from "react-native";
 import Navbar from "../Navbar.js";
 import image1 from "../../assets/images/image32.png";
 import image2 from "../../assets/images/image33.png";
@@ -30,7 +31,7 @@ export default function HowTo({ onClose }) {
   const navigation = useNavigation();
 
   const handleVideoPress = (videoUri) => {
-    navigation.navigate("VideoPlayer", { videoUri });
+    Linking.openURL(videoUri);
   };
 
   const handleMenuPress = () => {
@@ -127,38 +128,39 @@ export default function HowTo({ onClose }) {
               title: "How to Poach an Egg Like a Pro",
               subtitle:
                 "With the proper technique and a little practice, poaching an egg is easy.",
+              video: "https://youtu.be/lKJyOl98kGM",
             },
             {
               image: image6,
               title: "How to Fry the Perfect Egg",
               subtitle:
                 "Fried eggs are usually thought of as diner breakfast fare, but they're an easy way to add protein to all kinds of meals.",
+              video: "https://youtu.be/FQ9Y50AciO0",
             },
             {
               image: image7,
               title: "How to Make Scrambled Eggs",
               subtitle:
                 "Scrambled eggs are one of the most versatile breakfast dishes to prepare.",
+              video: "https://youtu.be/joHJcnne36Q",
             },
             {
               image: image8,
               title: "How to Cook the Perfect Omelette",
               subtitle:
                 "The omelette is one of the easiest and most inexpensive meals, and it works beautifully for breakfast, lunch or dinner.",
+              video: "#",
             },
             {
               image: image9,
               title: "How to Make the Perfect Hard Boiled Egg",
               subtitle:
                 "Hard boiled eggs are great food to have on hand as their uses are so versatile.",
+              video: "https://youtu.be/GG8M3QmLJ6I",
             },
           ].map((article, index) => (
             <View key={index} style={styles.card}>
-              <TouchableOpacity
-                onPress={() =>
-                  handleVideoPress("https://www.example.com/video1.mp4")
-                }
-              >
+              <TouchableOpacity onPress={() => handleVideoPress(article.video)}>
                 <ImageBackground
                   source={article.image}
                   style={styles.articleImage}
