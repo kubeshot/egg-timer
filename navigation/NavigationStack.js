@@ -1,15 +1,20 @@
 import * as React from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "../components/Home";
 import HardBoiled from "../components/HardBoiled";
 import SoftBoiled from "../components/SoftBoiled";
 import PoachedEggs from "../components/PoachedEggs";
 import Timer from "../components/Timer";
+import RecipeScreen from "../components/Recipe/recipe";
+import HowTo from "../components/How-To's/howTosPage";
+import VideoPlayerScreen from "../components/videoPlayerScreen";
+import SubscribeScreen from "../components/News Letter Signup/newsLetterSignup";
 
-export default function (Stack) {
+const Stack = createNativeStackNavigator();
+
+export default function NavigationStack() {
   return (
-    <>
+    <Stack.Navigator>
       <Stack.Screen
         name="Home"
         component={Home}
@@ -20,7 +25,6 @@ export default function (Stack) {
         component={HardBoiled}
         options={{ headerShown: false }}
       />
-
       <Stack.Screen
         name="SoftBoiled"
         component={SoftBoiled}
@@ -37,6 +41,23 @@ export default function (Stack) {
         component={Timer}
         options={{ headerShown: false }}
       />
-    </>
+  
+      <Stack.Screen
+        name="HowTo"
+        component={HowTo}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
+      <Stack.Screen
+        name="Recipe"
+        component={RecipeScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SignUp"
+        component={SubscribeScreen}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
   );
 }

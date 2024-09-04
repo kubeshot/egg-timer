@@ -150,7 +150,7 @@ const PoachedEggs = () => {
                     )}
                     <Text style={styles.eggsTimerButtonText}>Soft</Text>
                   </View>
-                  <Text style={styles.eggsTimerButtonText}>3:00</Text>
+                  <Text style={styles.eggsTimerButtonText}>2:00</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
@@ -201,9 +201,19 @@ const PoachedEggs = () => {
                 style={styles.startTimerButton}
                 onPress={() => {
                   navigation.navigate("Timer", {
-                    eggStyle: "Poached",
-                    time: "4.00",
-                    doneNess:"Medium"
+                    heading: "Poached",
+                    time:
+                      selectedEggType === 0
+                        ? 120
+                        : selectedEggType === 1
+                        ? 180
+                        : 240,
+                    subHeading:
+                      selectedEggType === 0
+                        ? "Soft Poached"
+                        : selectedEggType === 1
+                        ? "Medium Poached"
+                        : "Hard Poached" ,
                   });
                 }}
               >

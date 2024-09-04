@@ -1,12 +1,9 @@
+import React from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
-
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useFonts } from "expo-font";
 import NavigationStack from "./navigation/NavigationStack";
 
-import { useFonts } from "expo-font";
-
-const Stack = createNativeStackNavigator();
 export default function App() {
   const [fontsLoaded] = useFonts({
     "Inter-Bold": require("./assets/fonts/Inter-Bold.ttf"),
@@ -23,12 +20,11 @@ export default function App() {
       </View>
     );
   }
+
   return (
-    <>
-      <NavigationContainer>
-        <Stack.Navigator>{NavigationStack(Stack)}</Stack.Navigator>
-      </NavigationContainer>
-    </>
+    <NavigationContainer>
+      <NavigationStack />
+    </NavigationContainer>
   );
 }
 

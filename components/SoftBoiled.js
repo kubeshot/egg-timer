@@ -20,6 +20,7 @@ const SoftBoiled = () => {
   const [selectedSize, setSelectedSize] = useState("L");
   const [showSizeSelection, setShowSizeSelection] = useState(false);
   const [selectedEggType, setSelectedEggType] = useState(0);
+  const [timerSubHeading, setTimerSubheading] = useState("3-Minute Eggs");
 
   const steps = [
     "In a saucepan, bring 4 inches of water to a boil and then reduce to a simmer.",
@@ -133,6 +134,7 @@ const SoftBoiled = () => {
                 <TouchableOpacity
                   onPress={() => {
                     setSelectedEggType(0);
+                    setTimerSubheading("3-Minute Eggs");
                   }}
                   style={[
                     styles.threeMinuteEggsButton,
@@ -156,6 +158,7 @@ const SoftBoiled = () => {
                 <TouchableOpacity
                   onPress={() => {
                     setSelectedEggType(1);
+                    setTimerSubheading("Jammy Eggs");
                   }}
                   style={[
                     styles.jammyEggsButton,
@@ -177,7 +180,16 @@ const SoftBoiled = () => {
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity style={styles.startTimerButton}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Timer", {
+                    heading: "Soft Boiled",
+                    time: selectedEggType === 0 ? 180 : 360 ,
+                    subHeading: selectedEggType === 0 ? "3-Minute Eggs" : "Jammy Eggs" ,
+                  });
+                }}
+                style={styles.startTimerButton}
+              >
                 <Image source={require("../assets/images/basic--clock.png")} />
                 <Text style={[styles.eggsTimerButtonText, { color: "white" }]}>
                   Start Timer

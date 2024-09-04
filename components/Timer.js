@@ -13,28 +13,67 @@ import BottomBar from "./BottomBar";
 import { useNavigation } from "@react-navigation/native";
 
 const Timer = ({ route }) => {
+  console.log(route);
   const navigation = useNavigation();
-  // console.log(route.params);
 
   const [heading, setHeading] = useState("");
-  const [doneNess, setDoneNess] = useState("");
-
+  const [subHeading, setSubHeading] = useState(route.params.subHeading);
+  const [time, setTime] = useState(180); // Timer starts at 3 minutes (180 seconds)
+  const [isPaused, setIsPaused] = useState(false);
+  const [soundOn, setSoundOn] = useState(true);
 
   useEffect(() => {
-    if (route.params && route.params.eggStyle) {
-      setHeading(route.params.eggStyle);
+    if (route.params && route.params.heading) {
+      setHeading(route.params.heading);
     }
-    if (route.params && route.params.doneNess) {
-      setDoneNess(route.params.doneNess);
+    if (route.params && route.params.subHeading) {
+      setSubHeading(route.params.subHeading);
     }
-  });
+
+    if (route.params && route.params.time) {
+      setTime(route.params.time);
+    }
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (!isPaused && time > 0) {
+        setTime(time - 1);
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [time, isPaused, route.params]);
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+  };
+
+  const getTimerBackgroundImage = () => {
+    if (time === 0) {
+      return require("../assets/images/frame-1772.png"); // Third image for timer reaching 0
+    } else if (time <= route.params.time / 2) {
+      return require("../assets/images/frame-177.png"); // Second image for timer half
+    } else {
+      return require("../assets/images/frame-1771.png"); // Initial image
+    }
+  };
 
   return (
     <>
-      <ImageBackground
-        source={require("../assets/images/hardboiledbackground-1.png")}
-        style={styles.imageBackground}
-      >
+      {/* Wrapper with opacity overlay */}
+      <View style={styles.overlayContainer}>
+        <ImageBackground
+          source={require("../assets/images/hardboiledbackground-1.png")}
+          style={styles.imageBackground}
+        >
+          {/* Transparent overlay */}
+          <View style={styles.opacityLayer} />
+        </ImageBackground>
+
+        {/* Main content */}
         <View style={styles.container}>
           <View style={styles.header}>
             <TouchableOpacity
@@ -54,9 +93,37 @@ const Timer = ({ route }) => {
           <View style={styles.innerContainer}>
             <View style={styles.uppperButtonsContainer}>
               <Text style={styles.heading}>{heading} Eggs</Text>
-              <TouchableOpacity style={styles.instructionsButton}>
-                <Text style={styles.instructionsText}>{doneNess} Doneness</Text>
-              </TouchableOpacity>
+              {subHeading !== "" && (
+                <View style={styles.instructionsButton}>
+                  <Text style={styles.instructionsText}>{subHeading}</Text>
+                </View>
+              )}
+            </View>
+
+            {/* Timer UI */}
+            <View style={styles.timerContainer}>
+              <ImageBackground
+                source={getTimerBackgroundImage()}
+                style={styles.timerTextBackground}
+                imageStyle={{ resizeMode: "contain" }} // Optional: Adjust border radius if needed
+              >
+                <Text style={styles.timerText}>
+                  {time !== 0 && formatTime(time)}
+                  {time === 0 && "Done !"}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setSoundOn(!soundOn)}
+                  style={styles.soundButton}
+                >
+                  <Image
+                    source={
+                      soundOn
+                        ? require("../assets/images/group-175.png")
+                        : require("../assets/images/group-175.png")
+                    }
+                  />
+                </TouchableOpacity>
+              </ImageBackground>
             </View>
 
             <View
@@ -65,20 +132,49 @@ const Timer = ({ route }) => {
                 justifyContent: "space-between",
               }}
             >
-              <TouchableOpacity style={styles.cancelTimerButton}>
-                <Text style={[styles.eggsTimerButtonText, { color: "black" }]}>
-                  Cancel
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.pauseTimerButton}>
-                <Text style={[styles.eggsTimerButtonText, { color: "white" }]}>
-                  Pause Timer
-                </Text>
-              </TouchableOpacity>
+              {time !== 0 && (
+                <>
+                  <TouchableOpacity
+                    style={styles.cancelTimerButton}
+                    onPress={() => {
+                      setTime(route.params.time);
+                      setIsPaused(true);
+                    }}
+                  >
+                    <Text
+                      style={[styles.eggsTimerButtonText, { color: "black" }]}
+                    >
+                      Cancel
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.pauseTimerButton}
+                    onPress={() => setIsPaused(!isPaused)}
+                  >
+                    <Text
+                      style={[styles.eggsTimerButtonText, { color: "white" }]}
+                    >
+                      {isPaused ? "Resume Timer" : "Pause Timer"}
+                    </Text>
+                  </TouchableOpacity>
+                </>
+              )}
+              {time === 0 && (
+                <TouchableOpacity
+                  style={styles.pauseTimerButton}
+                  // onPress={() => setIsPaused(!isPaused)}
+                >
+                  <Text
+                    style={[styles.eggsTimerButtonText, { color: "white" }]}
+                  >
+                    Stop Timer
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </View>
-      </ImageBackground>
+      </View>
 
       <BottomBar />
     </>
@@ -86,15 +182,25 @@ const Timer = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
+  overlayContainer: {
+    flex: 1,
+    position: "relative",
+  },
   imageBackground: {
     flex: 1,
     resizeMode: "cover",
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
+  opacityLayer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(255, 255, 255, 0.4)", // Adjust the opacity here
   },
   container: {
     flex: 1,
     paddingTop: 48,
   },
-
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -103,7 +209,6 @@ const styles = StyleSheet.create({
   },
   backButton: {
     backgroundColor: "white",
-    // padding: 8,
     borderRadius: 50,
   },
   logoContainer: {
@@ -111,7 +216,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   placeholder: {
-    width: 50, // Same width as the back button to keep the balance
+    width: 50,
   },
   innerContainer: {
     justifyContent: "space-between",
@@ -119,38 +224,13 @@ const styles = StyleSheet.create({
     marginBottom: "30%",
   },
   uppperButtonsContainer: {},
-
-  sizeSelectionButonContainer: {
-    flexDirection: "row",
-    alignSelf: "flex-end",
-    gap: 10,
-    marginRight: 16,
-  },
-  sizeSelectorButonText: {
-    fontSize: 24,
-    fontFamily: "Inter-Bold",
-  },
   heading: {
     fontSize: 32,
     fontFamily: "Inter-Bold",
     textAlign: "center",
     marginTop: 48,
   },
-
-  subHeading: {
-    fontSize: 20,
-    fontFamily: "Inter-Bold",
-    textAlign: "center",
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 16,
-    marginTop: 16,
-  },
   instructionsButton: {
-    // width:"50%",
     marginTop: 24,
     alignSelf: "center",
     backgroundColor: "white",
@@ -163,95 +243,53 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Inter-SemiBold",
   },
-
-  sizeSelectorButton: {
-    height: 55,
-    width: 55,
+  timerContainer: {
     alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 100,
+    marginTop: 24,
   },
-
-  sizeContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#FFD700",
-    paddingVertical: 8,
-    paddingHorizontal: 24,
-    borderRadius: 30,
-    gap: 8,
-  },
-  sizeLabel: {
-    fontSize: 18,
-    fontFamily: "Inter-Bold",
-  },
-  sizeButton: {
-    backgroundColor: "white",
-    borderRadius: 20,
-    width: 40,
-    height: 40,
+  timerTextBackground: {
     justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: "23%",
+    paddingVertical: "25%",
   },
-  sizeText: {
-    fontSize: 16,
+  timerCompleteTextBackground: {
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: "20%",
+    paddingVertical: "25%",
+  },
+  timerText: {
+    fontSize: 64,
     fontFamily: "Inter-Bold",
+    color: "black",
   },
 
-  threeMinuteEggsButton: {
-    flexDirection: "row",
-    backgroundColor: "white",
-    marginHorizontal: 16,
-    paddingHorizontal: 24,
-    paddingVertical: 16,
-    borderRadius: 100,
+  soundButton: {
     marginTop: 16,
-    justifyContent: "space-between",
   },
-  eggsButtonInnerContainer: {
-    flexDirection: "row",
-    gap: 8,
-  },
-
-  jammyEggsButton: {
-    flexDirection: "row",
-    backgroundColor: "white",
-    marginHorizontal: 16,
-    paddingHorizontal: 24,
-    paddingVertical: 16,
-    borderRadius: 100,
-    marginVertical: 16,
-    justifyContent: "space-between",
-  },
-
   pauseTimerButton: {
     flex: 1,
     marginRight: 16,
     marginLeft: 8,
     borderRadius: 100,
     backgroundColor: "black",
-    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 24,
     paddingVertical: 16,
-    gap: 8,
   },
-
   cancelTimerButton: {
     flex: 1,
     marginLeft: 16,
     marginRight: 8,
     borderRadius: 100,
     backgroundColor: "#F2F2F6",
-    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 24,
     paddingVertical: 16,
-    gap: 8,
   },
-
   eggsTimerButtonText: {
     fontSize: 16,
     fontFamily: "Inter-SemiBold",
