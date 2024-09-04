@@ -8,6 +8,7 @@ import RecipeScreen from "../components/Recipe/recipe";
 import HowTo from "../components/How-To's/howTosPage";
 import VideoPlayerScreen from "../components/videoPlayerScreen";
 import SubscribeScreen from "../components/News Letter Signup/newsLetterSignup";
+import SearchScreen from "../components/searchScreenComponent";
 
 const Stack = createNativeStackNavigator();
 
@@ -40,6 +41,8 @@ export default function NavigationStack() {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
+      <Stack.Screen name="Search" component={SearchScreen} />
+
       <Stack.Screen
         name="Recipe"
         component={RecipeScreen}
