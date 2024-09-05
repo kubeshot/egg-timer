@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -14,7 +14,13 @@ import BottomBar from "./BottomBar";
 const SuccessPage = ({ route }) => {
   const navigation = useNavigation();
 
-  const [title, setTitle] = useState(route.params.title);
+  const [title, setTitle] = useState(route.params.title) || "";
+
+  useEffect(() => {
+    if (route.params && route.params.title) {
+      setTitle(route.params.title);
+    }
+  });
 
   const recipeIdeas = [
     {
