@@ -71,11 +71,13 @@ This command will open the Expo Developer Tools in your default web browser.
 To run the app on your smartphone:
 
 1. Install the **Expo Go** app from the [Google Play Store](https://play.google.com/store/apps/details?id=host.exp.exponent) or the [Apple App Store](https://apps.apple.com/app/expo-go/id982107779).
-2. In the terminal, after running `expo start`, a QR code will appear.
+2. In the terminal, after running `npm start`, a QR code will appear.
 3. Open the **Expo Go** app on your device.
 4. Use the camera or the built-in QR scanner in **Expo Go** to scan the QR code displayed in the Expo Developer Tools in your browser.
 
 Your app should now load on your device!
+
+![Expo Start Screen](https://github.com/kubeshot/egg-timer/blob/main/assets/images/QRScreenshot.png)
 
 ### 5. Running on an Emulator or Simulator
 
