@@ -59,7 +59,12 @@ const Home = () => {
                 />
                 <Text style={styles.eggStyleButtonText}>Poached</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.eggStyleButton}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("CustomTimer");
+                }}
+                style={styles.eggStyleButton}
+              >
                 <Image
                   source={require("../assets/images/BTN - Hard Boiled.png")}
                 />
