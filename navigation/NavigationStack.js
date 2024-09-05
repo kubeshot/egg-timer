@@ -10,6 +10,7 @@ import HowTo from "../components/How-To's/howTosPage";
 import VideoPlayerScreen from "../components/videoPlayerScreen";
 import SubscribeScreen from "../components/News Letter Signup/newsLetterSignup";
 import SearchScreen from "../components/searchScreenComponent";
+import SuccessPage from "../components/successPage";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +20,11 @@ export default function NavigationStack() {
       <Stack.Screen
         name="Home"
         component={Home}
+        options={{ headerShown: false }}
+      />
+       <Stack.Screen
+        name="Success"
+        component={SuccessPage}
         options={{ headerShown: false }}
       />
       <Stack.Screen
