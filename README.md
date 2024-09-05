@@ -1,16 +1,13 @@
-
 # Egg Timer App
 
 A customizable timer app for cooking the perfect eggs, built using React Native and Expo.
 
 ## Table of Contents
+
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
 - [Installation](#installation)
 - [Running the Project](#running-the-project)
-- [Building for Production](#building-for-production)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Prerequisites
 
@@ -20,9 +17,9 @@ Before you begin, ensure you have the following software installed on your machi
 - **npm** (comes with Node.js) or **Yarn** - [Download Yarn here](https://yarnpkg.com/)
 - **Expo CLI** - Install globally using:
 
-    ```bash
-    npm install -g expo-cli
-    ```
+  ```bash
+  npm install -g expo-cli
+  ```
 
 ## Getting Started
 
@@ -92,4 +89,3 @@ expo run:android
 # For iOS
 expo run:ios
 ```
-
