@@ -13,6 +13,11 @@ import { useNavigation } from "@react-navigation/native";
 const Home = () => {
   const navigation = useNavigation();
 
+  const hardBoiledImage = require("../assets/images/btn--hard-boiled.png");
+  const softBoiledImage = require("../assets/images/btn--hard-boiled1.png");
+  const poachedEggImage = require("../assets/images/btn--hard-boiled2.png");
+  const customTimerImage = require("../assets/images/BTN - Hard Boiled.png");
+
   return (
     <>
       <ScrollView style={styles.scrollViewContainer}>
@@ -30,7 +35,7 @@ const Home = () => {
                 style={styles.eggStyleButton}
               >
                 <Image
-                  source={require("../assets/images/btn--hard-boiled.png")}
+                  source={hardBoiledImage}
                 />
                 <Text style={styles.eggStyleButtonText}>Hard Boiled</Text>
               </TouchableOpacity>
@@ -41,7 +46,7 @@ const Home = () => {
                 style={styles.eggStyleButton}
               >
                 <Image
-                  source={require("../assets/images/btn--hard-boiled1.png")}
+                  source={softBoiledImage}
                 />
                 <Text style={styles.eggStyleButtonText}>Soft Boiled</Text>
               </TouchableOpacity>
@@ -55,7 +60,7 @@ const Home = () => {
                 style={styles.eggStyleButton}
               >
                 <Image
-                  source={require("../assets/images/btn--hard-boiled2.png")}
+                  source={poachedEggImage}
                 />
                 <Text style={styles.eggStyleButtonText}>Poached</Text>
               </TouchableOpacity>
@@ -66,7 +71,7 @@ const Home = () => {
                 style={styles.eggStyleButton}
               >
                 <Image
-                  source={require("../assets/images/BTN - Hard Boiled.png")}
+                  source={customTimerImage}
                 />
                 <Text style={styles.eggStyleButtonText}>Custom Timer</Text>
               </TouchableOpacity>

@@ -64,14 +64,18 @@ Alternatively, you can use:
 expo start
 ```
 
-This command will open the Expo Developer Tools in your default web browser. From there, you can choose to run the app on an emulator or physical device.
+This command will open the Expo Developer Tools in your default web browser.
 
 ### 4. Running on a Physical Device
 
 To run the app on your smartphone:
 
 1. Install the **Expo Go** app from the [Google Play Store](https://play.google.com/store/apps/details?id=host.exp.exponent) or the [Apple App Store](https://apps.apple.com/app/expo-go/id982107779).
-2. Open the **Expo Go** app and scan the QR code displayed in the Expo Developer Tools in your browser.
+2. In the terminal, after running `expo start`, a QR code will appear.
+3. Open the **Expo Go** app on your device.
+4. Use the camera or the built-in QR scanner in **Expo Go** to scan the QR code displayed in the Expo Developer Tools in your browser.
+
+Your app should now load on your device!
 
 ### 5. Running on an Emulator or Simulator
 
