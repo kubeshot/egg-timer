@@ -13,11 +13,11 @@ import BottomBar from "./BottomBar";
 import { useNavigation } from "@react-navigation/native";
 
 const Timer = ({ route }) => {
-  // console.log(route);
+  console.log(route);
   const navigation = useNavigation();
 
-  const [heading, setHeading] = useState("");
-  const [subHeading, setSubHeading] = useState(route.params.subHeading);
+  const [heading, setHeading] = useState(route.params.heading) || "";
+  const [subHeading, setSubHeading] = useState(route.params.subHeading) || "";
   const [time, setTime] = useState(180); // Timer starts at 3 minutes (180 seconds)
   const [isPaused, setIsPaused] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
@@ -58,6 +58,18 @@ const Timer = ({ route }) => {
       return require("../assets/images/frame-177.png"); // Second image for timer half
     } else {
       return require("../assets/images/frame-1771.png"); // Initial image
+    }
+  };
+
+  const getTitle = () => {
+    if (heading === "Hard Boiled Eggs") {
+      return "Your hard boiled eggs are done!";
+    } else if (heading === "Soft Boiled Eggs") {
+      return "Your soft boiled eggs are done!";
+    } else if (heading === "Poached Eggs") {
+      return "Your Poached Eggs are done!";
+    } else {
+      return "Your custom timer is done!";
     }
   };
 
@@ -111,7 +123,10 @@ const Timer = ({ route }) => {
                   {time !== 0 && formatTime(time)}
                   {time === 0 && "Done !"}
                 </Text>
-                <TouchableOpacity onPress={() => setSoundOn(!soundOn)} style={styles.soundButton}>
+                <TouchableOpacity
+                  onPress={() => setSoundOn(!soundOn)}
+                  style={styles.soundButton}
+                >
                   <Image
                     source={
                       soundOn
@@ -138,13 +153,19 @@ const Timer = ({ route }) => {
                       setIsPaused(true);
                     }}
                   >
-                    <Text style={[styles.eggsTimerButtonText, { color: "black" }]}>Cancel</Text>
+                    <Text
+                      style={[styles.eggsTimerButtonText, { color: "black" }]}
+                    >
+                      Cancel
+                    </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.pauseTimerButton}
                     onPress={() => setIsPaused(!isPaused)}
                   >
-                    <Text style={[styles.eggsTimerButtonText, { color: "white" }]}>
+                    <Text
+                      style={[styles.eggsTimerButtonText, { color: "white" }]}
+                    >
                       {isPaused ? "Resume Timer" : "Pause Timer"}
                     </Text>
                   </TouchableOpacity>
@@ -153,9 +174,17 @@ const Timer = ({ route }) => {
               {time === 0 && (
                 <TouchableOpacity
                   style={styles.pauseTimerButton}
-                  // onPress={() => setIsPaused(!isPaused)}
+                  onPress={() =>
+                    navigation.navigate("Success", {
+                      title: getTitle(),
+                    })
+                  }
                 >
-                  <Text style={[styles.eggsTimerButtonText, { color: "white" }]}>Stop Timer</Text>
+                  <Text
+                    style={[styles.eggsTimerButtonText, { color: "white" }]}
+                  >
+                    Stop Timer
+                  </Text>
                 </TouchableOpacity>
               )}
             </View>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,9 +9,12 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
+import BottomBar from "./BottomBar";
 
-const SuccessPage = ({ title }) => {
+const SuccessPage = ({ route }) => {
   const navigation = useNavigation();
+
+  const [title, setTitle] = useState(route.params.title);
 
   const recipeIdeas = [
     {
@@ -82,6 +85,7 @@ const SuccessPage = ({ title }) => {
           style={styles.backIcon}
         />
       </TouchableOpacity>
+      <BottomBar />
     </SafeAreaView>
   );
 };
