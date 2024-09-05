@@ -215,14 +215,15 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 40,
-    fontWeight: "900",
     textAlign: "center",
     marginBottom: 10,
+    fontFamily: "Inter-Bold",
   },
   headerSubtitle: {
     fontSize: 20,
-    fontWeight: "400",
+    // fontWeight: "400",
     textAlign: "center",
+    fontFamily: "Inter-Regular",
   },
   seriesSection: {
     backgroundColor: "#FFFBE6", // Light yellow background
@@ -232,13 +233,16 @@ const styles = StyleSheet.create({
   },
   seriesTitle: {
     fontSize: 25,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Inter-SemiBold",
+
     textAlign: "center",
     marginBottom: 10,
   },
   seriesImage: {
     width: "100%",
     height: 250,
+    // marginBottom: 20,
     borderTopLeftRadius: 10, // Apply border radius to the top-left corner
     borderTopRightRadius: 10, // Apply border radius to the top-right corner
   },
@@ -257,8 +261,10 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   articleTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 23,
+    // fontWeight: "bold",
+    fontFamily: "Inter-SemiBold",
+    marginTop:20,
     marginBottom: 10,
     left: 0,
   },
@@ -273,6 +279,7 @@ const styles = StyleSheet.create({
   },
   articleSubtitle: {
     fontSize: 18,
+    fontFamily: "Inter-Regular",
     marginBottom: 20,
   },
   topArticleSubtitle: {
@@ -299,7 +306,8 @@ const styles = StyleSheet.create({
   },
   halloweenTitle: {
     fontSize: 30,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Inter-Bold",
     textAlign: "center",
     marginTop: 40,
     marginBottom: 40,
@@ -333,13 +341,15 @@ const styles = StyleSheet.create({
   },
   halloweenSubtitle: {
     fontSize: 25,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Inter-SemiBold",
     textAlign: "center",
     marginBottom: 8,
   },
   halloweenDetails: {
     fontSize: 18,
     marginBottom: 15,
+    fontFamily: "Inter-Regular",
     textAlign: "center",
   },
   learnMoreButton: {
@@ -354,12 +364,14 @@ const styles = StyleSheet.create({
   },
   learnMoreText: {
     color: "#fff",
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Inter-SemiBold",
     fontSize: 16,
   },
   getAppSubtitle: {
     fontSize: 26,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Inter-SemiBold",
     textAlign: "center",
     marginBottom: 10,
   },
@@ -400,7 +412,8 @@ const styles = StyleSheet.create({
   },
   topArticlesTitle: {
     fontSize: 35,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Inter-Bold",
     textAlign: "center",
     marginBottom: 20,
   },

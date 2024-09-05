@@ -12,7 +12,8 @@ export default StyleSheet.create({
   },
   title: {
     fontSize: 40,
-    fontWeight: '800',
+    // fontWeight: '800',
+    fontFamily: "Inter-Bold",
     padding: 10,
     textAlign: 'center',
     marginTop:-30,
@@ -21,7 +22,8 @@ export default StyleSheet.create({
   },
   subtitle: {
     fontSize: 18,
-    fontWeight:'400',
+    // fontWeight:'400',
+    fontFamily: "Inter-SemiBold",
     textAlign: 'center',
     padding: 15,
     marginBottom: 20,
@@ -52,7 +54,8 @@ export default StyleSheet.create({
   },
   footer: {
     fontSize: 15,
-    fontWeight:'400',
+    // fontWeight:'400',
+    fontFamily: "Inter-Regular",
     textAlign: 'center',
     color: '#000000',
     marginTop: 15,

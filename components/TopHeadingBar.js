@@ -33,7 +33,8 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 20,
-    fontWeight: '800',
+    // fontWeight: '800',
+    fontFamily: "Inter-Bold",
     marginLeft: 8,
   },
   logo: {

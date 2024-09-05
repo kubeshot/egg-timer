@@ -361,13 +361,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 40,
-    fontWeight: "800",
+    // fontWeight: "800",
+    fontFamily: "Inter-Bold",
     textAlign: "center",
     marginVertical: 8,
   },
   subtitle: {
     fontSize: 16,
     textAlign: "center",
+    fontFamily: "Inter-Regular",
     marginBottom: 16,
     color: "#555",
   },
@@ -405,6 +407,7 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: 16,
+    fontFamily: "Inter-SemiBold",
     color: "#555",
   },
   activeTabText: {
@@ -427,7 +430,8 @@ const styles = StyleSheet.create({
   },
   recipeName: {
     fontSize: 16,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Inter-SemiBold",
     textAlign: "center",
   },
   seriesSection: {
@@ -438,7 +442,8 @@ const styles = StyleSheet.create({
   },
   seriesTitle: {
     fontSize: 25,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Inter-Bold",
     textAlign: "center",
     marginBottom: 10,
   },
@@ -455,12 +460,14 @@ const styles = StyleSheet.create({
   },
   articleTitle: {
     fontSize: 24,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Inter-SemiBold",
     marginBottom: 10,
-    left: 0,
+    
   },
   articleSubtitle: {
     fontSize: 18,
+    fontFamily: "Inter-Regular",
     marginBottom: 20,
   },
   card: {
@@ -480,7 +487,8 @@ const styles = StyleSheet.create({
 
   halloweenTitle: {
     fontSize: 30,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Inter-Bold",
     textAlign: "center",
     marginTop: 40,
     marginBottom: 40,
@@ -511,17 +519,20 @@ const styles = StyleSheet.create({
   },
   halloweenDescription: {
     marginTop: 10,
-    alignItems: "center",
+    // alignItems: "center",
+    left:2,
   },
   halloweenSubtitle: {
     fontSize: 25,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Inter-SemiBold",
     textAlign: "center",
     marginBottom: 8,
   },
   halloweenDetails: {
     fontSize: 18,
     marginBottom: 15,
+    fontFamily: "Inter-Regular",
     textAlign: "center",
   },
   learnMoreButton: {
@@ -544,7 +555,8 @@ const styles = StyleSheet.create({
   },
   getAppSubtitle: {
     fontSize: 26,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Inter-SemiBold",
     textAlign: "center",
     marginBottom: 10,
   },
@@ -565,7 +577,8 @@ const styles = StyleSheet.create({
   },
   chefsCornerTitle: {
     fontSize: 35,
-    fontWeight: "500",
+    // fontWeight: "500",
+    fontFamily: "Inter-Bold",
     textAlign: "center",
     marginBottom: 8,
   },
@@ -573,6 +586,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     color: "#555",
+    fontFamily: "Inter-Regular",
     marginBottom: 16,
   },
   chefsCornerImage: {
@@ -583,7 +597,8 @@ const styles = StyleSheet.create({
   },
   chefsRecipeTitle: {
     fontSize: 24,
-    fontWeight: "900",
+    // fontWeight: "900",
+    fontFamily: "Inter-SemiBold",
     textAlign: "center",
     marginBottom: 8,
   },
@@ -591,6 +606,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     color: "#555",
+    fontFamily: "Inter-Regular",
     marginBottom: 16,
   },
   appetizerSection: {
@@ -603,7 +619,8 @@ const styles = StyleSheet.create({
   },
   categoryTitle: {
     fontSize: 28,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Inter-Bold",
     textAlign: "center",
     marginBottom: 16,
   },
@@ -624,7 +641,8 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 16,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Inter-SemiBold",
     textAlign: "center",
   },
   moreEggsButton: {

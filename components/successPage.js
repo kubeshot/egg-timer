@@ -114,7 +114,8 @@ const styles = StyleSheet.create({
   },
   successText: {
     fontSize: 24,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Inter-Bold",
     textAlign: "center",
     marginTop: 20,
     marginBottom: 20,
@@ -130,7 +131,8 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 25,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Inter-SemiBold",
   },
   recipeGrid: {
     flexDirection: "row",

@@ -166,8 +166,9 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   newsletterText: {
-    fontSize: 28,
-    fontWeight: "bold",
+    fontSize: 22,
+    // fontWeight: "bold",
+    fontFamily: "Inter-SemiBold",
     marginBottom: 10,
     color: "#000",
     textAlign: "center",
@@ -217,7 +218,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginVertical: 5,
     color: "#000",
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Inter-Bold",
   },
   internationalContainer: {
     flexDirection: "row",
@@ -242,6 +244,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#000",
     marginBottom: 10,
+    fontFamily: "Inter-Regular",
     textAlign: "center",
   },
   legalLinksContainer: {
@@ -251,6 +254,7 @@ const styles = StyleSheet.create({
   legalLinkText: {
     fontSize: 14,
     color: "#000",
+    fontFamily: "Inter-Regular",
     marginHorizontal: 10,
     marginBottom: 40,
   },
