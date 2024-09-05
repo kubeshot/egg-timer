@@ -11,9 +11,8 @@ import {
 } from "react-native";
 import BottomBar from "./BottomBar";
 import { useNavigation } from "@react-navigation/native";
-import { Picker } from "@react-native-picker/picker";
 
-const CustomTimer = ({ route }) => {
+const CustomTimer = () => {
   // console.log(route);
   const navigation = useNavigation();
 
@@ -56,73 +55,19 @@ const CustomTimer = ({ route }) => {
               <View style={styles.uppperButtonsContainer}>
                 <Text style={styles.heading}>Custom Timer</Text>
               </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  marginHorizontal: "15%",
-                }}
-              >
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "black",
-                    paddingVertical: 8,
-                    paddingHorizontal: 16,
-                    borderRadius: 100,
-                    marginBottom: 20,
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: "white",
-                      fontSize: 16,
-                      fontFamily: "Inter-SemiBold",
-                    }}
-                  >
-                    Minutes
-                  </Text>
+              <View style={styles.labelContainer}>
+                <TouchableOpacity style={styles.label}>
+                  <Text style={styles.labelText}>Minutes</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "black",
-                    paddingVertical: 8,
-                    paddingHorizontal: 16,
-                    borderRadius: 100,
-                    marginBottom: 20,
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: "white",
-                      fontSize: 16,
-                      fontFamily: "Inter-SemiBold",
-                    }}
-                  >
-                    Seconds
-                  </Text>
+                <TouchableOpacity style={styles.label}>
+                  <Text style={styles.labelText}>Seconds</Text>
                 </TouchableOpacity>
               </View>
 
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 14,
-                }}
-              >
-                <View
-                  style={{
-                    alignItems: "center",
-                    gap: 20,
-                  }}
-                >
+              <View style={styles.timerContainer}>
+                <View style={styles.timerButtonContainer}>
                   <TouchableOpacity
-                    style={{
-                      backgroundColor: "#FFCE00",
-                      borderRadius: 100,
-                    }}
+                    style={styles.timerButton}
                     onPress={() => {
                       if (selectedMinutes > 0) {
                         setSelectedMinutes((prev) => prev - 1);
@@ -130,45 +75,16 @@ const CustomTimer = ({ route }) => {
                     }}
                   >
                     <Image
-                      style={{
-                        width: 50,
-                        height: 50,
-                        resizeMode: "center",
-                      }}
+                      style={styles.timerButtonImage}
                       source={require("../assets/images/icon.png")}
                     />
                   </TouchableOpacity>
 
-                  <View
-                    style={{
-                      width: 132,
-                      height: 144,
-                      borderWidth: 3,
-                      borderRadius: 12,
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
+                  <View style={styles.timerValueContainer}>
                     {selectedMinutes < 10 && (
-                      <Text
-                        style={{
-                          fontSize: 80,
-                          fontFamily: "Inter-Bold",
-                          color: "#DADADA",
-                        }}
-                      >
-                        0
-                      </Text>
+                      <Text style={styles.timerValueLight}>0</Text>
                     )}
-                    <Text
-                      style={{
-                        fontSize: 80,
-                        fontFamily: "Inter-Bold",
-                      }}
-                    >
-                      {selectedMinutes}
-                    </Text>
+                    <Text style={styles.timerValue}>{selectedMinutes}</Text>
                   </View>
 
                   <TouchableOpacity
@@ -177,90 +93,39 @@ const CustomTimer = ({ route }) => {
                         setSelectedMinutes((prev) => prev + 1);
                       }
                     }}
-                    style={{
-                      backgroundColor: "#FFCE00",
-                      borderRadius: 100,
-                    }}
+                    style={styles.timerButton}
                   >
                     <Image
-                      style={{
-                        width: 50,
-                        height: 50,
-                        resizeMode: "center",
-                      }}
+                      style={styles.timerButtonImage}
                       source={require("../assets/images/icon1.png")}
                     />
                   </TouchableOpacity>
                 </View>
 
                 <View>
-                  <Text
-                    style={{
-                      fontSize: 80,
-                      fontFamily: "Inter-SemiBold",
-                    }}
-                  >
-                    :
-                  </Text>
+                  <Text style={styles.semiColon}>:</Text>
                 </View>
 
-                <View
-                  style={{
-                    alignItems: "center",
-                    gap: 20,
-                  }}
-                >
+                <View style={styles.timerButtonContainer}>
                   <TouchableOpacity
                     onPress={() => {
                       if (selectedSeconds > 0) {
                         setSelectedSeconds((prev) => prev - 1);
                       }
                     }}
-                    style={{
-                      backgroundColor: "#FFCE00",
-                      borderRadius: 100,
-                    }}
+                    style={styles.timerButton}
                   >
                     <Image
-                      style={{
-                        width: 50,
-                        height: 50,
-                        resizeMode: "center",
-                      }}
+                      style={styles.timerButtonImage}
                       source={require("../assets/images/icon.png")}
                     />
                   </TouchableOpacity>
 
-                  <View
-                    style={{
-                      width: 132,
-                      height: 144,
-                      borderWidth: 3,
-                      borderRadius: 12,
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
+                  <View style={styles.timerValueContainer}>
                     {selectedSeconds < 10 && (
-                      <Text
-                        style={{
-                          fontSize: 80,
-                          fontFamily: "Inter-Bold",
-                          color: "#DADADA",
-                        }}
-                      >
-                        0
-                      </Text>
+                      <Text style={styles.timerValueLight}>0</Text>
                     )}
-                    <Text
-                      style={{
-                        fontSize: 80,
-                        fontFamily: "Inter-Bold",
-                      }}
-                    >
-                      {selectedSeconds}
-                    </Text>
+                    <Text style={styles.timerValue}>{selectedSeconds}</Text>
                   </View>
 
                   <TouchableOpacity
@@ -269,73 +134,41 @@ const CustomTimer = ({ route }) => {
                         setSelectedSeconds((prev) => prev + 1);
                       }
                     }}
-                    style={{
-                      backgroundColor: "#FFCE00",
-                      borderRadius: 100,
-                    }}
+                    style={styles.timerButton}
                   >
                     <Image
-                      style={{
-                        width: 50,
-                        height: 50,
-                        resizeMode: "center",
-                      }}
+                      style={styles.timerButtonImage}
                       source={require("../assets/images/icon1.png")}
                     />
                   </TouchableOpacity>
                 </View>
               </View>
 
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                {time !== 0 && (
-                  <>
-                    <TouchableOpacity
-                      style={styles.cancelTimerButton}
-                      onPress={() => {
-                        navigation.navigate("Home");
-                      }}
-                    >
-                      <Text
-                        style={[styles.eggsTimerButtonText, { color: "black" }]}
-                      >
-                        Cancel
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => {
-                        navigation.navigate("Timer", {
-                          heading: "Custom Timer",
-                          time: selectedMinutes * 60 + selectedSeconds,
-                          subheading: "",
-                        });
-                      }}
-                      style={styles.pauseTimerButton}
-                    >
-                      <Text
-                        style={[styles.eggsTimerButtonText, { color: "white" }]}
-                      >
-                        Start Timer
-                      </Text>
-                    </TouchableOpacity>
-                  </>
-                )}
-                {time === 0 && (
-                  <TouchableOpacity
-                    style={styles.pauseTimerButton}
-                    // onPress={() => setIsPaused(!isPaused)}
-                  >
-                    <Text
-                      style={[styles.eggsTimerButtonText, { color: "white" }]}
-                    >
-                      Stop Timer
-                    </Text>
-                  </TouchableOpacity>
-                )}
+              <View style={styles.bottomButtonContainer}>
+                <TouchableOpacity
+                  style={styles.cancelTimerButton}
+                  onPress={() => {
+                    navigation.navigate("Home");
+                  }}
+                >
+                  <Text style={[styles.bottomButtonText, { color: "black" }]}>
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("Timer", {
+                      heading: "Custom Timer",
+                      time: selectedMinutes * 60 + selectedSeconds,
+                      subheading: "",
+                    });
+                  }}
+                  style={styles.startTimerButton}
+                >
+                  <Text style={[styles.bottomButtonText, { color: "white" }]}>
+                    Start Timer
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -393,60 +226,80 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   uppperButtonsContainer: {},
-  picker: {
-    width: 150,
-    height: 50,
-  },
+
   heading: {
     fontSize: 32,
     fontFamily: "Inter-Bold",
     textAlign: "center",
     marginTop: 48,
   },
-  instructionsButton: {
-    marginTop: 24,
-    alignSelf: "center",
-    backgroundColor: "white",
-    borderRadius: 30,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
+  labelContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginHorizontal: "15%",
   },
-  instructionsText: {
-    textAlign: "center",
+  label: {
+    backgroundColor: "black",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 100,
+    marginBottom: 20,
+  },
+  labelText: {
+    color: "white",
     fontSize: 16,
     fontFamily: "Inter-SemiBold",
   },
   timerContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 24,
-    aspectRatio: 1, // This ensures a square container
-    width: "90%", // Use a percentage of the screen width
-    maxWidth: 400, // Optional: set a maximum width if desired
-    alignSelf: "center",
-  },
-  timerTextBackground: {
-    width: "100%",
-    height: "100%",
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    gap: 14,
   },
-  timerCompleteTextBackground: {
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: "20%",
-    paddingVertical: "25%",
+  timerButtonContainer: { alignItems: "center", gap: 20 },
+  timerButton: {
+    backgroundColor: "#FFCE00",
+    borderRadius: 100,
   },
-  timerText: {
-    fontSize: 64,
-    fontFamily: "Inter-Bold",
-    color: "black",
+  timerButtonImage: {
+    width: 50,
+    height: 50,
+    resizeMode: "center",
   },
 
+  semiColon: {
+    fontSize: 80,
+    fontFamily: "Inter-SemiBold",
+  },
+
+  timerValueContainer: {
+    width: 132,
+    height: 144,
+    borderWidth: 3,
+    borderRadius: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  timerValueLight: {
+    fontSize: 80,
+    fontFamily: "Inter-Bold",
+    color: "#DADADA",
+  },
+  timerValue: {
+    fontSize: 80,
+    fontFamily: "Inter-Bold",
+  },
   soundButton: {
     marginTop: 16,
   },
-  pauseTimerButton: {
+
+  bottomButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  startTimerButton: {
     flex: 1,
     marginRight: 16,
     marginLeft: 8,
@@ -469,7 +322,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 16,
   },
-  eggsTimerButtonText: {
+  bottomButtonText: {
     fontSize: 16,
     fontFamily: "Inter-SemiBold",
   },
