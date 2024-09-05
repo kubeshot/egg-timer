@@ -127,7 +127,7 @@ const HardBoiled = () => {
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate("Timer", {
-                  heading: "Hard Boiled",
+                  heading: "Hard Boiled Eggs",
                   time: 720,
                   subheading: "",
                 });

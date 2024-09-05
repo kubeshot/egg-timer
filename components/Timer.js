@@ -13,7 +13,7 @@ import BottomBar from "./BottomBar";
 import { useNavigation } from "@react-navigation/native";
 
 const Timer = ({ route }) => {
-  console.log(route);
+  // console.log(route);
   const navigation = useNavigation();
 
   const [heading, setHeading] = useState("");
@@ -92,7 +92,7 @@ const Timer = ({ route }) => {
 
           <View style={styles.innerContainer}>
             <View style={styles.uppperButtonsContainer}>
-              <Text style={styles.heading}>{heading} Eggs</Text>
+              <Text style={styles.heading}>{heading}</Text>
               {subHeading !== "" && (
                 <View style={styles.instructionsButton}>
                   <Text style={styles.instructionsText}>{subHeading}</Text>

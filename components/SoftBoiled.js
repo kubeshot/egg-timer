@@ -183,7 +183,7 @@ const SoftBoiled = () => {
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate("Timer", {
-                    heading: "Soft Boiled",
+                    heading: "Soft Boiled Eggs" ,
                     time: selectedEggType === 0 ? 180 : 360 ,
                     subHeading: selectedEggType === 0 ? "3-Minute Eggs" : "Jammy Eggs" ,
                   });

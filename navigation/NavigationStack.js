@@ -11,6 +11,7 @@ import VideoPlayerScreen from "../components/videoPlayerScreen";
 import SubscribeScreen from "../components/News Letter Signup/newsLetterSignup";
 import SearchScreen from "../components/searchScreenComponent";
 import SuccessPage from "../components/successPage";
+import CustomTimer from "../components/CustomTimer";
 
 const Stack = createNativeStackNavigator();
 
@@ -48,7 +49,7 @@ export default function NavigationStack() {
         component={Timer}
         options={{ headerShown: false }}
       />
-  
+
       <Stack.Screen
         name="HowTo"
         component={HowTo}
@@ -65,6 +66,11 @@ export default function NavigationStack() {
       <Stack.Screen
         name="SignUp"
         component={SubscribeScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CustomTimer"
+        component={CustomTimer}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
