@@ -353,7 +353,7 @@ export default function RecipeScreen({ onClose }) {
     //   </ScrollView>
     // </SafeAreaView>
 
-    <SafeAreaView style={styles.safeArea}>
+    <>
       <Header title="Recipes" logoSource={image1} onClose={onClose} />
 
       {loading && (
@@ -369,7 +369,7 @@ export default function RecipeScreen({ onClose }) {
           onLoadEnd={() => setLoading(false)}
         />
       </View>
-    </SafeAreaView>
+    </>
   );
 }
 
