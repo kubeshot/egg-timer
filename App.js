@@ -3,6 +3,7 @@ import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import NavigationStack from "./navigation/NavigationStack";
+import { StatusBar } from "expo-status-bar";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -23,6 +24,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
+      <StatusBar translucent backgroundColor="transparent" />
       <NavigationStack />
     </NavigationContainer>
   );
