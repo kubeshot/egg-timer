@@ -9,9 +9,13 @@ import {
 } from "react-native";
 import BottomBar from "./BottomBar";
 import { useNavigation } from "@react-navigation/native";
+import { Linking } from "react-native";
 
 const Home = () => {
   const navigation = useNavigation();
+  const handleLinkPress = (Uri) => {
+    Linking.openURL(Uri);
+  };
 
   const hardBoiledImage = require("../assets/images/btn--hard-boiled.png");
   const softBoiledImage = require("../assets/images/btn--hard-boiled1.png");
@@ -34,9 +38,7 @@ const Home = () => {
                 }}
                 style={styles.eggStyleButton}
               >
-                <Image
-                  source={hardBoiledImage}
-                />
+                <Image source={hardBoiledImage} />
                 <Text style={styles.eggStyleButtonText}>Hard Boiled</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -45,9 +47,7 @@ const Home = () => {
                 }}
                 style={styles.eggStyleButton}
               >
-                <Image
-                  source={softBoiledImage}
-                />
+                <Image source={softBoiledImage} />
                 <Text style={styles.eggStyleButtonText}>Soft Boiled</Text>
               </TouchableOpacity>
             </View>
@@ -59,9 +59,7 @@ const Home = () => {
                 }}
                 style={styles.eggStyleButton}
               >
-                <Image
-                  source={poachedEggImage}
-                />
+                <Image source={poachedEggImage} />
                 <Text style={styles.eggStyleButtonText}>Poached</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -70,9 +68,7 @@ const Home = () => {
                 }}
                 style={styles.eggStyleButton}
               >
-                <Image
-                  source={customTimerImage}
-                />
+                <Image source={customTimerImage} />
                 <Text style={styles.eggStyleButtonText}>Custom Timer</Text>
               </TouchableOpacity>
             </View>
@@ -84,7 +80,14 @@ const Home = () => {
               Watch the video. See how it's done!
             </Text>
 
-            <TouchableOpacity style={styles.videoButton}>
+            <TouchableOpacity
+              style={styles.videoButton}
+              onPress={() =>
+                handleLinkPress(
+                  "https://www.youtube.com/shorts/DPt0CX7zwFA"
+                )
+              }
+            >
               <Image source={require("../assets/images/btnhardboiled.png")} />
               <View style={styles.videoTextContainer}>
                 <Image source={require("../assets/images/frame-143.png")} />
@@ -93,7 +96,14 @@ const Home = () => {
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.videoButton}>
+            <TouchableOpacity
+              style={styles.videoButton}
+              onPress={() =>
+                handleLinkPress(
+                  "https://www.youtube.com/shorts/JHcwHcRCxrk"
+                )
+              }
+            >
               <Image
                 source={require("../assets/images/btn--hard-boiled4.png")}
               />
@@ -104,7 +114,14 @@ const Home = () => {
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.videoButton}>
+            <TouchableOpacity
+              style={styles.videoButton}
+              onPress={() =>
+                handleLinkPress(
+                  "https://www.youtube.com/shorts/I-PDJ-uBQwE"
+                )
+              }
+            >
               <Image source={require("../assets/images/btnhardboiled2.png")} />
               <View style={styles.videoTextContainer}>
                 <Image source={require("../assets/images/frame-143.png")} />
@@ -112,7 +129,14 @@ const Home = () => {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.moreVideosButton}>
+            <TouchableOpacity
+              style={styles.moreVideosButton}
+              onPress={() =>
+                handleLinkPress(
+                  "https://www.youtube.com/channel/UCq6p--GVSjdVKp_B4zQbqgQ"
+                )
+              }
+            >
               <Text style={styles.videoContainerText}>More How-To Videos</Text>
             </TouchableOpacity>
           </View>
