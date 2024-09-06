@@ -9,6 +9,7 @@ import {
   Linking,
   ScrollView,
   SafeAreaView,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Header from "../TopHeadingBar.js";
@@ -97,6 +98,8 @@ export default function RecipeScreen({ onClose }) {
   const handleSearchPress = (text) => {
     setSearchQuery(text);
   };
+
+  const [loading, setLoading] = useState(true);
 
   return (
     // <SafeAreaView style={styles.safeArea}>
@@ -352,8 +355,19 @@ export default function RecipeScreen({ onClose }) {
 
     <SafeAreaView style={styles.safeArea}>
       <Header title="Recipes" logoSource={image1} onClose={onClose} />
+
+      {loading && (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#000000" />
+        </View>
+      )}
+
       <View style={styles.container}>
-        <WebView source={{ uri: "https://www.eggs.ca/recipes/" }} />
+        <WebView
+          source={{ uri: "https://www.eggs.ca/recipes/" }}
+          onLoadStart={() => setLoading(true)}
+          onLoadEnd={() => setLoading(false)}
+        />
       </View>
     </SafeAreaView>
   );
@@ -367,6 +381,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // padding: 16,
+  },
+  loadingContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    zIndex: 1,
   },
   title: {
     fontSize: 40,

@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ImageBackground,
   SafeAreaView,
+  ActivityIndicator,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../TopHeadingBar.js";
@@ -46,6 +47,7 @@ export default function HowTo({ onClose }) {
   const handleSearchPress = () => {
     // Handle search button press
   };
+  const [loading, setLoading] = useState(true);
 
   return (
     // <SafeAreaView style={{ flex: 1 }}>
@@ -213,8 +215,17 @@ export default function HowTo({ onClose }) {
     // </SafeAreaView>
     <SafeAreaView style={styles.safeArea}>
       <Header title="How-To's" logoSource={image11} onClose={onClose} />
+      {loading && (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#000000" />
+        </View>
+      )}
       <View style={styles.container}>
-        <WebView source={{ uri: "https://www.eggs.ca/eggs101" }} />
+        <WebView
+          source={{ uri: "https://www.eggs.ca/eggs101" }}
+          onLoadStart={() => setLoading(true)}
+          onLoadEnd={() => setLoading(false)}
+        />
       </View>
     </SafeAreaView>
   );
@@ -227,6 +238,17 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+  },
+  loadingContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    zIndex: 1,
   },
   header: {
     marginTop: 20,
