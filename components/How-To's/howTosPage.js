@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+
 import {
   StyleSheet,
   Text,
@@ -26,14 +27,17 @@ import image10 from "../../assets/images/image40.png";
 import image11 from "../../assets/images/file021.png";
 import videoIcon from "../../assets/images/iconplay-video.png";
 import Footer from "../footer.js";
+import VideoModal from "../VideoModal.js";
 
 export default function HowTo({ onClose }) {
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [currentVideoId, setCurrentVideoId] = useState("");
 
-  const handleVideoPress = (videoUri) => {
-    Linking.openURL(videoUri);
+  const handleVideoPress = (videoId) => {
+    setCurrentVideoId(videoId);  // Directly pass the video ID
+    setModalVisible(true);
   };
-
   const handleMenuPress = () => {
     // Handle menu button press
   };
@@ -128,21 +132,21 @@ export default function HowTo({ onClose }) {
               title: "How to Poach an Egg Like a Pro",
               subtitle:
                 "With the proper technique and a little practice, poaching an egg is easy.",
-              video: "https://youtu.be/lKJyOl98kGM",
+              video: "lKJyOl98kGM",
             },
             {
               image: image6,
               title: "How to Fry the Perfect Egg",
               subtitle:
                 "Fried eggs are usually thought of as diner breakfast fare, but they're an easy way to add protein to all kinds of meals.",
-              video: "https://youtu.be/FQ9Y50AciO0",
+              video: "FQ9Y50AciO0",
             },
             {
               image: image7,
               title: "How to Make Scrambled Eggs",
               subtitle:
                 "Scrambled eggs are one of the most versatile breakfast dishes to prepare.",
-              video: "https://youtu.be/joHJcnne36Q",
+              video: "joHJcnne36Q",
             },
             {
               image: image8,
@@ -156,7 +160,7 @@ export default function HowTo({ onClose }) {
               title: "How to Make the Perfect Hard Boiled Egg",
               subtitle:
                 "Hard boiled eggs are great food to have on hand as their uses are so versatile.",
-              video: "https://youtu.be/GG8M3QmLJ6I",
+              video: "GG8M3QmLJ6I",
             },
           ].map((article, index) => (
             <View key={index} style={styles.card}>
@@ -200,7 +204,13 @@ export default function HowTo({ onClose }) {
         </View>
         <Footer />
       </ScrollView>
+      <VideoModal
+        isVisible={modalVisible}
+        videoUri={currentVideoId}  // Pass video ID
+        onClose={() => setModalVisible(false)}
+      />
     </SafeAreaView>
+
   );
 }
 
