@@ -62,7 +62,7 @@ export default function SubscribeScreen({ onClose }) {
     //     <Footer />
     //   </ScrollView>
     // </SafeAreaView>
-    <SafeAreaView style={styles.safeArea}>
+    <>
       <Header
         title="Newsletter Sign-up"
         logoSource={image1}
@@ -81,7 +81,7 @@ export default function SubscribeScreen({ onClose }) {
           onLoadEnd={() => setLoading(false)}
         />
       </View>
-    </SafeAreaView>
+    </>
   );
 }
 

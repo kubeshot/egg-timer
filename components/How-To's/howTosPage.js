@@ -213,7 +213,7 @@ export default function HowTo({ onClose }) {
     //     onClose={() => setModalVisible(false)}
     //   />
     // </SafeAreaView>
-    <SafeAreaView style={styles.safeArea}>
+    <>
       <Header title="How-To's" logoSource={image11} onClose={onClose} />
       {loading && (
         <View style={styles.loadingContainer}>
@@ -227,7 +227,7 @@ export default function HowTo({ onClose }) {
           onLoadEnd={() => setLoading(false)}
         />
       </View>
-    </SafeAreaView>
+    </>
   );
 }
 
