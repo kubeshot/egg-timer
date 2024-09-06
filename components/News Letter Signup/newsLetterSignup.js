@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   ScrollView,
   SafeAreaView,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import Header from "../TopHeadingBar.js";
 import Navbar from "../Navbar.js";
@@ -22,6 +23,8 @@ export default function SubscribeScreen({ onClose }) {
   const handleSearchPress = () => {
     // Handle search button press
   };
+
+  const [loading, setLoading] = useState(true);
 
   return (
     // <SafeAreaView style={{ flex: 1 }}>
@@ -59,16 +62,26 @@ export default function SubscribeScreen({ onClose }) {
     //     <Footer />
     //   </ScrollView>
     // </SafeAreaView>
-    <SafeAreaView style={styles.safeArea}>
+    <>
       <Header
         title="Newsletter Sign-up"
         logoSource={image1}
         onClose={onClose}
       />
+
+      {loading && (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#000000" />
+        </View>
+      )}
       <View style={styles.container}>
-        <WebView source={{ uri: "https://www.eggs.ca/newsletter-signup/" }} />
+        <WebView
+          source={{ uri: "https://www.eggs.ca/newsletter-signup/" }}
+          onLoadStart={() => setLoading(true)}
+          onLoadEnd={() => setLoading(false)}
+        />
       </View>
-    </SafeAreaView>
+    </>
   );
 }
 
@@ -79,5 +92,16 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+  },
+  loadingContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    zIndex: 1,
   },
 });
