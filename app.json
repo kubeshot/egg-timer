@@ -15,12 +15,14 @@
       "supportsTablet": true
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.ansh_kubeshot.eggtimer"
-    },
+  "permissions": ["INTERNET"],
+  "adaptiveIcon": {
+    "foregroundImage": "./assets/images/adaptive-icon.png",
+    "backgroundColor": "#ffffff"
+  },
+  "package": "com.ansh_kubeshot.eggtimer"
+},
+
     "web": {
       "favicon": "./assets/images/favicon.png"
     },

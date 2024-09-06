@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Image,
   ScrollView,
@@ -9,10 +9,19 @@ import {
 } from "react-native";
 import BottomBar from "./BottomBar";
 import { useNavigation } from "@react-navigation/native";
+import VideoModal from "./VideoModal";
 import { Linking } from "react-native";
+
 
 const Home = () => {
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [currentVideoId, setCurrentVideoId] = useState("");
+
+  const handleVideoPress = (videoId) => {
+    setCurrentVideoId(videoId);  // Directly pass the video ID
+    setModalVisible(true);
+  };
   const handleLinkPress = (Uri) => {
     Linking.openURL(Uri);
   };
@@ -82,11 +91,7 @@ const Home = () => {
 
             <TouchableOpacity
               style={styles.videoButton}
-              onPress={() =>
-                handleLinkPress(
-                  "https://www.youtube.com/shorts/DPt0CX7zwFA"
-                )
-              }
+              onPress={() => handleVideoPress("DPt0CX7zwFA")}
             >
               <Image source={require("../assets/images/btnhardboiled.png")} />
               <View style={styles.videoTextContainer}>
@@ -98,11 +103,7 @@ const Home = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.videoButton}
-              onPress={() =>
-                handleLinkPress(
-                  "https://www.youtube.com/shorts/JHcwHcRCxrk"
-                )
-              }
+              onPress={() => handleVideoPress("JHcwHcRCxrk")}
             >
               <Image
                 source={require("../assets/images/btn--hard-boiled4.png")}
@@ -116,26 +117,20 @@ const Home = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.videoButton}
-              onPress={() =>
-                handleLinkPress(
-                  "https://www.youtube.com/shorts/I-PDJ-uBQwE"
-                )
-              }
+              onPress={() => handleVideoPress("I-PDJ-uBQwE")}
             >
               <Image source={require("../assets/images/btnhardboiled2.png")} />
               <View style={styles.videoTextContainer}>
                 <Image source={require("../assets/images/frame-143.png")} />
-                <Text style={styles.videoContainerText}>How to Poach Eggs</Text>
+                <Text style={styles.videoContainerText}>
+                  How to Poach Eggs
+                </Text>
               </View>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.moreVideosButton}
-              onPress={() =>
-                handleLinkPress(
-                  "https://www.youtube.com/channel/UCq6p--GVSjdVKp_B4zQbqgQ"
-                )
-              }
+              onPress={() => handleLinkPress("https://www.youtube.com/channel/UCq6p--GVSjdVKp_B4zQbqgQ")}
             >
               <Text style={styles.videoContainerText}>More How-To Videos</Text>
             </TouchableOpacity>
@@ -143,9 +138,17 @@ const Home = () => {
         </View>
       </ScrollView>
       <BottomBar />
+      <VideoModal
+        isVisible={modalVisible}
+        videoUri={currentVideoId}  // Pass video ID
+        onClose={() => setModalVisible(false)}
+      />
     </>
   );
 };
+
+
+
 
 const styles = StyleSheet.create({
   scrollViewContainer: {
