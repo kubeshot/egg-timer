@@ -1,30 +1,42 @@
 import React, { useState, useRef } from "react";
+import { Video, ResizeMode } from "expo-av";
 import {
   View,
   StyleSheet,
   TouchableOpacity,
-  Text,
   ActivityIndicator,
-  Dimensions, // Import Dimensions here
+  Dimensions,
+  Text,
 } from "react-native";
 import Modal from "react-native-modal";
 import { AntDesign } from "@expo/vector-icons";
-import YoutubeIframe from "react-native-youtube-iframe"; // Import YouTube iframe
+import YoutubePlayer from "react-native-youtube-iframe";
+
+
 
 const VideoModal = ({ isVisible, videoUri, onClose }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const youtubePlayerRef = useRef(null);
+  const video = useRef(null);
+  const [status, setStatus] = useState({});
 
   const handleReady = () => {
-    setLoading(false); // Hide loader when video is ready
+    setLoading(false);
   };
 
   const { width, height } = Dimensions.get("window");
 
-  // You can adjust the height and width here
-  const iframeWidth = width * 0.9; // 90% of the screen width
-  const iframeHeight = iframeWidth * (16 / 9); // Keep a 16:9 ratio for the video
+  const modalWidth = width ;
+  const modalHeight = height-200 ;
+  
+
+  const isYouTubeUrl =
+    videoUri.includes("youtube.com") ||
+    videoUri.includes("youtu.be") ||
+    videoUri.includes("shorts");
+
+  const videoId = extractVideoId(videoUri);
 
   return (
     <Modal
@@ -33,7 +45,7 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
       onBackButtonPress={onClose}
       style={styles.modal}
     >
-      <View style={styles.modalContent}>
+      <View style={[styles.container, { width: modalWidth, height: modalHeight }]}>
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
           <AntDesign name="closecircle" size={24} color="white" />
         </TouchableOpacity>
@@ -48,24 +60,52 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
 
         {error ? (
           <Text style={styles.errorText}>{error}</Text>
+        ) : isYouTubeUrl && videoId ? (
+          <View style={styles.youtubeContainer}>
+            <YoutubePlayer
+              ref={youtubePlayerRef}
+              height={height-200} // Increase height by 10%
+              width={width}
+              videoId={videoId}
+              play={true}
+              onReady={handleReady}
+              onError={(e) => {
+                console.error("YouTube Error:", e);
+                setError("Failed to load video. Please try again later.");
+                setLoading(false);
+
+              }}
+              webViewProps={{
+                injectedJavaScript: `
+                  var element = document.getElementsByClassName('container')[0];
+                  element.style.position = 'unset';
+                  element.style.paddingBottom = 'unset';
+                  true;
+                `,
+              }}
+            />
+          </View>
         ) : (
-          <YoutubeIframe
-            ref={youtubePlayerRef}
-            height={iframeHeight} // Set dynamic height
-            width={iframeWidth} // Set dynamic width
-            videoId={videoUri} // Make sure this is the correct video ID
-            play={true}
-            onReady={handleReady}
-            onError={(e) => {
-              console.error("YouTube Error:", e);
-              setError("Failed to load video. Please try again later.");
-              setLoading(false);
-            }}
+          <Video
+            ref={video}
+            style={styles.video}
+            source={{ uri: videoUri }}
+            useNativeControls
+            resizeMode={ResizeMode.COVER}
+            isLooping
+            onPlaybackStatusUpdate={(status) => setStatus(() => status)}
           />
         )}
       </View>
     </Modal>
   );
+};
+
+const extractVideoId = (url) => {
+  const videoIdRegex =
+    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|shorts\/)([^"&?/\s]{11})/;
+  const matches = url.match(videoIdRegex);
+  return matches ? matches[1] : null;
 };
 
 const styles = StyleSheet.create({
@@ -74,19 +114,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  modalContent: {
-    backgroundColor: "white",
-    borderRadius: 20,
-    // padding: 5,
-    alignItems: "center",
-    width: "90%",
-    aspectRatio: 30 / 16,
-  },
   closeButton: {
     position: "absolute",
     top: 10,
     right: 10,
-    zIndex: 1,
+    zIndex: 2,
   },
   errorText: {
     color: "red",
@@ -98,6 +130,22 @@ const styles = StyleSheet.create({
     top: "50%",
     left: "50%",
     zIndex: 1,
+  },
+  container: {
+    justifyContent: "center",
+    backgroundColor: "black",
+    borderRadius: 15,
+    overflow: "hidden",
+  },
+  youtubeContainer: {
+    height: "100%",
+    width: "100%",
+    overflow: "hidden",
+  },
+  video: {
+    alignSelf: "center",
+    width: "100%",
+    height: "100%",
   },
 });
 

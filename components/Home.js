@@ -91,7 +91,7 @@ const Home = () => {
 
             <TouchableOpacity
               style={styles.videoButton}
-              onPress={() => handleVideoPress("DPt0CX7zwFA")}
+              onPress={() => handleVideoPress("https://www.youtube.com/shorts/DPt0CX7zwFA")}
             >
               <Image source={require("../assets/images/btnhardboiled.png")} />
               <View style={styles.videoTextContainer}>
@@ -103,7 +103,7 @@ const Home = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.videoButton}
-              onPress={() => handleVideoPress("JHcwHcRCxrk")}
+              onPress={() => handleVideoPress("https://www.youtube.com/shorts/JHcwHcRCxrk")}
             >
               <Image
                 source={require("../assets/images/btn--hard-boiled4.png")}
@@ -117,7 +117,7 @@ const Home = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.videoButton}
-              onPress={() => handleVideoPress("I-PDJ-uBQwE")}
+              onPress={() => handleVideoPress("https://www.youtube.com/shorts/I-PDJ-uBQwE")}
             >
               <Image source={require("../assets/images/btnhardboiled2.png")} />
               <View style={styles.videoTextContainer}>
