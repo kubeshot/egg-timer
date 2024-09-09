@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Video, ResizeMode } from "expo-av";
 import {
   View,
@@ -12,14 +12,24 @@ import Modal from "react-native-modal";
 import { AntDesign } from "@expo/vector-icons";
 import YoutubePlayer from "react-native-youtube-iframe";
 
-
-
 const VideoModal = ({ isVisible, videoUri, onClose }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const youtubePlayerRef = useRef(null);
   const video = useRef(null);
   const [status, setStatus] = useState({});
+  const [showCloseButton, setShowCloseButton] = useState(false);
+
+  useEffect(() => {
+    if (isVisible) {
+      setShowCloseButton(false);
+      const timer = setTimeout(() => {
+        setShowCloseButton(true);
+      }, 4000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible]);
 
   const handleReady = () => {
     setLoading(false);
@@ -27,9 +37,8 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
 
   const { width, height } = Dimensions.get("window");
 
-  const modalWidth = width ;
-  const modalHeight = height-250 ;
-  
+  const modalWidth = width;
+  const modalHeight = height - 250;
 
   const isYouTubeUrl =
     videoUri.includes("youtube.com") ||
@@ -46,17 +55,13 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
       style={styles.modal}
     >
       <View style={[styles.container, { width: modalWidth, height: modalHeight }]}>
-        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-          <AntDesign name="closecircle" size={24} color="white" />
-        </TouchableOpacity>
-
-        {loading && (
-          <ActivityIndicator
-            size="large"
-            color="#0000ff"
-            style={styles.loader}
-          />
+        {showCloseButton && (
+          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+            <AntDesign name="closecircle" size={24} color="white" />
+          </TouchableOpacity>
         )}
+
+        {loading && <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />}
 
         {error ? (
           <Text style={styles.errorText}>{error}</Text>
@@ -64,7 +69,7 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
           <View style={styles.youtubeContainer}>
             <YoutubePlayer
               ref={youtubePlayerRef}
-              height={height-250} // Increase height by 10%
+              height={height - 250} // Increase height by 10%
               width={width}
               videoId={videoId}
               play={true}
@@ -73,7 +78,6 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
                 console.error("YouTube Error:", e);
                 setError("Failed to load video. Please try again later.");
                 setLoading(false);
-
               }}
               webViewProps={{
                 injectedJavaScript: `
@@ -116,9 +120,12 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     position: "absolute",
-    top: 1,
-    right: 0,
-    zIndex: 2,
+    top: 10,
+    right: 10,
+    zIndex: 3, // Increase zIndex to ensure it's on top
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Add a semi-transparent background
+    borderRadius: 12, // Make it circular
+    padding: 5,
   },
   errorText: {
     color: "red",
