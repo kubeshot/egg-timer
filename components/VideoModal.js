@@ -28,7 +28,7 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
   const { width, height } = Dimensions.get("window");
 
   const modalWidth = width ;
-  const modalHeight = height-200 ;
+  const modalHeight = height-250 ;
   
 
   const isYouTubeUrl =
@@ -64,7 +64,7 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
           <View style={styles.youtubeContainer}>
             <YoutubePlayer
               ref={youtubePlayerRef}
-              height={height-200} // Increase height by 10%
+              height={height-250} // Increase height by 10%
               width={width}
               videoId={videoId}
               play={true}
@@ -116,8 +116,8 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     position: "absolute",
-    top: 10,
-    right: 10,
+    top: 1,
+    right: 0,
     zIndex: 2,
   },
   errorText: {
