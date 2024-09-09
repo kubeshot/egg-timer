@@ -62,26 +62,21 @@ export default function SubscribeScreen({ onClose }) {
     //     <Footer />
     //   </ScrollView>
     // </SafeAreaView>
-    <>
-      <Header
-        title="Newsletter Sign-up"
-        logoSource={image1}
-        onClose={onClose}
-      />
+    <View style={styles.container}>
+      <Header title="Newsletter Sign-up" logoSource={image1} onClose={onClose} />
 
       {loading && (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#000000" />
         </View>
       )}
-      <View style={styles.container}>
-        <WebView
-          source={{ uri: "https://www.eggs.ca/newsletter-signup/" }}
-          onLoadStart={() => setLoading(true)}
-          onLoadEnd={() => setLoading(false)}
-        />
-      </View>
-    </>
+
+      <WebView
+        source={{ uri: "https://www.eggs.ca/newsletter-signup/" }}
+        onLoadStart={() => setLoading(true)}
+        onLoadEnd={() => setLoading(false)}
+      />
+    </View>
   );
 }
 

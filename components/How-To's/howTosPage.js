@@ -213,21 +213,20 @@ export default function HowTo({ onClose }) {
     //     onClose={() => setModalVisible(false)}
     //   />
     // </SafeAreaView>
-    <>
+    <View style={styles.container}>
       <Header title="How-To's" logoSource={image11} onClose={onClose} />
       {loading && (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#000000" />
         </View>
       )}
-      <View style={styles.container}>
-        <WebView
-          source={{ uri: "https://www.eggs.ca/eggs101" }}
-          onLoadStart={() => setLoading(true)}
-          onLoadEnd={() => setLoading(false)}
-        />
-      </View>
-    </>
+
+      <WebView
+        source={{ uri: "https://www.eggs.ca/eggs101" }}
+        onLoadStart={() => setLoading(true)}
+        onLoadEnd={() => setLoading(false)}
+      />
+    </View>
   );
 }
 

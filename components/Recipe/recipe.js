@@ -353,7 +353,7 @@ export default function RecipeScreen({ onClose }) {
     //   </ScrollView>
     // </SafeAreaView>
 
-    <>
+    <View style={styles.container}>
       <Header title="Recipes" logoSource={image1} onClose={onClose} />
 
       {loading && (
@@ -362,14 +362,12 @@ export default function RecipeScreen({ onClose }) {
         </View>
       )}
 
-      <View style={styles.container}>
-        <WebView
-          source={{ uri: "https://www.eggs.ca/recipes/" }}
-          onLoadStart={() => setLoading(true)}
-          onLoadEnd={() => setLoading(false)}
-        />
-      </View>
-    </>
+      <WebView
+        source={{ uri: "https://www.eggs.ca/recipes/" }}
+        onLoadStart={() => setLoading(true)}
+        onLoadEnd={() => setLoading(false)}
+      />
+    </View>
   );
 }
 
