@@ -22,6 +22,9 @@ const SoftBoiled = () => {
   const [selectedEggType, setSelectedEggType] = useState(0);
   const [timerSubHeading, setTimerSubheading] = useState("3-Minute Eggs");
 
+  const [timer1, setTimer1] = useState(3);
+  const [timer2, setTimer2] = useState(6);
+
   const steps = [
     "In a saucepan, bring 4 inches of water to a boil and then reduce to a simmer.",
     "Using a slotted spoon lower eggs into simmering water. ",
@@ -87,6 +90,10 @@ const SoftBoiled = () => {
                     ]}
                     onPress={() => {
                       setSelectedSize("M");
+
+                      setTimer1(2);
+                      setTimer2(5);
+
                       setShowSizeSelection(false);
                     }}
                   >
@@ -102,6 +109,8 @@ const SoftBoiled = () => {
                     ]}
                     onPress={() => {
                       setSelectedSize("L");
+                      setTimer1(3);
+                      setTimer2(6);
                       setShowSizeSelection(false);
                     }}
                   >
@@ -117,6 +126,8 @@ const SoftBoiled = () => {
                     ]}
                     onPress={() => {
                       setSelectedSize("XL");
+                      setTimer1(4);
+                      setTimer2(7);
                       setShowSizeSelection(false);
                     }}
                   >
@@ -134,6 +145,7 @@ const SoftBoiled = () => {
                 <TouchableOpacity
                   onPress={() => {
                     setSelectedEggType(0);
+
                     setTimerSubheading("3-Minute Eggs");
                   }}
                   style={[
@@ -153,11 +165,12 @@ const SoftBoiled = () => {
                       3-Minute Eggs
                     </Text>
                   </View>
-                  <Text style={styles.eggsTimerButtonText}>3:00</Text>
+                  <Text style={styles.eggsTimerButtonText}>{timer1}:00</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
                     setSelectedEggType(1);
+
                     setTimerSubheading("Jammy Eggs");
                   }}
                   style={[
@@ -176,16 +189,17 @@ const SoftBoiled = () => {
                     <Text style={styles.eggsTimerButtonText}>Jammy Eggs</Text>
                   </View>
 
-                  <Text style={styles.eggsTimerButtonText}>6:00</Text>
+                  <Text style={styles.eggsTimerButtonText}>{timer2}:00</Text>
                 </TouchableOpacity>
               </View>
 
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate("Timer", {
-                    heading: "Soft Boiled Eggs" ,
-                    time: selectedEggType === 0 ? 180 : 360 ,
-                    subHeading: selectedEggType === 0 ? "3-Minute Eggs" : "Jammy Eggs" ,
+                    heading: "Soft Boiled Eggs",
+                    time: selectedEggType === 0 ? timer1 * 60 : timer2 * 60,
+                    subHeading:
+                      selectedEggType === 0 ? "3-Minute Eggs" : "Jammy Eggs",
                   });
                 }}
                 style={styles.startTimerButton}

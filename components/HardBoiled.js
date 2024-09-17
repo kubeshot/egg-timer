@@ -20,6 +20,8 @@ const HardBoiled = () => {
   const [selectedSize, setSelectedSize] = useState("L");
   const [showSizeSelection, setShowSizeSelection] = useState(false);
 
+  const [timer, setTimer] = useState(12);
+
   const steps = [
     "In a saucepan, place eggs in a single layer and cover eggs with at least 1 inch of water.",
     "Cover with a lid and bring to a boil over high heat.",
@@ -85,6 +87,7 @@ const HardBoiled = () => {
                     ]}
                     onPress={() => {
                       setSelectedSize("M");
+                      setTimer(10);
                       setShowSizeSelection(false);
                     }}
                   >
@@ -100,6 +103,7 @@ const HardBoiled = () => {
                     ]}
                     onPress={() => {
                       setSelectedSize("L");
+                      setTimer(12);
                       setShowSizeSelection(false);
                     }}
                   >
@@ -115,6 +119,7 @@ const HardBoiled = () => {
                     ]}
                     onPress={() => {
                       setSelectedSize("XL");
+                      setTimer(14);
                       setShowSizeSelection(false);
                     }}
                   >
@@ -128,7 +133,7 @@ const HardBoiled = () => {
               onPress={() => {
                 navigation.navigate("Timer", {
                   heading: "Hard Boiled Eggs",
-                  time: 720,
+                  time: timer * 60,
                   subheading: "",
                 });
               }}
@@ -144,7 +149,7 @@ const HardBoiled = () => {
                 <Image source={require("../assets/images/basic--clock.png")} />
                 <Text style={styles.startTimerButtonText}>Start Timer</Text>
               </View>
-              <Text style={styles.startTimerButtonText}>12:00</Text>
+              <Text style={styles.startTimerButtonText}>{timer}:00</Text>
             </TouchableOpacity>
           </View>
         </View>

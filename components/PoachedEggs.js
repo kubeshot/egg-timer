@@ -21,6 +21,10 @@ const PoachedEggs = () => {
   const [showSizeSelection, setShowSizeSelection] = useState(false);
   const [selectedEggType, setSelectedEggType] = useState(0);
 
+  const [timer1, setTimer1] = useState(2);
+  const [timer2, setTimer2] = useState(3);
+  const [timer3, setTimer3] = useState(4);
+
   const steps = [
     "In a saucepan, bring 3 inches of water to a gentle simmer.",
     "Add 2 tsp of white vinegar to the water. ",
@@ -87,6 +91,11 @@ const PoachedEggs = () => {
                     ]}
                     onPress={() => {
                       setSelectedSize("M");
+
+                      setTimer1(2);
+                      setTimer2(3);
+                      setTimer3(4);
+
                       setShowSizeSelection(false);
                     }}
                   >
@@ -102,6 +111,9 @@ const PoachedEggs = () => {
                     ]}
                     onPress={() => {
                       setSelectedSize("L");
+                      setTimer1(3);
+                      setTimer2(4);
+                      setTimer3(5);
                       setShowSizeSelection(false);
                     }}
                   >
@@ -117,6 +129,9 @@ const PoachedEggs = () => {
                     ]}
                     onPress={() => {
                       setSelectedSize("XL");
+                      setTimer1(4);
+                      setTimer2(5);
+                      setTimer3(6);
                       setShowSizeSelection(false);
                     }}
                   >
@@ -150,7 +165,7 @@ const PoachedEggs = () => {
                     )}
                     <Text style={styles.eggsTimerButtonText}>Soft</Text>
                   </View>
-                  <Text style={styles.eggsTimerButtonText}>2:00</Text>
+                  <Text style={styles.eggsTimerButtonText}>{timer1}:00</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
@@ -171,7 +186,7 @@ const PoachedEggs = () => {
                     )}
                     <Text style={styles.eggsTimerButtonText}>Medium</Text>
                   </View>
-                  <Text style={styles.eggsTimerButtonText}>3:00</Text>
+                  <Text style={styles.eggsTimerButtonText}>{timer2}:00</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
@@ -193,7 +208,7 @@ const PoachedEggs = () => {
                     <Text style={styles.eggsTimerButtonText}>Hard</Text>
                   </View>
 
-                  <Text style={styles.eggsTimerButtonText}>4:00</Text>
+                  <Text style={styles.eggsTimerButtonText}>{timer3}:00</Text>
                 </TouchableOpacity>
               </View>
 
@@ -204,16 +219,16 @@ const PoachedEggs = () => {
                     heading: "Poached Eggs",
                     time:
                       selectedEggType === 0
-                        ? 120
+                        ? timer1 * 60
                         : selectedEggType === 1
-                        ? 180
-                        : 240,
+                        ? timer2 * 60
+                        : timer3 * 60,
                     subHeading:
                       selectedEggType === 0
                         ? "Soft Poached"
                         : selectedEggType === 1
                         ? "Medium Poached"
-                        : "Hard Poached" ,
+                        : "Hard Poached",
                   });
                 }}
               >
