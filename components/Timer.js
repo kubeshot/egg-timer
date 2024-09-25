@@ -10,10 +10,10 @@ import {
   Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import Svg, { Circle, Defs, Pattern, Rect } from 'react-native-svg';
+import Svg, { Circle, Defs, Pattern, Rect } from "react-native-svg";
 import BottomBar from "./BottomBar";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -108,36 +108,46 @@ const Timer = ({ route }) => {
           </View>
         )}
 
-        <View style={[styles.timerContainer, { width: circleSize, height: circleSize }]}>
-        <Svg width={circleSize} height={circleSize}>
-  <Defs>
-    <Pattern id="stripes" patternUnits="userSpaceOnUse" width="4" height="8">
-      {/* Background color of the pattern */}
-      <Rect x="0" y="0" width="4" height="8" fill="white" />
-      {/* Stripes */}
-      <Rect x="0" y="0" width="2" height="8" fill="black" />
-    </Pattern>
-  </Defs>
-  <Circle
-    cx={circleSize / 2}
-    cy={circleSize / 2}
-    r={radius}
-    stroke="#E0E0E0"
-    strokeWidth={strokeWidth}
-    fill="none"
-  />
-  <AnimatedCircle
-    cx={circleSize / 2}
-    cy={circleSize / 2}
-    r={radius}
-    stroke="url(#stripes)" // Use the striped pattern here
-    strokeWidth={strokeWidth}
-    fill="none"
-    strokeDasharray={circumference}
-    strokeDashoffset={strokeDashoffset}
-    strokeLinecap="round"
-  />
-</Svg>
+        <View
+          style={[
+            styles.timerContainer,
+            { width: circleSize, height: circleSize },
+          ]}
+        >
+          <Svg width={circleSize} height={circleSize}>
+            <Defs>
+              <Pattern
+                id="stripes"
+                patternUnits="userSpaceOnUse"
+                width="4"
+                height="8"
+              >
+                {/* Background color of the pattern */}
+                <Rect x="0" y="0" width="4" height="8" fill="white" />
+                {/* Stripes */}
+                <Rect x="0" y="0" width="2" height="8" fill="black" />
+              </Pattern>
+            </Defs>
+            <Circle
+              cx={circleSize / 2}
+              cy={circleSize / 2}
+              r={radius}
+              stroke="#E0E0E0"
+              strokeWidth={strokeWidth}
+              fill="none"
+            />
+            <AnimatedCircle
+              cx={circleSize / 2}
+              cy={circleSize / 2}
+              r={radius}
+              stroke="url(#stripes)" // Use the striped pattern here
+              strokeWidth={strokeWidth}
+              fill="none"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              strokeLinecap="round"
+            />
+          </Svg>
 
           <View style={styles.timerInnerCircle}>
             <Text style={styles.timerText}>
@@ -254,7 +264,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   timerInnerCircle: {
-    position: 'absolute',
+    position: "absolute",
     width: "90%",
     height: "90%",
     borderRadius: 1000,
