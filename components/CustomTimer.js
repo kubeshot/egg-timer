@@ -3,6 +3,7 @@ import {
   Image,
   ImageBackground,
   Modal,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -35,143 +36,147 @@ const CustomTimer = () => {
 
         {/* Main content */}
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          <View style={styles.container}>
-            <View style={styles.header}>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.goBack();
-                }}
-                style={styles.backButton}
-              >
-                <Image source={require("../assets/images/btnback-arrow.png")} />
-              </TouchableOpacity>
-              <View style={styles.logoContainer}>
-                <Image source={require("../assets/images/Logo.png")} />
-              </View>
-              <View style={styles.placeholder} />
-            </View>
-
-            <View style={styles.innerContainer}>
-              <View style={styles.uppperButtonsContainer}>
-                <Text style={styles.heading}>Custom Timer</Text>
-              </View>
-              <View style={styles.labelContainer}>
-                <TouchableOpacity style={styles.label}>
-                  <Text style={styles.labelText}>Minutes</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.label}>
-                  <Text style={styles.labelText}>Seconds</Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.timerContainer}>
-                <View style={styles.timerButtonContainer}>
-                  <TouchableOpacity
-                    style={styles.timerButton}
-                    onPress={() => {
-                      if (selectedMinutes > 0) {
-                        setSelectedMinutes((prev) => prev - 1);
-                      }
-                    }}
-                  >
-                    <Image
-                      style={styles.timerButtonImage}
-                      source={require("../assets/images/icon.png")}
-                    />
-                  </TouchableOpacity>
-
-                  <View style={styles.timerValueContainer}>
-                    {selectedMinutes < 10 && (
-                      <Text style={styles.timerValueLight}>0</Text>
-                    )}
-                    <Text style={styles.timerValue}>{selectedMinutes}</Text>
-                  </View>
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (selectedMinutes < 60) {
-                        setSelectedMinutes((prev) => prev + 1);
-                      }
-                    }}
-                    style={styles.timerButton}
-                  >
-                    <Image
-                      style={styles.timerButtonImage}
-                      source={require("../assets/images/icon1.png")}
-                    />
-                  </TouchableOpacity>
-                </View>
-
-                <View>
-                  <Text style={styles.semiColon}>:</Text>
-                </View>
-
-                <View style={styles.timerButtonContainer}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (selectedSeconds > 0) {
-                        setSelectedSeconds((prev) => prev - 1);
-                      }
-                    }}
-                    style={styles.timerButton}
-                  >
-                    <Image
-                      style={styles.timerButtonImage}
-                      source={require("../assets/images/icon.png")}
-                    />
-                  </TouchableOpacity>
-
-                  <View style={styles.timerValueContainer}>
-                    {selectedSeconds < 10 && (
-                      <Text style={styles.timerValueLight}>0</Text>
-                    )}
-                    <Text style={styles.timerValue}>{selectedSeconds}</Text>
-                  </View>
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (selectedSeconds < 60) {
-                        setSelectedSeconds((prev) => prev + 1);
-                      }
-                    }}
-                    style={styles.timerButton}
-                  >
-                    <Image
-                      style={styles.timerButtonImage}
-                      source={require("../assets/images/icon1.png")}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <View style={styles.bottomButtonContainer}>
-                <TouchableOpacity
-                  style={styles.cancelTimerButton}
-                  onPress={() => {
-                    navigation.navigate("Home");
-                  }}
-                >
-                  <Text style={[styles.bottomButtonText, { color: "black" }]}>
-                    Cancel
-                  </Text>
-                </TouchableOpacity>
+          <SafeAreaView style={styles.safeArea}>
+            <View style={styles.container}>
+              <View style={styles.header}>
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate("Timer", {
-                      heading: "Custom Timer",
-                      time: selectedMinutes * 60 + selectedSeconds,
-                      subheading: "",
-                    });
+                    navigation.goBack();
                   }}
-                  style={styles.startTimerButton}
+                  style={styles.backButton}
                 >
-                  <Text style={[styles.bottomButtonText, { color: "white" }]}>
-                    Start Timer
-                  </Text>
+                  <Image
+                    source={require("../assets/images/btnback-arrow.png")}
+                  />
                 </TouchableOpacity>
+                <View style={styles.logoContainer}>
+                  <Image source={require("../assets/images/Logo.png")} />
+                </View>
+                <View style={styles.placeholder} />
+              </View>
+
+              <View style={styles.innerContainer}>
+                <View style={styles.uppperButtonsContainer}>
+                  <Text style={styles.heading}>Custom Timer</Text>
+                </View>
+                <View style={styles.labelContainer}>
+                  <TouchableOpacity style={styles.label}>
+                    <Text style={styles.labelText}>Minutes</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.label}>
+                    <Text style={styles.labelText}>Seconds</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View style={styles.timerContainer}>
+                  <View style={styles.timerButtonContainer}>
+                    <TouchableOpacity
+                      style={styles.timerButton}
+                      onPress={() => {
+                        if (selectedMinutes > 0) {
+                          setSelectedMinutes((prev) => prev - 1);
+                        }
+                      }}
+                    >
+                      <Image
+                        style={styles.timerButtonImage}
+                        source={require("../assets/images/icon.png")}
+                      />
+                    </TouchableOpacity>
+
+                    <View style={styles.timerValueContainer}>
+                      {selectedMinutes < 10 && (
+                        <Text style={styles.timerValueLight}>0</Text>
+                      )}
+                      <Text style={styles.timerValue}>{selectedMinutes}</Text>
+                    </View>
+
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (selectedMinutes < 60) {
+                          setSelectedMinutes((prev) => prev + 1);
+                        }
+                      }}
+                      style={styles.timerButton}
+                    >
+                      <Image
+                        style={styles.timerButtonImage}
+                        source={require("../assets/images/icon1.png")}
+                      />
+                    </TouchableOpacity>
+                  </View>
+
+                  <View>
+                    <Text style={styles.semiColon}>:</Text>
+                  </View>
+
+                  <View style={styles.timerButtonContainer}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (selectedSeconds > 0) {
+                          setSelectedSeconds((prev) => prev - 1);
+                        }
+                      }}
+                      style={styles.timerButton}
+                    >
+                      <Image
+                        style={styles.timerButtonImage}
+                        source={require("../assets/images/icon.png")}
+                      />
+                    </TouchableOpacity>
+
+                    <View style={styles.timerValueContainer}>
+                      {selectedSeconds < 10 && (
+                        <Text style={styles.timerValueLight}>0</Text>
+                      )}
+                      <Text style={styles.timerValue}>{selectedSeconds}</Text>
+                    </View>
+
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (selectedSeconds < 60) {
+                          setSelectedSeconds((prev) => prev + 1);
+                        }
+                      }}
+                      style={styles.timerButton}
+                    >
+                      <Image
+                        style={styles.timerButtonImage}
+                        source={require("../assets/images/icon1.png")}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                <View style={styles.bottomButtonContainer}>
+                  <TouchableOpacity
+                    style={styles.cancelTimerButton}
+                    onPress={() => {
+                      navigation.navigate("Home");
+                    }}
+                  >
+                    <Text style={[styles.bottomButtonText, { color: "black" }]}>
+                      Cancel
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate("Timer", {
+                        heading: "Custom Timer",
+                        time: selectedMinutes * 60 + selectedSeconds,
+                        subheading: "",
+                      });
+                    }}
+                    style={styles.startTimerButton}
+                  >
+                    <Text style={[styles.bottomButtonText, { color: "white" }]}>
+                      Start Timer
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
+          </SafeAreaView>
         </ScrollView>
       </View>
 
@@ -181,6 +186,9 @@ const CustomTimer = () => {
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   overlayContainer: {
     flex: 1,
     position: "relative",
@@ -229,7 +237,7 @@ const styles = StyleSheet.create({
 
   heading: {
     fontSize: 32,
-    fontFamily: "Inter-Bold",
+    fontFamily: "Kaleko-Bold",
     textAlign: "center",
     marginTop: 48,
   },

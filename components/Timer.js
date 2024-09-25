@@ -3,6 +3,7 @@ import {
   Image,
   ImageBackground,
   Modal,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -76,6 +77,7 @@ const Timer = ({ route }) => {
   return (
     <>
       {/* Wrapper with opacity overlay */}
+
       <View style={styles.overlayContainer}>
         <ImageBackground
           source={require("../assets/images/hardboiledbackground-1.png")}
@@ -85,111 +87,113 @@ const Timer = ({ route }) => {
           <View style={styles.opacityLayer} />
         </ImageBackground>
 
-        {/* Main content */}
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack();
-              }}
-              style={styles.backButton}
-            >
-              <Image source={require("../assets/images/btnback-arrow.png")} />
-            </TouchableOpacity>
-            <View style={styles.logoContainer}>
-              <Image source={require("../assets/images/Logo.png")} />
-            </View>
-            <View style={styles.placeholder} />
-          </View>
-
-          <View style={styles.innerContainer}>
-            <View style={styles.uppperButtonsContainer}>
-              <Text style={styles.heading}>{heading}</Text>
-              {subHeading !== "" && (
-                <View style={styles.instructionsButton}>
-                  <Text style={styles.instructionsText}>{subHeading}</Text>
-                </View>
-              )}
-            </View>
-
-            {/* Timer UI */}
-            <View style={styles.timerContainer}>
-              <ImageBackground
-                source={getTimerBackgroundImage()}
-                style={styles.timerTextBackground}
-                resizeMode="contain"
+        <SafeAreaView style={styles.safeArea}>
+          {/* Main content */}
+          <View style={styles.container}>
+            <View style={styles.header}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.goBack();
+                }}
+                style={styles.backButton}
               >
-                <Text style={styles.timerText}>
-                  {time !== 0 && formatTime(time)}
-                  {time === 0 && "Done !"}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => setSoundOn(!soundOn)}
-                  style={styles.soundButton}
-                >
-                  <Image
-                    source={
-                      soundOn
-                        ? require("../assets/images/group-175.png")
-                        : require("../assets/images/group-175.png")
-                    }
-                  />
-                </TouchableOpacity>
-              </ImageBackground>
+                <Image source={require("../assets/images/btnback-arrow.png")} />
+              </TouchableOpacity>
+              <View style={styles.logoContainer}>
+                <Image source={require("../assets/images/Logo.png")} />
+              </View>
+              <View style={styles.placeholder} />
             </View>
 
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              {time !== 0 && (
-                <>
+            <View style={styles.innerContainer}>
+              <View style={styles.uppperButtonsContainer}>
+                <Text style={styles.heading}>{heading}</Text>
+                {subHeading !== "" && (
+                  <View style={styles.instructionsButton}>
+                    <Text style={styles.instructionsText}>{subHeading}</Text>
+                  </View>
+                )}
+              </View>
+
+              {/* Timer UI */}
+              <View style={styles.timerContainer}>
+                <ImageBackground
+                  source={getTimerBackgroundImage()}
+                  style={styles.timerTextBackground}
+                  resizeMode="contain"
+                >
+                  <Text style={styles.timerText}>
+                    {time !== 0 && formatTime(time)}
+                    {time === 0 && "Done !"}
+                  </Text>
                   <TouchableOpacity
-                    style={styles.cancelTimerButton}
-                    onPress={() => {
-                      setTime(route.params.time);
-                      setIsPaused(true);
-                    }}
+                    onPress={() => setSoundOn(!soundOn)}
+                    style={styles.soundButton}
                   >
-                    <Text
-                      style={[styles.eggsTimerButtonText, { color: "black" }]}
-                    >
-                      Cancel
-                    </Text>
+                    <Image
+                      source={
+                        soundOn
+                          ? require("../assets/images/group-175.png")
+                          : require("../assets/images/group-175.png")
+                      }
+                    />
                   </TouchableOpacity>
+                </ImageBackground>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                {time !== 0 && (
+                  <>
+                    <TouchableOpacity
+                      style={styles.cancelTimerButton}
+                      onPress={() => {
+                        setTime(route.params.time);
+                        setIsPaused(true);
+                      }}
+                    >
+                      <Text
+                        style={[styles.eggsTimerButtonText, { color: "black" }]}
+                      >
+                        Cancel
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.pauseTimerButton}
+                      onPress={() => setIsPaused(!isPaused)}
+                    >
+                      <Text
+                        style={[styles.eggsTimerButtonText, { color: "white" }]}
+                      >
+                        {isPaused ? "Resume Timer" : "Pause Timer"}
+                      </Text>
+                    </TouchableOpacity>
+                  </>
+                )}
+                {time === 0 && (
                   <TouchableOpacity
                     style={styles.pauseTimerButton}
-                    onPress={() => setIsPaused(!isPaused)}
+                    onPress={() =>
+                      navigation.navigate("Success", {
+                        title: getTitle(),
+                      })
+                    }
                   >
                     <Text
                       style={[styles.eggsTimerButtonText, { color: "white" }]}
                     >
-                      {isPaused ? "Resume Timer" : "Pause Timer"}
+                      Stop Timer
                     </Text>
                   </TouchableOpacity>
-                </>
-              )}
-              {time === 0 && (
-                <TouchableOpacity
-                  style={styles.pauseTimerButton}
-                  onPress={() =>
-                    navigation.navigate("Success", {
-                      title: getTitle(),
-                    })
-                  }
-                >
-                  <Text
-                    style={[styles.eggsTimerButtonText, { color: "white" }]}
-                  >
-                    Stop Timer
-                  </Text>
-                </TouchableOpacity>
-              )}
+                )}
+              </View>
             </View>
           </View>
-        </View>
+        </SafeAreaView>
       </View>
 
       <BottomBar />
@@ -198,6 +202,10 @@ const Timer = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
+
   overlayContainer: {
     flex: 1,
     position: "relative",
@@ -242,7 +250,7 @@ const styles = StyleSheet.create({
   uppperButtonsContainer: {},
   heading: {
     fontSize: 32,
-    fontFamily: "Inter-Bold",
+    fontFamily: "Kaleko-Bold",
     textAlign: "center",
     marginTop: 48,
   },
