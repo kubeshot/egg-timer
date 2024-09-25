@@ -1,65 +1,76 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
-  Image,
-  ImageBackground,
-  Modal,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
+  View,
   Text,
   TouchableOpacity,
-  View,
+  StyleSheet,
+  Image,
+  Animated,
+  Easing,
+  Dimensions,
 } from "react-native";
-import BottomBar from "./BottomBar";
 import { useNavigation } from "@react-navigation/native";
+import Svg, { Circle, Defs, Pattern, Rect } from 'react-native-svg';
+import BottomBar from "./BottomBar";
+
+const { width, height } = Dimensions.get('window');
+
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 const Timer = ({ route }) => {
-  console.log(route);
   const navigation = useNavigation();
-
-  const [heading, setHeading] = useState(route.params.heading) || "";
-  const [subHeading, setSubHeading] = useState(route.params.subHeading) || "";
-  const [time, setTime] = useState(180); // Timer starts at 3 minutes (180 seconds)
+  const [heading, setHeading] = useState(route.params?.heading || "");
+  const [subHeading, setSubHeading] = useState(route.params?.subHeading || "");
+  const [time, setTime] = useState(route.params?.time || 180);
   const [isPaused, setIsPaused] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
+  const progress = useRef(new Animated.Value(0)).current;
+
+  const circleSize = Math.min(width, height) * 0.6;
+  const strokeWidth = 10;
+  const radius = (circleSize - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
 
   useEffect(() => {
-    if (route.params && route.params.heading) {
-      setHeading(route.params.heading);
+    if (route.params) {
+      setHeading(route.params.heading || "");
+      setSubHeading(route.params.subHeading || "");
+      setTime(route.params.time || 180);
+      progress.setValue(0);
     }
-    if (route.params && route.params.subHeading) {
-      setSubHeading(route.params.subHeading);
-    }
-
-    if (route.params && route.params.time) {
-      setTime(route.params.time);
-    }
-  }, []);
+  }, [route.params]);
 
   useEffect(() => {
     const timer = setInterval(() => {
       if (!isPaused && time > 0) {
-        setTime(time - 1);
+        setTime((prevTime) => prevTime - 1);
       }
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [time, isPaused, route.params]);
+  }, [time, isPaused]);
+
+  useEffect(() => {
+    const initialTime = route.params.time || 180;
+    const progressValue = 1 - time / initialTime;
+
+    Animated.timing(progress, {
+      toValue: progressValue,
+      duration: 1000,
+      useNativeDriver: true,
+      easing: Easing.linear,
+    }).start();
+  }, [time]);
+
+  const strokeDashoffset = progress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, circumference],
+  });
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
-  };
-
-  const getTimerBackgroundImage = () => {
-    if (time === 0) {
-      return require("../assets/images/frame-1772.png"); // Third image for timer reaching 0
-    } else if (time <= route.params.time / 2) {
-      return require("../assets/images/frame-177.png"); // Second image for timer half
-    } else {
-      return require("../assets/images/frame-1771.png"); // Initial image
-    }
   };
 
   const getTitle = () => {
@@ -75,165 +86,138 @@ const Timer = ({ route }) => {
   };
 
   return (
-    <>
-      {/* Wrapper with opacity overlay */}
-
-      <View style={styles.overlayContainer}>
-        <ImageBackground
-          source={require("../assets/images/hardboiledbackground-1.png")}
-          style={styles.imageBackground}
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
         >
-          {/* Transparent overlay */}
-          <View style={styles.opacityLayer} />
-        </ImageBackground>
+          <Image source={require("../assets/images/btnback-arrow.png")} />
+        </TouchableOpacity>
+        <View style={styles.logoContainer}>
+          <Image source={require("../assets/images/Logo.png")} />
+        </View>
+        <View style={styles.placeholder} />
+      </View>
 
-        <SafeAreaView style={styles.safeArea}>
-          {/* Main content */}
-          <View style={styles.container}>
-            <View style={styles.header}>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.goBack();
-                }}
-                style={styles.backButton}
-              >
-                <Image source={require("../assets/images/btnback-arrow.png")} />
-              </TouchableOpacity>
-              <View style={styles.logoContainer}>
-                <Image source={require("../assets/images/Logo.png")} />
-              </View>
-              <View style={styles.placeholder} />
-            </View>
-
-            <View style={styles.innerContainer}>
-              <View style={styles.uppperButtonsContainer}>
-                <Text style={styles.heading}>{heading}</Text>
-                {subHeading !== "" && (
-                  <View style={styles.instructionsButton}>
-                    <Text style={styles.instructionsText}>{subHeading}</Text>
-                  </View>
-                )}
-              </View>
-
-              {/* Timer UI */}
-              <View style={styles.timerContainer}>
-                <ImageBackground
-                  source={getTimerBackgroundImage()}
-                  style={styles.timerTextBackground}
-                  resizeMode="contain"
-                >
-                  <Text style={styles.timerText}>
-                    {time !== 0 && formatTime(time)}
-                    {time === 0 && "Done !"}
-                  </Text>
-                  <TouchableOpacity
-                    onPress={() => setSoundOn(!soundOn)}
-                    style={styles.soundButton}
-                  >
-                    <Image
-                      source={
-                        soundOn
-                          ? require("../assets/images/group-175.png")
-                          : require("../assets/images/group-175.png")
-                      }
-                    />
-                  </TouchableOpacity>
-                </ImageBackground>
-              </View>
-
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                {time !== 0 && (
-                  <>
-                    <TouchableOpacity
-                      style={styles.cancelTimerButton}
-                      onPress={() => {
-                        setTime(route.params.time);
-                        setIsPaused(true);
-                      }}
-                    >
-                      <Text
-                        style={[styles.eggsTimerButtonText, { color: "black" }]}
-                      >
-                        Cancel
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.pauseTimerButton}
-                      onPress={() => setIsPaused(!isPaused)}
-                    >
-                      <Text
-                        style={[styles.eggsTimerButtonText, { color: "white" }]}
-                      >
-                        {isPaused ? "Resume Timer" : "Pause Timer"}
-                      </Text>
-                    </TouchableOpacity>
-                  </>
-                )}
-                {time === 0 && (
-                  <TouchableOpacity
-                    style={styles.pauseTimerButton}
-                    onPress={() =>
-                      navigation.navigate("Success", {
-                        title: getTitle(),
-                      })
-                    }
-                  >
-                    <Text
-                      style={[styles.eggsTimerButtonText, { color: "white" }]}
-                    >
-                      Stop Timer
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-            </View>
+      <View style={styles.content}>
+        <Text style={styles.heading}>{heading}</Text>
+        {subHeading !== "" && (
+          <View style={styles.instructionsButton}>
+            <Text style={styles.instructionsText}>{subHeading}</Text>
           </View>
-        </SafeAreaView>
+        )}
+
+        <View style={[styles.timerContainer, { width: circleSize, height: circleSize }]}>
+        <Svg width={circleSize} height={circleSize}>
+  <Defs>
+    <Pattern id="stripes" patternUnits="userSpaceOnUse" width="4" height="8">
+      {/* Background color of the pattern */}
+      <Rect x="0" y="0" width="4" height="8" fill="white" />
+      {/* Stripes */}
+      <Rect x="0" y="0" width="2" height="8" fill="black" />
+    </Pattern>
+  </Defs>
+  <Circle
+    cx={circleSize / 2}
+    cy={circleSize / 2}
+    r={radius}
+    stroke="#E0E0E0"
+    strokeWidth={strokeWidth}
+    fill="none"
+  />
+  <AnimatedCircle
+    cx={circleSize / 2}
+    cy={circleSize / 2}
+    r={radius}
+    stroke="url(#stripes)" // Use the striped pattern here
+    strokeWidth={strokeWidth}
+    fill="none"
+    strokeDasharray={circumference}
+    strokeDashoffset={strokeDashoffset}
+    strokeLinecap="round"
+  />
+</Svg>
+
+          <View style={styles.timerInnerCircle}>
+            <Text style={styles.timerText}>
+              {time !== 0 ? formatTime(time) : "Done!"}
+            </Text>
+            <TouchableOpacity
+              onPress={() => setSoundOn(!soundOn)}
+              style={styles.soundButton}
+            >
+              <Image
+                source={
+                  soundOn
+                    ? require("../assets/images/group-175.png")
+                    : require("../assets/images/group-175.png")
+                }
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.buttonContainer}>
+          {time !== 0 ? (
+            <>
+              <TouchableOpacity
+                style={styles.cancelTimerButton}
+                onPress={() => {
+                  setTime(route.params.time);
+                  setIsPaused(true);
+                  progress.setValue(0);
+                }}
+              >
+                <Text style={[styles.buttonText, { color: "black" }]}>
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.pauseTimerButton}
+                onPress={() => setIsPaused(!isPaused)}
+              >
+                <Text style={[styles.buttonText, { color: "white" }]}>
+                  {isPaused ? "Resume Timer" : "Pause Timer"}
+                </Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <TouchableOpacity
+              style={styles.pauseTimerButton}
+              onPress={() =>
+                navigation.navigate("Success", { title: getTitle() })
+              }
+            >
+              <Text style={[styles.buttonText, { color: "white" }]}>
+                Stop Timer
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
       <BottomBar />
-    </>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
-
-  overlayContainer: {
-    flex: 1,
-    position: "relative",
-  },
-  imageBackground: {
-    flex: 1,
-    resizeMode: "cover",
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-  },
-  opacityLayer: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(255, 255, 255, 0.4)", // Adjust the opacity here
-  },
   container: {
     flex: 1,
-    paddingTop: 48,
+    backgroundColor: "#F5F5F5",
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginHorizontal: 16,
+    paddingHorizontal: 16,
+    paddingTop: 48,
   },
   backButton: {
     backgroundColor: "white",
     borderRadius: 50,
+    padding: 8,
   },
   logoContainer: {
     flex: 1,
@@ -242,21 +226,19 @@ const styles = StyleSheet.create({
   placeholder: {
     width: 50,
   },
-  innerContainer: {
-    justifyContent: "space-between",
+  content: {
     flex: 1,
-    marginBottom: "30%",
+    alignItems: "center",
+    justifyContent: "space-around",
+    paddingHorizontal: 16,
+    paddingBottom: 80,
   },
-  uppperButtonsContainer: {},
   heading: {
     fontSize: 32,
-    fontFamily: "Kaleko-Bold",
+    fontWeight: "bold",
     textAlign: "center",
-    marginTop: 48,
   },
   instructionsButton: {
-    marginTop: 24,
-    alignSelf: "center",
     backgroundColor: "white",
     borderRadius: 30,
     paddingHorizontal: 16,
@@ -265,63 +247,55 @@ const styles = StyleSheet.create({
   instructionsText: {
     textAlign: "center",
     fontSize: 16,
-    fontFamily: "Inter-SemiBold",
+    fontWeight: "600",
   },
   timerContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 24,
-    aspectRatio: 1, // This ensures a square container
-    width: "90%", // Use a percentage of the screen width
-    maxWidth: 400, // Optional: set a maximum width if desired
-    alignSelf: "center",
-  },
-  timerTextBackground: {
-    width: "100%",
-    height: "100%",
     justifyContent: "center",
     alignItems: "center",
   },
-  timerCompleteTextBackground: {
+  timerInnerCircle: {
+    position: 'absolute',
+    width: "90%",
+    height: "90%",
+    borderRadius: 1000,
+    backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: "20%",
-    paddingVertical: "25%",
   },
   timerText: {
-    fontSize: 64,
-    fontFamily: "Inter-Bold",
-    color: "black",
+    fontSize: 48,
+    fontWeight: "bold",
   },
-
   soundButton: {
     marginTop: 16,
   },
-  pauseTimerButton: {
-    flex: 1,
-    marginRight: 16,
-    marginLeft: 8,
-    borderRadius: 100,
-    backgroundColor: "black",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 24,
-    paddingVertical: 16,
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    marginBottom: 20,
   },
   cancelTimerButton: {
     flex: 1,
-    marginLeft: 16,
     marginRight: 8,
     borderRadius: 100,
     backgroundColor: "#F2F2F6",
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 24,
     paddingVertical: 16,
   },
-  eggsTimerButtonText: {
+  pauseTimerButton: {
+    flex: 1,
+    marginLeft: 8,
+    borderRadius: 100,
+    backgroundColor: "black",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 16,
+  },
+  buttonText: {
     fontSize: 16,
-    fontFamily: "Inter-SemiBold",
+    fontWeight: "600",
   },
 });
 
