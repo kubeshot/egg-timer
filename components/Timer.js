@@ -10,7 +10,7 @@ import {
   Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import Svg, { Circle } from 'react-native-svg';
+import Svg, { Circle, Defs, Pattern, Rect } from 'react-native-svg';
 import BottomBar from "./BottomBar";
 
 const { width, height } = Dimensions.get('window');
@@ -64,7 +64,7 @@ const Timer = ({ route }) => {
 
   const strokeDashoffset = progress.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, circumference], // Reversed direction here
+    outputRange: [0, circumference],
   });
 
   const formatTime = (seconds) => {
@@ -109,27 +109,36 @@ const Timer = ({ route }) => {
         )}
 
         <View style={[styles.timerContainer, { width: circleSize, height: circleSize }]}>
-          <Svg width={circleSize} height={circleSize}>
-            <Circle
-              cx={circleSize / 2}
-              cy={circleSize / 2}
-              r={radius}
-              stroke="#E0E0E0"
-              strokeWidth={strokeWidth}
-              fill="none"
-            />
-            <AnimatedCircle
-              cx={circleSize / 2}
-              cy={circleSize / 2}
-              r={radius}
-              stroke="#FFD700"
-              strokeWidth={strokeWidth}
-              fill="none"
-              strokeDasharray={circumference}
-              strokeDashoffset={strokeDashoffset}
-              strokeLinecap="round"
-            />
-          </Svg>
+        <Svg width={circleSize} height={circleSize}>
+  <Defs>
+    <Pattern id="stripes" patternUnits="userSpaceOnUse" width="4" height="8">
+      {/* Background color of the pattern */}
+      <Rect x="0" y="0" width="4" height="8" fill="white" />
+      {/* Stripes */}
+      <Rect x="0" y="0" width="2" height="8" fill="black" />
+    </Pattern>
+  </Defs>
+  <Circle
+    cx={circleSize / 2}
+    cy={circleSize / 2}
+    r={radius}
+    stroke="#E0E0E0"
+    strokeWidth={strokeWidth}
+    fill="none"
+  />
+  <AnimatedCircle
+    cx={circleSize / 2}
+    cy={circleSize / 2}
+    r={radius}
+    stroke="url(#stripes)" // Use the striped pattern here
+    strokeWidth={strokeWidth}
+    fill="none"
+    strokeDasharray={circumference}
+    strokeDashoffset={strokeDashoffset}
+    strokeLinecap="round"
+  />
+</Svg>
+
           <View style={styles.timerInnerCircle}>
             <Text style={styles.timerText}>
               {time !== 0 ? formatTime(time) : "Done!"}
