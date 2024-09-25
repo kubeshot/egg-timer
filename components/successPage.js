@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   successText: {
     fontSize: 24,
     // fontWeight: "bold",
-    fontFamily: "Inter-Bold",
+    fontFamily: "Kaleko-Bold",
     textAlign: "center",
     marginTop: 20,
     marginBottom: 20,
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 25,
     // fontWeight: "bold",
-    fontFamily: "Inter-SemiBold",
+    fontFamily: "Kaleko-Bold",
   },
   recipeGrid: {
     flexDirection: "row",
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   },
   recipeTitle: {
     fontSize: 16,
-    fontWeight: "500",
+    fontFamily:'Kaleko-Bold',
     textAlign: "center",
   },
   backButton: {

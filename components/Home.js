@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Image,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,14 +13,13 @@ import { useNavigation } from "@react-navigation/native";
 import VideoModal from "./VideoModal";
 import { Linking } from "react-native";
 
-
 const Home = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [currentVideoId, setCurrentVideoId] = useState("");
 
   const handleVideoPress = (videoId) => {
-    setCurrentVideoId(videoId);  // Directly pass the video ID
+    setCurrentVideoId(videoId); // Directly pass the video ID
     setModalVisible(true);
   };
   const handleLinkPress = (Uri) => {
@@ -33,131 +33,148 @@ const Home = () => {
 
   return (
     <>
-      <ScrollView style={styles.scrollViewContainer}>
-        <View style={styles.container}>
-          <Image source={require("../assets/images/Logo.png")} />
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView style={styles.scrollViewContainer}>
+          <View style={styles.container}>
+            <Image source={require("../assets/images/Logo.png")} />
 
-          <View style={styles.eggStyleContainer}>
-            <Text style={styles.heading}>Let's get cracking!</Text>
-            <Text style={styles.subHeading}>Choose your egg style</Text>
-            <View style={styles.row}>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("HardBoiled");
-                }}
-                style={styles.eggStyleButton}
-              >
-                <Image source={hardBoiledImage} />
-                <Text style={styles.eggStyleButtonText}>Hard Boiled</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("SoftBoiled");
-                }}
-                style={styles.eggStyleButton}
-              >
-                <Image source={softBoiledImage} />
-                <Text style={styles.eggStyleButtonText}>Soft Boiled</Text>
-              </TouchableOpacity>
+            <View style={styles.eggStyleContainer}>
+              <Text style={styles.heading}>Let's get cracking!</Text>
+              <Text style={styles.subHeading}>Choose your egg style</Text>
+              <View style={styles.row}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("HardBoiled");
+                  }}
+                  style={styles.eggStyleButton}
+                >
+                  <Image source={hardBoiledImage} />
+                  <Text style={styles.eggStyleButtonText}>Hard Boiled</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("SoftBoiled");
+                  }}
+                  style={styles.eggStyleButton}
+                >
+                  <Image source={softBoiledImage} />
+                  <Text style={styles.eggStyleButtonText}>Soft Boiled</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.row}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("PoachedEggs");
+                  }}
+                  style={styles.eggStyleButton}
+                >
+                  <Image source={poachedEggImage} />
+                  <Text style={styles.eggStyleButtonText}>Poached</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("CustomTimer");
+                  }}
+                  style={styles.eggStyleButton}
+                >
+                  <Image source={customTimerImage} />
+                  <Text style={styles.eggStyleButtonText}>Custom Timer</Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
-            <View style={styles.row}>
+            <View style={styles.videoContainer}>
+              <Text style={styles.heading}>Eggceptional Videos</Text>
+              <Text style={styles.subHeading}>
+                Watch the video. See how it's done!
+              </Text>
+
               <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("PoachedEggs");
-                }}
-                style={styles.eggStyleButton}
+                style={styles.videoButton}
+                onPress={() =>
+                  handleVideoPress("https://www.youtube.com/shorts/DPt0CX7zwFA")
+                }
               >
-                <Image source={poachedEggImage} />
-                <Text style={styles.eggStyleButtonText}>Poached</Text>
+                <Image source={require("../assets/images/btnhardboiled.png")} />
+                <View style={styles.videoTextContainer}>
+                  <Image source={require("../assets/images/frame-143.png")} />
+                  <Text style={styles.videoContainerText}>
+                    How to Hard Boil Eggs
+                  </Text>
+                </View>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("CustomTimer");
-                }}
-                style={styles.eggStyleButton}
+                style={styles.videoButton}
+                onPress={() =>
+                  handleVideoPress("https://www.youtube.com/shorts/JHcwHcRCxrk")
+                }
               >
-                <Image source={customTimerImage} />
-                <Text style={styles.eggStyleButtonText}>Custom Timer</Text>
+                <Image
+                  source={require("../assets/images/btn--hard-boiled4.png")}
+                />
+                <View style={styles.videoTextContainer}>
+                  <Image source={require("../assets/images/frame-143.png")} />
+                  <Text style={styles.videoContainerText}>
+                    How to Soft Boil Eggs
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.videoButton}
+                onPress={() =>
+                  handleVideoPress("https://www.youtube.com/shorts/I-PDJ-uBQwE")
+                }
+              >
+                <Image
+                  source={require("../assets/images/btnhardboiled2.png")}
+                />
+                <View style={styles.videoTextContainer}>
+                  <Image source={require("../assets/images/frame-143.png")} />
+                  <Text style={styles.videoContainerText}>
+                    How to Poach Eggs
+                  </Text>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.moreVideosButton}
+                onPress={() =>
+                  handleLinkPress(
+                    "https://www.youtube.com/channel/UCq6p--GVSjdVKp_B4zQbqgQ"
+                  )
+                }
+              >
+                <Text style={styles.videoContainerText}>
+                  More How-To Videos
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
-
-          <View style={styles.videoContainer}>
-            <Text style={styles.heading}>Eggceptional Videos</Text>
-            <Text style={styles.subHeading}>
-              Watch the video. See how it's done!
-            </Text>
-
-            <TouchableOpacity
-              style={styles.videoButton}
-              onPress={() => handleVideoPress("https://www.youtube.com/shorts/DPt0CX7zwFA")}
-            >
-              <Image source={require("../assets/images/btnhardboiled.png")} />
-              <View style={styles.videoTextContainer}>
-                <Image source={require("../assets/images/frame-143.png")} />
-                <Text style={styles.videoContainerText}>
-                  How to Hard Boil Eggs
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.videoButton}
-              onPress={() => handleVideoPress("https://www.youtube.com/shorts/JHcwHcRCxrk")}
-            >
-              <Image
-                source={require("../assets/images/btn--hard-boiled4.png")}
-              />
-              <View style={styles.videoTextContainer}>
-                <Image source={require("../assets/images/frame-143.png")} />
-                <Text style={styles.videoContainerText}>
-                  How to Soft Boil Eggs
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.videoButton}
-              onPress={() => handleVideoPress("https://www.youtube.com/shorts/I-PDJ-uBQwE")}
-            >
-              <Image source={require("../assets/images/btnhardboiled2.png")} />
-              <View style={styles.videoTextContainer}>
-                <Image source={require("../assets/images/frame-143.png")} />
-                <Text style={styles.videoContainerText}>
-                  How to Poach Eggs
-                </Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.moreVideosButton}
-              onPress={() => handleLinkPress("https://www.youtube.com/channel/UCq6p--GVSjdVKp_B4zQbqgQ")}
-            >
-              <Text style={styles.videoContainerText}>More How-To Videos</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </SafeAreaView>
       <BottomBar />
       <VideoModal
         isVisible={modalVisible}
-        videoUri={currentVideoId}  // Pass video ID
+        videoUri={currentVideoId} // Pass video ID
         onClose={() => setModalVisible(false)}
       />
     </>
   );
 };
 
-
-
-
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#f2f2f2", // Apply background color to safe area
+  },
   scrollViewContainer: {
     flex: 1,
     backgroundColor: "#f2f2f2",
   },
   container: {
     flex: 1,
-    marginTop:'5%',
+    marginTop: "5%",
     alignItems: "center",
     paddingTop: 50,
   },
@@ -174,7 +191,7 @@ const styles = StyleSheet.create({
 
   heading: {
     fontSize: 24,
-    fontFamily: "Inter-Bold",
+    fontFamily: "Kaleko-Bold",
   },
 
   subHeading: {
@@ -191,7 +208,7 @@ const styles = StyleSheet.create({
   },
   eggStyleButtonText: {
     fontSize: 16,
-    fontFamily: "Inter-Bold",
+    fontFamily: "Kaleko-Bold",
   },
 
   row: {

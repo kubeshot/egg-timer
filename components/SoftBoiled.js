@@ -3,6 +3,7 @@ import {
   Image,
   ImageBackground,
   Modal,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -38,180 +39,186 @@ const SoftBoiled = () => {
         source={require("../assets/images/hardboiledbackground-2.png")}
         style={styles.imageBackground}
       >
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack();
-              }}
-              style={styles.backButton}
-            >
-              <Image source={require("../assets/images/btnback-arrow.png")} />
-            </TouchableOpacity>
-            <View style={styles.logoContainer}>
-              <Image source={require("../assets/images/Logo.png")} />
-            </View>
-            <View style={styles.placeholder} />
-          </View>
-
-          <View style={styles.innerContainer}>
-            <View style={styles.uppperButtonsContainer}>
-              <Text style={styles.heading}>Soft Boiled Eggs</Text>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  style={styles.instructionsButton}
-                  onPress={() => {
-                    setModalVisible(true);
-                  }}
-                >
-                  <Text style={styles.instructionsText}>Instructions</Text>
-                </TouchableOpacity>
-                <View style={styles.sizeContainer}>
-                  <Text style={styles.sizeLabel}>Size</Text>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setShowSizeSelection((prev) => !prev);
-                    }}
-                    style={styles.sizeButton}
-                  >
-                    <Text style={styles.sizeText}>{selectedSize}</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-              {showSizeSelection && (
-                <View style={styles.sizeSelectionButonContainer}>
-                  <TouchableOpacity
-                    style={[
-                      styles.sizeSelectorButton,
-                      {
-                        backgroundColor:
-                          selectedSize === "M" ? "#FFCD32" : "white",
-                      },
-                    ]}
-                    onPress={() => {
-                      setSelectedSize("M");
-
-                      setTimer1(2);
-                      setTimer2(5);
-
-                      setShowSizeSelection(false);
-                    }}
-                  >
-                    <Text style={styles.sizeSelectorButonText}>M</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[
-                      styles.sizeSelectorButton,
-                      {
-                        backgroundColor:
-                          selectedSize === "L" ? "#FFCD32" : "white",
-                      },
-                    ]}
-                    onPress={() => {
-                      setSelectedSize("L");
-                      setTimer1(3);
-                      setTimer2(6);
-                      setShowSizeSelection(false);
-                    }}
-                  >
-                    <Text style={styles.sizeSelectorButonText}>L</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[
-                      styles.sizeSelectorButton,
-                      {
-                        backgroundColor:
-                          selectedSize === "XL" ? "#FFCD32" : "white",
-                      },
-                    ]}
-                    onPress={() => {
-                      setSelectedSize("XL");
-                      setTimer1(4);
-                      setTimer2(7);
-                      setShowSizeSelection(false);
-                    }}
-                  >
-                    <Text style={styles.sizeSelectorButonText}>XL</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
-
-            <View>
-              <View>
-                <Text style={styles.subHeading}>
-                  How do you like your eggs?
-                </Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    setSelectedEggType(0);
-
-                    setTimerSubheading("3-Minute Eggs");
-                  }}
-                  style={[
-                    styles.threeMinuteEggsButton,
-                    {
-                      borderWidth: selectedEggType === 0 ? 2 : 0,
-                    },
-                  ]}
-                >
-                  <View style={styles.eggsButtonInnerContainer}>
-                    {selectedEggType === 0 && (
-                      <Image
-                        source={require("../assets/images/checkcircle.png")}
-                      />
-                    )}
-                    <Text style={styles.eggsTimerButtonText}>
-                      3-Minute Eggs
-                    </Text>
-                  </View>
-                  <Text style={styles.eggsTimerButtonText}>{timer1}:00</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    setSelectedEggType(1);
-
-                    setTimerSubheading("Jammy Eggs");
-                  }}
-                  style={[
-                    styles.jammyEggsButton,
-                    {
-                      borderWidth: selectedEggType === 1 ? 2 : 0,
-                    },
-                  ]}
-                >
-                  <View style={styles.eggsButtonInnerContainer}>
-                    {selectedEggType === 1 && (
-                      <Image
-                        source={require("../assets/images/checkcircle.png")}
-                      />
-                    )}
-                    <Text style={styles.eggsTimerButtonText}>Jammy Eggs</Text>
-                  </View>
-
-                  <Text style={styles.eggsTimerButtonText}>{timer2}:00</Text>
-                </TouchableOpacity>
-              </View>
-
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.container}>
+            <View style={styles.header}>
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate("Timer", {
-                    heading: "Soft Boiled Eggs",
-                    time: selectedEggType === 0 ? timer1 * 60 : timer2 * 60,
-                    subHeading:
-                      selectedEggType === 0 ? "3-Minute Eggs" : "Jammy Eggs",
-                  });
+                  navigation.goBack();
                 }}
-                style={styles.startTimerButton}
+                style={styles.backButton}
               >
-                <Image source={require("../assets/images/basic--clock.png")} />
-                <Text style={[styles.eggsTimerButtonText, { color: "white" }]}>
-                  Start Timer
-                </Text>
+                <Image source={require("../assets/images/btnback-arrow.png")} />
               </TouchableOpacity>
+              <View style={styles.logoContainer}>
+                <Image source={require("../assets/images/Logo.png")} />
+              </View>
+              <View style={styles.placeholder} />
+            </View>
+
+            <View style={styles.innerContainer}>
+              <View style={styles.uppperButtonsContainer}>
+                <Text style={styles.heading}>Soft Boiled Eggs</Text>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity
+                    style={styles.instructionsButton}
+                    onPress={() => {
+                      setModalVisible(true);
+                    }}
+                  >
+                    <Text style={styles.instructionsText}>Instructions</Text>
+                  </TouchableOpacity>
+                  <View style={styles.sizeContainer}>
+                    <Text style={styles.sizeLabel}>Size</Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setShowSizeSelection((prev) => !prev);
+                      }}
+                      style={styles.sizeButton}
+                    >
+                      <Text style={styles.sizeText}>{selectedSize}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                {showSizeSelection && (
+                  <View style={styles.sizeSelectionButonContainer}>
+                    <TouchableOpacity
+                      style={[
+                        styles.sizeSelectorButton,
+                        {
+                          backgroundColor:
+                            selectedSize === "M" ? "#FFCD32" : "white",
+                        },
+                      ]}
+                      onPress={() => {
+                        setSelectedSize("M");
+
+                        setTimer1(2);
+                        setTimer2(5);
+
+                        setShowSizeSelection(false);
+                      }}
+                    >
+                      <Text style={styles.sizeSelectorButonText}>M</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[
+                        styles.sizeSelectorButton,
+                        {
+                          backgroundColor:
+                            selectedSize === "L" ? "#FFCD32" : "white",
+                        },
+                      ]}
+                      onPress={() => {
+                        setSelectedSize("L");
+                        setTimer1(3);
+                        setTimer2(6);
+                        setShowSizeSelection(false);
+                      }}
+                    >
+                      <Text style={styles.sizeSelectorButonText}>L</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[
+                        styles.sizeSelectorButton,
+                        {
+                          backgroundColor:
+                            selectedSize === "XL" ? "#FFCD32" : "white",
+                        },
+                      ]}
+                      onPress={() => {
+                        setSelectedSize("XL");
+                        setTimer1(4);
+                        setTimer2(7);
+                        setShowSizeSelection(false);
+                      }}
+                    >
+                      <Text style={styles.sizeSelectorButonText}>XL</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+
+              <View>
+                <View>
+                  <Text style={styles.subHeading}>
+                    How do you like your eggs?
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSelectedEggType(0);
+
+                      setTimerSubheading("3-Minute Eggs");
+                    }}
+                    style={[
+                      styles.threeMinuteEggsButton,
+                      {
+                        borderWidth: selectedEggType === 0 ? 2 : 0,
+                      },
+                    ]}
+                  >
+                    <View style={styles.eggsButtonInnerContainer}>
+                      {selectedEggType === 0 && (
+                        <Image
+                          source={require("../assets/images/checkcircle.png")}
+                        />
+                      )}
+                      <Text style={styles.eggsTimerButtonText}>
+                        3-Minute Eggs
+                      </Text>
+                    </View>
+                    <Text style={styles.eggsTimerButtonText}>{timer1}:00</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSelectedEggType(1);
+
+                      setTimerSubheading("Jammy Eggs");
+                    }}
+                    style={[
+                      styles.jammyEggsButton,
+                      {
+                        borderWidth: selectedEggType === 1 ? 2 : 0,
+                      },
+                    ]}
+                  >
+                    <View style={styles.eggsButtonInnerContainer}>
+                      {selectedEggType === 1 && (
+                        <Image
+                          source={require("../assets/images/checkcircle.png")}
+                        />
+                      )}
+                      <Text style={styles.eggsTimerButtonText}>Jammy Eggs</Text>
+                    </View>
+
+                    <Text style={styles.eggsTimerButtonText}>{timer2}:00</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("Timer", {
+                      heading: "Soft Boiled Eggs",
+                      time: selectedEggType === 0 ? timer1 * 60 : timer2 * 60,
+                      subHeading:
+                        selectedEggType === 0 ? "3-Minute Eggs" : "Jammy Eggs",
+                    });
+                  }}
+                  style={styles.startTimerButton}
+                >
+                  <Image
+                    source={require("../assets/images/basic--clock.png")}
+                  />
+                  <Text
+                    style={[styles.eggsTimerButtonText, { color: "white" }]}
+                  >
+                    Start Timer
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
+        </SafeAreaView>
       </ImageBackground>
 
       <Modal
@@ -271,6 +278,9 @@ const SoftBoiled = () => {
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   imageBackground: {
     flex: 1,
     resizeMode: "cover",
@@ -317,14 +327,14 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 32,
-    fontFamily: "Inter-Bold",
+    fontFamily: "Kaleko-Bold",
     textAlign: "center",
     marginTop: 48,
   },
 
   subHeading: {
     fontSize: 20,
-    fontFamily: "Inter-Bold",
+    fontFamily: "Kaleko-Bold",
     textAlign: "center",
   },
   buttonContainer: {
@@ -440,7 +450,7 @@ const styles = StyleSheet.create({
 
   modalTitle: {
     fontSize: 32,
-    fontFamily: "Inter-Bold",
+    fontFamily: "Kaleko-Bold",
     textAlign: "center",
     marginBottom: 24,
   },
