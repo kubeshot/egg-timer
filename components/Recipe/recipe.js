@@ -10,6 +10,7 @@ import {
   ScrollView,
   SafeAreaView,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Header from "../TopHeadingBar.js";
@@ -19,73 +20,7 @@ import Footer from "../footer.js";
 import { WebView } from "react-native-webview";
 
 const image1 = require("../../assets/images/file02.png");
-const image2 = require("../../assets/images/image17.png");
-const image3 = require("../../assets/images/image16.png");
-const image4 = require("../../assets/images/image26.png");
-const image5 = require("../../assets/images/image27.png");
-const image6 = require("../../assets/images/image31.png");
-const image7 = require("../../assets/images/image28.png");
-const image8 = require("../../assets/images/image29.png");
-const image9 = require("../../assets/images/image30.png");
 
-const recipesData = {
-  Breakfast: [
-    {
-      id: "1",
-      name: "Baked Oatmeal Cups",
-      image: require("../../assets/images/image18.png"),
-      link: "https://example.com/oatmeal",
-    },
-    {
-      id: "2",
-      name: "Bacon & Egg Breakfast Burrito",
-      image: require("../../assets/images/image22.png"),
-      link: "https://example.com/burrito",
-    },
-  ],
-  Lunch: [
-    {
-      id: "1",
-      name: "Grilled Chicken Salad",
-      image: require("../../assets/images/image25.png"),
-      link: "https://example.com/salad",
-    },
-    {
-      id: "2",
-      name: "Turkey Sandwich",
-      image: require("../../assets/images/image24.png"),
-      link: "https://example.com/sandwich",
-    },
-  ],
-  Dinner: [
-    {
-      id: "1",
-      name: "Steak with Vegetables",
-      image: require("../../assets/images/image26.png"),
-      link: "https://example.com/steak",
-    },
-    {
-      id: "2",
-      name: "Spaghetti Bolognese",
-      image: require("../../assets/images/image21.png"),
-      link: "https://example.com/spaghetti",
-    },
-  ],
-  Snacks: [
-    {
-      id: "1",
-      name: "Fruit Bowl",
-      image: require("../../assets/images/image19.png"),
-      link: "https://example.com/fruit",
-    },
-    {
-      id: "2",
-      name: "Yogurt Parfait",
-      image: require("../../assets/images/image23.png"),
-      link: "https://example.com/yogurt",
-    },
-  ],
-};
 
 export default function RecipeScreen({ onClose }) {
   const [selectedTab, setSelectedTab] = useState("Breakfast");
@@ -102,257 +37,6 @@ export default function RecipeScreen({ onClose }) {
   const [loading, setLoading] = useState(true);
 
   return (
-    // <SafeAreaView style={styles.safeArea}>
-    //   <Header title="Recipes" logoSource={image1} onClose={onClose} />
-
-    //   <Navbar onMenuPress={handleMenuPress} onSearchPress={handleSearchPress} />
-
-    //   <ScrollView style={styles.container}>
-    //     <Text style={styles.title}>Recipes</Text>
-    //     <Text style={styles.subtitle}>
-    //       Browse our collection of egg recipes, everything from quick breakfast
-    //       ideas to our favorite classic egg recipes. We've got delicious ideas
-    //       for any meal!
-    //     </Text>
-    //     <TextInput
-    //       style={styles.searchBar}
-    //       placeholder="Search our recipes"
-    //       placeholderTextColor="#888"
-    //       onChangeText={handleSearchPress} // Add this line
-    //     />
-    //     <View style={styles.tabs}>
-    //       {Object.keys(recipesData).map((tab) => (
-    //         <TouchableOpacity
-    //           key={tab}
-    //           onPress={() => setSelectedTab(tab)}
-    //           style={[styles.tab, selectedTab === tab && styles.activeTab]}
-    //         >
-    //           <Text
-    //             style={
-    //               selectedTab === tab ? styles.activeTabText : styles.tabText
-    //             }
-    //           >
-    //             {tab}
-    //           </Text>
-    //         </TouchableOpacity>
-    //       ))}
-    //     </View>
-    //     <View style={styles.recipeList}>
-    //       {recipesData[selectedTab]
-    //         .filter((item) =>
-    //           item.name.toLowerCase().includes(searchQuery.toLowerCase())
-    //         )
-    //         .map((item) => (
-    //           <TouchableOpacity
-    //             key={item.id}
-    //             onPress={() => Linking.openURL(item.link)}
-    //             style={styles.recipeCard}
-    //           >
-    //             <Image source={item.image} style={styles.recipeImage} />
-    //             <Text style={styles.recipeName}>{item.name}</Text>
-    //           </TouchableOpacity>
-    //         ))}
-    //     </View>
-
-    //     <View style={styles.seriesSection}>
-    //       <Text style={styles.seriesTitle}>Breakfast On-the-Go</Text>
-    //       <View style={styles.seriesImageContainer}>
-    //         <Image source={image2} style={styles.seriesImage} />
-    //       </View>
-
-    //       <Text style={styles.articleTitle}>Make-Ahead Breakfast Bowls</Text>
-    //       <Text style={styles.articleSubtitle}>
-    //         Your new favourite noodle dish is going to be this one that's right
-    //         out of your own kitchen but will taste like it's from the hottest
-    //         new noodle bar in the city!
-    //       </Text>
-    //       <View style={styles.seriesImageContainer}>
-    //         <Image source={image3} style={styles.seriesImage} />
-    //       </View>
-    //       <Text style={styles.articleTitle}>Cloud Eggs</Text>
-    //       <Text style={styles.articleSubtitle}>
-    //         Loco Moco is a delicious and filling contemporary Hawaiian meal made
-    //         for three layers: rice and a hamburger patty smothered in delicious
-    //         gravy and topped with a fried egg.
-    //       </Text>
-    //     </View>
-
-    //     <Text style={styles.halloweenTitle}>Need Some Inspiration?</Text>
-    //     <View style={styles.card}>
-    //       <View style={styles.halloweenContent}>
-    //         <Image source={image4} style={styles.halloweenImage} />
-    //         <View style={styles.halloweenDescription}>
-    //           <Text style={styles.halloweenSubtitle}>
-    //             5 Eggceptional Halloween
-    //           </Text>
-    //           <Text style={styles.halloweenSubtitle}>Ideas</Text>
-    //           <Text style={styles.halloweenDetails}>
-    //             Halloween is just around the corner and we have 5 easy and fun
-    //             ways to include eggs in your Halloween prep. From recipes to
-    //             crafts we have got you covered.
-    //           </Text>
-    //           <TouchableOpacity style={styles.learnMoreButton}>
-    //             <Text style={styles.learnMoreText}>Learn More</Text>
-    //           </TouchableOpacity>
-    //         </View>
-    //       </View>
-    //     </View>
-    //     <View style={styles.card}>
-    //       <View style={styles.halloweenContent}>
-    //         <Image source={image5} style={styles.halloweenImage} />
-    //         <View style={styles.halloweenDescription}>
-    //           <Text style={styles.halloweenSubtitle}>4 Ways to Love Your</Text>
-    //           <Text style={styles.halloweenSubtitle}>Leftovers</Text>
-    //           <Text style={styles.halloweenDetails}>
-    //             Eggs are an easy way to transform last night's leftovers into
-    //             something new and delicious for today.
-    //           </Text>
-    //           <TouchableOpacity style={styles.learnMoreButton}>
-    //             <Text style={styles.learnMoreText}>Learn More</Text>
-    //           </TouchableOpacity>
-    //         </View>
-    //       </View>
-    //     </View>
-
-    //     <Text style={styles.chefsCornerTitle}>Chef's Corner</Text>
-    //     <Text style={styles.chefsCornerSubtitle}>
-    //       A new recipe every month from our Egg Farmers of Canada Ambassadors.
-    //     </Text>
-    //     <View style={styles.card}>
-    //       <View style={styles.halloweenContent}>
-    //         <Image source={image6} style={styles.halloweenImage} />
-    //         <View style={styles.getAppContainer}>
-    //           <View style={styles.halloweenDescription}>
-    //             <Text style={styles.chefsRecipeTitle}>Marysol's</Text>
-    //             <Text style={styles.chefsRecipeTitle}>Dutch Baby Pancakes</Text>
-    //             <Text style={styles.chefsRecipeTitle}>with Fresh Berries</Text>
-    //             <Text style={styles.chefsRecipeDescription}>
-    //               As tempting as it may be to peek, the key to the success of
-    //               these pancakes is to make sure no heat escapes from the oven
-    //               during baking. So keep the oven light on and the oven door
-    //               closed!
-    //             </Text>
-    //             <TouchableOpacity style={styles.learnMoreButton}>
-    //               <Text style={styles.learnMoreText}>Learn More</Text>
-    //             </TouchableOpacity>
-    //           </View>
-    //         </View>
-    //       </View>
-    //     </View>
-
-    //     <View style={styles.appetizerSection}>
-    //       <Text style={styles.chefsCornerTitle}>Fun & Easy Egg Appetizers</Text>
-    //       <Text style={styles.chefsCornerSubtitle}>
-    //         Let's get creative with these fun and easy appetizer ideas!
-    //       </Text>
-
-    //       <View style={styles.card}>
-    //         <View style={styles.halloweenContent}>
-    //           <Image source={image7} style={styles.halloweenImage} />
-    //           <View style={styles.halloweenDescription}>
-    //             <Text style={styles.articleTitle}>
-    //               Sun-Dried Tomato and Basil Baked Ricotta
-    //             </Text>
-    //             <Text style={styles.articleSubtitle}>
-    //               This easy, flavour-packed dish is perfect for entertaining.
-    //             </Text>
-    //           </View>
-    //         </View>
-    //       </View>
-    //       <View style={styles.card}>
-    //         <View style={styles.halloweenContent}>
-    //           <Image source={image8} style={styles.halloweenImage} />
-    //           <View style={styles.halloweenDescription}>
-    //             <Text style={styles.articleTitle}>Egg and Bacon Canapes</Text>
-    //             <Text style={styles.articleSubtitle}>
-    //               Dress up bacon and eggs by making these easy and elegant
-    //               canapes.
-    //             </Text>
-    //           </View>
-    //         </View>
-    //       </View>
-    //       <View style={styles.card}>
-    //         <View style={styles.halloweenContent}>
-    //           <Image source={image9} style={styles.halloweenImage} />
-    //           <View style={styles.halloweenDescription}>
-    //             <Text style={styles.articleTitle}>Mean Green Cheezy Bites</Text>
-    //             <Text style={styles.articleSubtitle}>
-    //               With kale and spinach, these savory bites loaded with italian
-    //               cheeses are a delicious way to eat your greens. They make a
-    //               great snack or appetizer.
-    //             </Text>
-    //           </View>
-    //         </View>
-    //       </View>
-    //     </View>
-    //     <View style={styles.categorySection}>
-    //       <Text style={styles.categoryTitle}>Recipe Categories</Text>
-    //       <View style={styles.categoryGrid}>
-    //         <TouchableOpacity style={styles.categoryCard}>
-    //           <Image
-    //             source={require("../../assets/images/image8.png")}
-    //             style={styles.categoryImage}
-    //           />
-    //           <Text style={styles.categoryText}>Sandwiches & Wraps</Text>
-    //         </TouchableOpacity>
-    //         <TouchableOpacity style={styles.categoryCard}>
-    //           <Image
-    //             source={require("../../assets/images/image9.png")}
-    //             style={styles.categoryImage}
-    //           />
-    //           <Text style={styles.categoryText}>Brunch</Text>
-    //         </TouchableOpacity>
-    //         <TouchableOpacity style={styles.categoryCard}>
-    //           <Image
-    //             source={require("../../assets/images/image10.png")}
-    //             style={styles.categoryImage}
-    //           />
-    //           <Text style={styles.categoryText}>Boiled Eggs</Text>
-    //         </TouchableOpacity>
-    //         <TouchableOpacity style={styles.categoryCard}>
-    //           <Image
-    //             source={require("../../assets/images/image11.png")}
-    //             style={styles.categoryImage}
-    //           />
-    //           <Text style={styles.categoryText}>Lunch</Text>
-    //         </TouchableOpacity>
-    //         <TouchableOpacity style={styles.categoryCard}>
-    //           <Image
-    //             source={require("../../assets/images/image12.png")}
-    //             style={styles.categoryImage}
-    //           />
-    //           <Text style={styles.categoryText}>Nutritious Bowl Recipes</Text>
-    //         </TouchableOpacity>
-    //         <TouchableOpacity style={styles.categoryCard}>
-    //           <Image
-    //             source={require("../../assets/images/image13.png")}
-    //             style={styles.categoryImage}
-    //           />
-    //           <Text style={styles.categoryText}>Poached Eggs</Text>
-    //         </TouchableOpacity>
-    //         <TouchableOpacity style={styles.categoryCard}>
-    //           <Image
-    //             source={require("../../assets/images/image14.png")}
-    //             style={styles.categoryImage}
-    //           />
-    //           <Text style={styles.categoryText}>Appetizers and Canapes</Text>
-    //         </TouchableOpacity>
-    //         <TouchableOpacity style={styles.categoryCard}>
-    //           <Image
-    //             source={require("../../assets/images/image15.png")}
-    //             style={styles.categoryImage}
-    //           />
-    //           <Text style={styles.categoryText}>Vegetarian</Text>
-    //         </TouchableOpacity>
-    //       </View>
-    //       <TouchableOpacity style={styles.moreEggsButton}>
-    //         <Text style={styles.moreEggsText}>Explore Recipe Categories</Text>
-    //       </TouchableOpacity>
-    //     </View>
-    //     <Footer />
-    //   </ScrollView>
-    // </SafeAreaView>
-
     <View style={styles.container}>
       <Header title="Recipes" logoSource={image1} onClose={onClose} />
 
@@ -362,11 +46,20 @@ export default function RecipeScreen({ onClose }) {
         </View>
       )}
 
-      <WebView
-        source={{ uri: "https://www.eggs.ca/recipes/" }}
-        onLoadStart={() => setLoading(true)}
-        onLoadEnd={() => setLoading(false)}
-      />
+      {/* Conditionally rendering iframe for web and WebView for mobile */}
+      {Platform.OS === "web" ? (
+        <iframe
+          src="https://www.eggs.ca/recipes/"
+          style={{ width: "100%", height: "100%" }}
+          onLoad={() => setLoading(false)}
+        />
+      ) : (
+        <WebView
+          source={{ uri: "https://www.eggs.ca/recipes/" }}
+          onLoadStart={() => setLoading(true)}
+          onLoadEnd={() => setLoading(false)}
+        />
+      )}
     </View>
   );
 }

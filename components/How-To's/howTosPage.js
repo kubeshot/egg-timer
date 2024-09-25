@@ -10,25 +10,13 @@ import {
   ImageBackground,
   SafeAreaView,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../TopHeadingBar.js";
-import { Linking } from "react-native";
-import Navbar from "../Navbar.js";
-import image1 from "../../assets/images/image32.png";
-import image2 from "../../assets/images/image33.png";
-import image3 from "../../assets/images/image34.png";
-import image4 from "../../assets/images/banner-image.png";
-import image5 from "../../assets/images/image35.png";
-import image6 from "../../assets/images/image36.png";
-import image7 from "../../assets/images/image37.png";
-import image8 from "../../assets/images/image38.png";
-import image9 from "../../assets/images/image39.png";
-import image10 from "../../assets/images/image40.png";
+
 import image11 from "../../assets/images/file021.png";
-import videoIcon from "../../assets/images/iconplay-video.png";
-import Footer from "../footer.js";
-import VideoModal from "../VideoModal.js";
+
 import WebView from "react-native-webview";
 
 export default function HowTo({ onClose }) {
@@ -40,196 +28,36 @@ export default function HowTo({ onClose }) {
     setCurrentVideoId(videoId); // Directly pass the video ID
     setModalVisible(true);
   };
-  const handleMenuPress = () => {
-    // Handle menu button press
-  };
 
-  const handleSearchPress = () => {
-    // Handle search button press
-  };
   const [loading, setLoading] = useState(true);
 
-  return (
-    // <SafeAreaView style={{ flex: 1 }}>
-    //   <Header title="How-To's" logoSource={image11} onClose={onClose} />
-    //   <Navbar onMenuPress={handleMenuPress} onSearchPress={handleSearchPress} />
-    //   <ScrollView contentContainerStyle={styles.container}>
-    //     {/* Header Section */}
-    //     <View style={styles.header}>
-    //       <Text style={styles.headerTitle}>Eggs 101</Text>
-    //       <Text style={styles.headerSubtitle}>
-    //         Want to master the art of meringues or learn how to poach an egg
-    //         like a pro? Our how-to articles and videos have everything you need
-    //         to become a certified eggs-pert.
-    //       </Text>
-    //     </View>
-
-    //     {/* How-To Series Section */}
-    //     <View style={styles.seriesSection}>
-    //       <Text style={styles.seriesTitle}>From Our How To Series</Text>
-    //       <Image source={image1} style={styles.seriesImage} />
-
-    //       <Text style={styles.articleTitle}>How to Make Hollandaise Sauce</Text>
-    //       <Text style={styles.articleSubtitle}>
-    //         Soft boil eggs are a perfect way to enjoy, and take virtually no
-    //         time to make.
-    //       </Text>
-    //       <Image source={image2} style={styles.articleImage} />
-    //       <Text style={styles.articleTitle}>How to Soft Boil Eggs</Text>
-    //       <Text style={styles.articleSubtitle}>
-    //         Not just for eggs Benedict, hollandaise sauce is delicious drizzled
-    //         over many seafood and vegetable dishes, including salmon and
-    //         asparagus!
-    //       </Text>
-    //     </View>
-
-    //     {/* Halloween Section */}
-    //     <Text style={styles.halloweenTitle}>Get Crafty for Halloween</Text>
-    //     <View style={styles.card}>
-    //       <View style={styles.halloweenContent}>
-    //         <Image source={image3} style={styles.halloweenImage} />
-    //         <View style={styles.kidApprovedBadge}>
-    //           <Text style={styles.kidApprovedText}>Kid Approved</Text>
-    //         </View>
-    //         <View style={styles.halloweenDescription}>
-    //           <Text style={styles.halloweenSubtitle}>
-    //             Egg Carton Pumpkin Craft
-    //           </Text>
-    //           <Text style={styles.halloweenSubtitle}>For Kids</Text>
-    //           <Text style={styles.halloweenDetails}>
-    //             Egg cartons are painted and glued to make a crafty
-    //             Jack-O-Lantern.
-    //           </Text>
-    //           <TouchableOpacity style={styles.learnMoreButton}>
-    //             <Text style={styles.learnMoreText}>Learn More</Text>
-    //           </TouchableOpacity>
-    //         </View>
-    //       </View>
-    //     </View>
-
-    //     {/* Get App Section */}
-    //     <View style={styles.card}>
-    //       <View style={styles.halloweenContent}>
-    //         <Image source={image4} style={styles.halloweenImage} />
-    //         <View style={styles.getAppContainer}>
-    //           <View style={styles.halloweenDescription}>
-    //             <Text style={styles.getAppSubtitle}>
-    //               Perfect Eggs. Every time.
-    //             </Text>
-    //             <Text style={styles.getAppSubtitle}>Get the app.</Text>
-    //             <TouchableOpacity style={styles.downloadButton}>
-    //               <Text style={styles.downloadText}>Download Now</Text>
-    //             </TouchableOpacity>
-    //           </View>
-    //         </View>
-    //       </View>
-    //     </View>
-
-    //     {/* Top Articles Section */}
-    //     <View style={styles.topArticles}>
-    //       <Text style={styles.topArticlesTitle}>Top Articles</Text>
-
-    //       {[
-    //         {
-    //           image: image5,
-    //           title: "How to Poach an Egg Like a Pro",
-    //           subtitle:
-    //             "With the proper technique and a little practice, poaching an egg is easy.",
-    //           video: "lKJyOl98kGM",
-    //         },
-    //         {
-    //           image: image6,
-    //           title: "How to Fry the Perfect Egg",
-    //           subtitle:
-    //             "Fried eggs are usually thought of as diner breakfast fare, but they're an easy way to add protein to all kinds of meals.",
-    //           video: "FQ9Y50AciO0",
-    //         },
-    //         {
-    //           image: image7,
-    //           title: "How to Make Scrambled Eggs",
-    //           subtitle:
-    //             "Scrambled eggs are one of the most versatile breakfast dishes to prepare.",
-    //           video: "joHJcnne36Q",
-    //         },
-    //         {
-    //           image: image8,
-    //           title: "How to Cook the Perfect Omelette",
-    //           subtitle:
-    //             "The omelette is one of the easiest and most inexpensive meals, and it works beautifully for breakfast, lunch or dinner.",
-    //           video: "#",
-    //         },
-    //         {
-    //           image: image9,
-    //           title: "How to Make the Perfect Hard Boiled Egg",
-    //           subtitle:
-    //             "Hard boiled eggs are great food to have on hand as their uses are so versatile.",
-    //           video: "GG8M3QmLJ6I",
-    //         },
-    //       ].map((article, index) => (
-    //         <View key={index} style={styles.card}>
-    //           <TouchableOpacity onPress={() => handleVideoPress(article.video)}>
-    //             <ImageBackground
-    //               source={article.image}
-    //               style={styles.articleImage}
-    //               imageStyle={styles.articleImageBorder}
-    //             >
-    //               <Image source={videoIcon} style={styles.videoIcon} />
-    //             </ImageBackground>
-    //             <View style={styles.articleContent}>
-    //               <Text style={styles.topArticleTitle}>{article.title}</Text>
-    //               <Text style={styles.topArticleSubtitle}>
-    //                 {article.subtitle}
-    //               </Text>
-    //             </View>
-    //           </TouchableOpacity>
-    //         </View>
-    //       ))}
-
-    //       <View style={styles.card}>
-    //         <View style={styles.articleContent}>
-    //           <Image
-    //             source={image10}
-    //             style={styles.articleImage}
-    //             imageStyle={styles.articleImageBorder}
-    //           />
-    //           <Text style={styles.topArticleTitle}>
-    //             How to Peel a Hard Boiled Egg
-    //           </Text>
-    //           <Text style={styles.topArticleSubtitle}>
-    //             Peeling hard boiled can be frustrating and time consuming. Here
-    //             are a few simple tips to make it easier.
-    //           </Text>
-    //         </View>
-    //       </View>
-    //       <TouchableOpacity style={styles.moreEggsButton}>
-    //         <Text style={styles.moreEggsText}>More Eggs 101 Articles</Text>
-    //       </TouchableOpacity>
-    //     </View>
-    //     <Footer />
-    //   </ScrollView>
-    //   <VideoModal
-    //     isVisible={modalVisible}
-    //     videoUri={currentVideoId}  // Pass video ID
-    //     onClose={() => setModalVisible(false)}
-    //   />
-    // </SafeAreaView>
+ return (
     <View style={styles.container}>
       <Header title="How-To's" logoSource={image11} onClose={onClose} />
+
       {loading && (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#000000" />
         </View>
       )}
 
-      <WebView
-        source={{ uri: "https://www.eggs.ca/eggs101" }}
-        onLoadStart={() => setLoading(true)}
-        onLoadEnd={() => setLoading(false)}
-      />
+      {/* Conditionally rendering iframe for web and WebView for mobile */}
+      {Platform.OS === "web" ? (
+        <iframe
+          src="https://www.eggs.ca/eggs101"
+          style={{ width: "100%", height: "100%" }}
+          onLoad={() => setLoading(false)}
+        />
+      ) : (
+        <WebView
+          source={{ uri: "https://www.eggs.ca/eggs101" }}
+          onLoadStart={() => setLoading(true)}
+          onLoadEnd={() => setLoading(false)}
+        />
+      )}
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
