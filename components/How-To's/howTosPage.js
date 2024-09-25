@@ -14,7 +14,8 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../TopHeadingBar.js";
-
+import { Linking } from "react-native";
+import Navbar from "../Navbar.js";
 import image11 from "../../assets/images/file021.png";
 
 import WebView from "react-native-webview";
