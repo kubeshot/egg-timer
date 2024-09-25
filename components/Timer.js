@@ -8,6 +8,8 @@ import {
   Animated,
   Easing,
   Dimensions,
+  ImageBackground,
+  SafeAreaView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Svg, { Circle, Defs, Pattern, Rect } from "react-native-svg";
@@ -86,136 +88,166 @@ const Timer = ({ route }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Image source={require("../assets/images/btnback-arrow.png")} />
-        </TouchableOpacity>
-        <View style={styles.logoContainer}>
-          <Image source={require("../assets/images/Logo.png")} />
-        </View>
-        <View style={styles.placeholder} />
-      </View>
+    <View style={styles.overlayContainer}>
+      <ImageBackground
+        source={require("../assets/images/hardboiledbackground-1.png")}
+        style={styles.imageBackground}
+      >
+        {/* Transparent overlay */}
+        <View style={styles.opacityLayer} />
+      </ImageBackground>
 
-      <View style={styles.content}>
-        <Text style={styles.heading}>{heading}</Text>
-        {subHeading !== "" && (
-          <View style={styles.instructionsButton}>
-            <Text style={styles.instructionsText}>{subHeading}</Text>
-          </View>
-        )}
-
-        <View
-          style={[
-            styles.timerContainer,
-            { width: circleSize, height: circleSize },
-          ]}
-        >
-          <Svg width={circleSize} height={circleSize}>
-            <Defs>
-              <Pattern
-                id="stripes"
-                patternUnits="userSpaceOnUse"
-                width="4"
-                height="8"
-              >
-                {/* Background color of the pattern */}
-                <Rect x="0" y="0" width="4" height="8" fill="white" />
-                {/* Stripes */}
-                <Rect x="0" y="0" width="2" height="8" fill="black" />
-              </Pattern>
-            </Defs>
-            <Circle
-              cx={circleSize / 2}
-              cy={circleSize / 2}
-              r={radius}
-              stroke="#E0E0E0"
-              strokeWidth={strokeWidth}
-              fill="none"
-            />
-            <AnimatedCircle
-              cx={circleSize / 2}
-              cy={circleSize / 2}
-              r={radius}
-              stroke="url(#stripes)" // Use the striped pattern here
-              strokeWidth={strokeWidth}
-              fill="none"
-              strokeDasharray={circumference}
-              strokeDashoffset={strokeDashoffset}
-              strokeLinecap="round"
-            />
-          </Svg>
-
-          <View style={styles.timerInnerCircle}>
-            <Text style={styles.timerText}>
-              {time !== 0 ? formatTime(time) : "Done!"}
-            </Text>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          <View style={styles.header}>
             <TouchableOpacity
-              onPress={() => setSoundOn(!soundOn)}
-              style={styles.soundButton}
+              onPress={() => navigation.goBack()}
+              style={styles.backButton}
             >
-              <Image
-                source={
-                  soundOn
-                    ? require("../assets/images/group-175.png")
-                    : require("../assets/images/group-175.png")
-                }
-              />
+              <Image source={require("../assets/images/btnback-arrow.png")} />
             </TouchableOpacity>
+            <View style={styles.logoContainer}>
+              <Image source={require("../assets/images/Logo.png")} />
+            </View>
+            <View style={styles.placeholder} />
+          </View>
+
+          <View style={styles.content}>
+            <Text style={styles.heading}>{heading}</Text>
+            {subHeading !== "" && (
+              <View style={styles.instructionsButton}>
+                <Text style={styles.instructionsText}>{subHeading}</Text>
+              </View>
+            )}
+
+            <View
+              style={[
+                styles.timerContainer,
+                { width: circleSize, height: circleSize },
+              ]}
+            >
+              <Svg width={circleSize} height={circleSize}>
+                <Defs>
+                  <Pattern
+                    id="stripes"
+                    patternUnits="userSpaceOnUse"
+                    width="4"
+                    height="8"
+                  >
+                    {/* Background color of the pattern */}
+                    <Rect x="0" y="0" width="4" height="8" fill="white" />
+                    {/* Stripes */}
+                    <Rect x="0" y="0" width="2" height="8" fill="black" />
+                  </Pattern>
+                </Defs>
+                <Circle
+                  cx={circleSize / 2}
+                  cy={circleSize / 2}
+                  r={radius}
+                  stroke="#E0E0E0"
+                  strokeWidth={strokeWidth}
+                  fill="none"
+                />
+                <AnimatedCircle
+                  cx={circleSize / 2}
+                  cy={circleSize / 2}
+                  r={radius}
+                  stroke="url(#stripes)" // Use the striped pattern here
+                  strokeWidth={strokeWidth}
+                  fill="none"
+                  strokeDasharray={circumference}
+                  strokeDashoffset={strokeDashoffset}
+                  strokeLinecap="round"
+                />
+              </Svg>
+
+              <View style={styles.timerInnerCircle}>
+                <Text style={styles.timerText}>
+                  {time !== 0 ? formatTime(time) : "Done!"}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setSoundOn(!soundOn)}
+                  style={styles.soundButton}
+                >
+                  <Image
+                    source={
+                      soundOn
+                        ? require("../assets/images/group-175.png")
+                        : require("../assets/images/group-175.png")
+                    }
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.buttonContainer}>
+              {time !== 0 ? (
+                <>
+                  <TouchableOpacity
+                    style={styles.cancelTimerButton}
+                    onPress={() => {
+                      setTime(route.params.time);
+                      setIsPaused(true);
+                      progress.setValue(0);
+                    }}
+                  >
+                    <Text style={[styles.buttonText, { color: "black" }]}>
+                      Cancel
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.pauseTimerButton}
+                    onPress={() => setIsPaused(!isPaused)}
+                  >
+                    <Text style={[styles.buttonText, { color: "white" }]}>
+                      {isPaused ? "Resume Timer" : "Pause Timer"}
+                    </Text>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <TouchableOpacity
+                  style={styles.pauseTimerButton}
+                  onPress={() =>
+                    navigation.navigate("Success", { title: getTitle() })
+                  }
+                >
+                  <Text style={[styles.buttonText, { color: "white" }]}>
+                    Stop Timer
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
         </View>
-
-        <View style={styles.buttonContainer}>
-          {time !== 0 ? (
-            <>
-              <TouchableOpacity
-                style={styles.cancelTimerButton}
-                onPress={() => {
-                  setTime(route.params.time);
-                  setIsPaused(true);
-                  progress.setValue(0);
-                }}
-              >
-                <Text style={[styles.buttonText, { color: "black" }]}>
-                  Cancel
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.pauseTimerButton}
-                onPress={() => setIsPaused(!isPaused)}
-              >
-                <Text style={[styles.buttonText, { color: "white" }]}>
-                  {isPaused ? "Resume Timer" : "Pause Timer"}
-                </Text>
-              </TouchableOpacity>
-            </>
-          ) : (
-            <TouchableOpacity
-              style={styles.pauseTimerButton}
-              onPress={() =>
-                navigation.navigate("Success", { title: getTitle() })
-              }
-            >
-              <Text style={[styles.buttonText, { color: "white" }]}>
-                Stop Timer
-              </Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      </View>
-
+      </SafeAreaView>
       <BottomBar />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
+
+  overlayContainer: {
+    flex: 1,
+    position: "relative",
+  },
+  imageBackground: {
+    flex: 1,
+    resizeMode: "cover",
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
+  opacityLayer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(255, 255, 255, 0.4)", // Adjust the opacity here
+  },
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    // backgroundColor: "#F5F5F5",
   },
   header: {
     flexDirection: "row",
