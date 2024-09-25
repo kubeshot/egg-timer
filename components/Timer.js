@@ -64,7 +64,7 @@ const Timer = ({ route }) => {
 
   const strokeDashoffset = progress.interpolate({
     inputRange: [0, 1],
-    outputRange: [circumference, 0],
+    outputRange: [0, circumference], // Reversed direction here
   });
 
   const formatTime = (seconds) => {
@@ -289,4 +289,5 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
+
 export default Timer;
