@@ -11,6 +11,7 @@ export default function App() {
     "Inter-Medium": require("./assets/fonts/Inter-Medium.ttf"),
     "Inter-Regular": require("./assets/fonts/Inter-Regular.ttf"),
     "Inter-SemiBold": require("./assets/fonts/Inter-SemiBold.ttf"),
+    "Kaleko-Bold": require("./assets/fonts/Kaleko205Round-Bold.ttf"),
   });
 
   if (!fontsLoaded) {

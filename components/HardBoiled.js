@@ -3,6 +3,7 @@ import {
   Image,
   ImageBackground,
   Modal,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -35,124 +36,128 @@ const HardBoiled = () => {
         source={require("../assets/images/hardboiledbackground-11.png")}
         style={styles.imageBackground}
       >
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack();
-              }}
-              style={styles.backButton}
-            >
-              <Image source={require("../assets/images/btnback-arrow.png")} />
-            </TouchableOpacity>
-            <View style={styles.logoContainer}>
-              <Image source={require("../assets/images/Logo.png")} />
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.container}>
+            <View style={styles.header}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.goBack();
+                }}
+                style={styles.backButton}
+              >
+                <Image source={require("../assets/images/btnback-arrow.png")} />
+              </TouchableOpacity>
+              <View style={styles.logoContainer}>
+                <Image source={require("../assets/images/Logo.png")} />
+              </View>
+              <View style={styles.placeholder} />
             </View>
-            <View style={styles.placeholder} />
-          </View>
 
-          <View style={styles.innerContainer}>
-            <View style={styles.uppperButtonsContainer}>
-              <Text style={styles.heading}>Hard Boiled Eggs</Text>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  style={styles.instructionsButton}
-                  onPress={() => {
-                    setModalVisible(true);
+            <View style={styles.innerContainer}>
+              <View style={styles.uppperButtonsContainer}>
+                <Text style={styles.heading}>Hard Boiled Eggs</Text>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity
+                    style={styles.instructionsButton}
+                    onPress={() => {
+                      setModalVisible(true);
+                    }}
+                  >
+                    <Text style={styles.instructionsText}>Instructions</Text>
+                  </TouchableOpacity>
+                  <View style={styles.sizeContainer}>
+                    <Text style={styles.sizeLabel}>Size</Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setShowSizeSelection((prev) => !prev);
+                      }}
+                      style={styles.sizeButton}
+                    >
+                      <Text style={styles.sizeText}>{selectedSize}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                {showSizeSelection && (
+                  <View style={styles.sizeSelectionButonContainer}>
+                    <TouchableOpacity
+                      style={[
+                        styles.sizeSelectorButton,
+                        {
+                          backgroundColor:
+                            selectedSize === "M" ? "#FFCD32" : "white",
+                        },
+                      ]}
+                      onPress={() => {
+                        setSelectedSize("M");
+                        setTimer(10);
+                        setShowSizeSelection(false);
+                      }}
+                    >
+                      <Text style={styles.sizeSelectorButonText}>M</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[
+                        styles.sizeSelectorButton,
+                        {
+                          backgroundColor:
+                            selectedSize === "L" ? "#FFCD32" : "white",
+                        },
+                      ]}
+                      onPress={() => {
+                        setSelectedSize("L");
+                        setTimer(12);
+                        setShowSizeSelection(false);
+                      }}
+                    >
+                      <Text style={styles.sizeSelectorButonText}>L</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[
+                        styles.sizeSelectorButton,
+                        {
+                          backgroundColor:
+                            selectedSize === "XL" ? "#FFCD32" : "white",
+                        },
+                      ]}
+                      onPress={() => {
+                        setSelectedSize("XL");
+                        setTimer(14);
+                        setShowSizeSelection(false);
+                      }}
+                    >
+                      <Text style={styles.sizeSelectorButonText}>XL</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Timer", {
+                    heading: "Hard Boiled Eggs",
+                    time: timer * 60,
+                    subheading: "",
+                  });
+                }}
+                style={styles.startTimerButton}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 8,
                   }}
                 >
-                  <Text style={styles.instructionsText}>Instructions</Text>
-                </TouchableOpacity>
-                <View style={styles.sizeContainer}>
-                  <Text style={styles.sizeLabel}>Size</Text>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setShowSizeSelection((prev) => !prev);
-                    }}
-                    style={styles.sizeButton}
-                  >
-                    <Text style={styles.sizeText}>{selectedSize}</Text>
-                  </TouchableOpacity>
+                  <Image
+                    source={require("../assets/images/basic--clock.png")}
+                  />
+                  <Text style={styles.startTimerButtonText}>Start Timer</Text>
                 </View>
-              </View>
-              {showSizeSelection && (
-                <View style={styles.sizeSelectionButonContainer}>
-                  <TouchableOpacity
-                    style={[
-                      styles.sizeSelectorButton,
-                      {
-                        backgroundColor:
-                          selectedSize === "M" ? "#FFCD32" : "white",
-                      },
-                    ]}
-                    onPress={() => {
-                      setSelectedSize("M");
-                      setTimer(10);
-                      setShowSizeSelection(false);
-                    }}
-                  >
-                    <Text style={styles.sizeSelectorButonText}>M</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[
-                      styles.sizeSelectorButton,
-                      {
-                        backgroundColor:
-                          selectedSize === "L" ? "#FFCD32" : "white",
-                      },
-                    ]}
-                    onPress={() => {
-                      setSelectedSize("L");
-                      setTimer(12);
-                      setShowSizeSelection(false);
-                    }}
-                  >
-                    <Text style={styles.sizeSelectorButonText}>L</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[
-                      styles.sizeSelectorButton,
-                      {
-                        backgroundColor:
-                          selectedSize === "XL" ? "#FFCD32" : "white",
-                      },
-                    ]}
-                    onPress={() => {
-                      setSelectedSize("XL");
-                      setTimer(14);
-                      setShowSizeSelection(false);
-                    }}
-                  >
-                    <Text style={styles.sizeSelectorButonText}>XL</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
+                <Text style={styles.startTimerButtonText}>{timer}:00</Text>
+              </TouchableOpacity>
             </View>
-
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("Timer", {
-                  heading: "Hard Boiled Eggs",
-                  time: timer * 60,
-                  subheading: "",
-                });
-              }}
-              style={styles.startTimerButton}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 8,
-                }}
-              >
-                <Image source={require("../assets/images/basic--clock.png")} />
-                <Text style={styles.startTimerButtonText}>Start Timer</Text>
-              </View>
-              <Text style={styles.startTimerButtonText}>{timer}:00</Text>
-            </TouchableOpacity>
           </View>
-        </View>
+        </SafeAreaView>
       </ImageBackground>
 
       <Modal
@@ -186,7 +191,10 @@ const HardBoiled = () => {
                       {step}
                       {index === 2 && (
                         <Text
-                          style={[styles.modalStepText, { fontWeight: "bold" }]}
+                          style={[
+                            styles.modalStepText,
+                            { fontFamily: "Inter-Bold" },
+                          ]}
                         >
                           12 minutes.
                         </Text>
@@ -205,6 +213,10 @@ const HardBoiled = () => {
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    // backgroundColor: "#f2f2f2", // Apply background color to safe area
+  },
   imageBackground: {
     flex: 1,
     resizeMode: "cover",
@@ -234,7 +246,7 @@ const styles = StyleSheet.create({
 
   heading: {
     fontSize: 32,
-    fontWeight: "bold",
+    fontFamily: "Kaleko-Bold",
     textAlign: "center",
     marginTop: 48,
   },
@@ -350,7 +362,7 @@ const styles = StyleSheet.create({
 
   modalTitle: {
     fontSize: 32,
-    fontFamily: "Inter-Bold",
+    fontFamily: "Kaleko-Bold",
     textAlign: "center",
     marginBottom: 24,
   },

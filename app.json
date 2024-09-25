@@ -11,6 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "experiments": {
+      "baseUrl": "/egg-timer"
+    },
     "ios": {
       "supportsTablet": true
     },
@@ -24,7 +27,8 @@
 },
 
     "web": {
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "bundler": "metro"
     },
     "plugins": [
       "expo-font"
