@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   StyleSheet,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import Header from "../TopHeadingBar.js";
 import Navbar from "../Navbar.js";
@@ -16,54 +17,15 @@ import Footer from "../footer.js";
 import WebView from "react-native-webview";
 
 export default function SubscribeScreen({ onClose }) {
-  const handleMenuPress = () => {
-    // Handle menu button press
-  };
-
-  const handleSearchPress = () => {
-    // Handle search button press
-  };
-
   const [loading, setLoading] = useState(true);
 
   return (
-    // <SafeAreaView style={{ flex: 1 }}>
-    // <Header
-    //   title="Newsletter Sign-up"
-    //   logoSource={image1}
-    //   onClose={onClose}
-    // />
-
-    //   <Navbar onMenuPress={handleMenuPress} onSearchPress={handleSearchPress} />
-
-    //   <ScrollView contentContainerStyle={styles.container}>
-    //     <Text style={styles.title}>Subscribe to the Eggs.ca Newsletter</Text>
-
-    //     <Text style={styles.subtitle}>
-    //       Get egg-citing recipes, how-tos, egg 101s and so much more delivered
-    //       to your inbox every month!
-    //     </Text>
-
-    //     <TextInput
-    //       style={styles.input}
-    //       placeholder="Your Email Address"
-    //       placeholderTextColor="#9E9E9E"
-    //     />
-
-    //     <TouchableOpacity style={styles.button}>
-    //       <Text style={styles.buttonText}>Submit</Text>
-    //     </TouchableOpacity>
-
-    //     <Text style={styles.footer}>
-    //       As a subscriber to eggs.ca, you may receive emails containing
-    //       delicious recipes, nutrition tips, contests and promotions. You may
-    //       unsubscribe at any time.
-    //     </Text>
-    //     <Footer />
-    //   </ScrollView>
-    // </SafeAreaView>
     <View style={styles.container}>
-      <Header title="Newsletter Sign-up" logoSource={image1} onClose={onClose} />
+      <Header
+        title="Newsletter Sign-up"
+        logoSource={image1}
+        onClose={onClose}
+      />
 
       {loading && (
         <View style={styles.loadingContainer}>
@@ -71,11 +33,20 @@ export default function SubscribeScreen({ onClose }) {
         </View>
       )}
 
-      <WebView
-        source={{ uri: "https://www.eggs.ca/newsletter-signup/" }}
-        onLoadStart={() => setLoading(true)}
-        onLoadEnd={() => setLoading(false)}
-      />
+      {/* Conditionally rendering iframe for web and WebView for mobile */}
+      {Platform.OS === "web" ? (
+        <iframe
+          src="https://www.eggs.ca/newsletter-signup/"
+          style={{ width: "100%", height: "100%" }}
+          onLoad={() => setLoading(false)}
+        />
+      ) : (
+        <WebView
+          source={{ uri: "https://www.eggs.ca/newsletter-signup/" }}
+          onLoadStart={() => setLoading(true)}
+          onLoadEnd={() => setLoading(false)}
+        />
+      )}
     </View>
   );
 }
