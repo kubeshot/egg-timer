@@ -12,12 +12,28 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import Svg, { Circle, Defs, Pattern, Rect } from "react-native-svg";
+import Svg, { Path } from "react-native-svg";
 import BottomBar from "./BottomBar";
 
 const { width, height } = Dimensions.get("window");
 
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+// const AnimatedPath = Animated.createAnimatedComponent(Path);
+
+const createDashedCirclePath = (cx, cy, r, dashCount) => {
+  let path = "";
+  for (let i = 0; i < dashCount; i++) {
+    const angle = (i / dashCount) * Math.PI * 2;
+    const startX = cx + Math.cos(angle) * r;
+    const startY = cy + Math.sin(angle) * r;
+    const endAngle = ((i + 0.5) / dashCount) * Math.PI * 2;
+    const endX = cx + Math.cos(endAngle) * r;
+    const endY = cy + Math.sin(endAngle) * r;
+    path += `M${startX},${startY} A${r},${r} 0 0,1 ${endX},${endY}`;
+  }
+  return path;
+};
+
+const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 const Timer = ({ route }) => {
   const navigation = useNavigation();
@@ -29,7 +45,7 @@ const Timer = ({ route }) => {
   const progress = useRef(new Animated.Value(0)).current;
 
   const circleSize = Math.min(width, height) * 0.6;
-  const strokeWidth = 10;
+  const strokeWidth = 30;
   const radius = (circleSize - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
 
@@ -100,10 +116,7 @@ const Timer = ({ route }) => {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.backButton}
-            >
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
               <Image source={require("../assets/images/btnback-arrow.png")} />
             </TouchableOpacity>
             <View style={styles.logoContainer}>
@@ -120,55 +133,27 @@ const Timer = ({ route }) => {
               </View>
             )}
 
-            <View
-              style={[
-                styles.timerContainer,
-                { width: circleSize, height: circleSize },
-              ]}
-            >
+            <View style={[styles.timerContainer, { width: circleSize, height: circleSize }]}>
               <Svg width={circleSize} height={circleSize}>
-                <Defs>
-                  <Pattern
-                    id="stripes"
-                    patternUnits="userSpaceOnUse"
-                    width="4"
-                    height="8"
-                  >
-                    {/* Background color of the pattern */}
-                    <Rect x="0" y="0" width="4" height="8" fill="white" />
-                    {/* Stripes */}
-                    <Rect x="0" y="0" width="2" height="8" fill="black" />
-                  </Pattern>
-                </Defs>
-                <Circle
-                  cx={circleSize / 2}
-                  cy={circleSize / 2}
-                  r={radius}
+                <Path
+                  d={createDashedCirclePath(circleSize / 2, circleSize / 2, radius, 200)}
                   stroke="#E0E0E0"
                   strokeWidth={strokeWidth}
                   fill="none"
                 />
-                <AnimatedCircle
-                  cx={circleSize / 2}
-                  cy={circleSize / 2}
-                  r={radius}
-                  stroke="url(#stripes)" // Use the striped pattern here
+                <AnimatedPath
+                  d={createDashedCirclePath(circleSize / 2, circleSize / 2, radius, 200)}
+                  stroke="black"
                   strokeWidth={strokeWidth}
                   fill="none"
                   strokeDasharray={circumference}
                   strokeDashoffset={strokeDashoffset}
-                  strokeLinecap="round"
                 />
               </Svg>
 
               <View style={styles.timerInnerCircle}>
-                <Text style={styles.timerText}>
-                  {time !== 0 ? formatTime(time) : "Done!"}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => setSoundOn(!soundOn)}
-                  style={styles.soundButton}
-                >
+                <Text style={styles.timerText}>{time !== 0 ? formatTime(time) : "Done!"}</Text>
+                <TouchableOpacity onPress={() => setSoundOn(!soundOn)} style={styles.soundButton}>
                   <Image
                     source={
                       soundOn
@@ -191,9 +176,7 @@ const Timer = ({ route }) => {
                       progress.setValue(0);
                     }}
                   >
-                    <Text style={[styles.buttonText, { color: "black" }]}>
-                      Cancel
-                    </Text>
+                    <Text style={[styles.buttonText, { color: "black" }]}>Cancel</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.pauseTimerButton}
@@ -207,13 +190,9 @@ const Timer = ({ route }) => {
               ) : (
                 <TouchableOpacity
                   style={styles.pauseTimerButton}
-                  onPress={() =>
-                    navigation.navigate("Success", { title: getTitle() })
-                  }
+                  onPress={() => navigation.navigate("Success", { title: getTitle() })}
                 >
-                  <Text style={[styles.buttonText, { color: "white" }]}>
-                    Stop Timer
-                  </Text>
+                  <Text style={[styles.buttonText, { color: "white" }]}>Stop Timer</Text>
                 </TouchableOpacity>
               )}
             </View>
