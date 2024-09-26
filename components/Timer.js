@@ -57,7 +57,7 @@ const Timer = ({ route }) => {
 
   const progress = useRef(new Animated.Value(0)).current;
 
-  const circleSize = Math.min(width, height) * 0.6;
+  const circleSize = Math.min(width, height) * 0.8;
   const strokeWidth = 30;
   const radius = (circleSize - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
@@ -81,7 +81,6 @@ const Timer = ({ route }) => {
     const animateSpokes = (progress) => {
       const fadedSpokes = Math.floor(progress * spokeCount);
       const animations = spokeAnimations.map((anim, index) => {
-        // Adjust the index to start from the top (270 degrees)
         const adjustedIndex = (Math.floor(spokeCount) - index) % spokeCount;
         return Animated.timing(anim, {
           toValue: adjustedIndex < fadedSpokes ? 1 : 0,
