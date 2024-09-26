@@ -1,4 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
+
+// import { Animated, Easing } from "react-native";
+
 import {
   View,
   Text,
@@ -20,17 +23,16 @@ const { width, height } = Dimensions.get("window");
 // const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 const createDashedCirclePath = (cx, cy, r, dashCount) => {
-  let path = "";
-  for (let i = 0; i < dashCount; i++) {
-    const angle = (i / dashCount) * Math.PI * 2;
+  return [...Array(dashCount)].map((_, i) => {
+    // Adjust the angle calculation to start from the top (270 degrees)
+    const angle = (i / dashCount) * Math.PI * 2 + Math.PI * 1.5;
     const startX = cx + Math.cos(angle) * r;
     const startY = cy + Math.sin(angle) * r;
-    const endAngle = ((i + 0.5) / dashCount) * Math.PI * 2;
+    const endAngle = ((i + 0.5) / dashCount) * Math.PI * 2 + Math.PI * 1.5;
     const endX = cx + Math.cos(endAngle) * r;
     const endY = cy + Math.sin(endAngle) * r;
-    path += `M${startX},${startY} A${r},${r} 0 0,1 ${endX},${endY}`;
-  }
-  return path;
+    return `M${startX},${startY} A${r},${r} 0 0,1 ${endX},${endY}`;
+  });
 };
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
@@ -42,6 +44,17 @@ const Timer = ({ route }) => {
   const [time, setTime] = useState(route.params?.time || 180);
   const [isPaused, setIsPaused] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
+
+  const [spokeCount, setSpokeCount] = useState(200);
+  const spokeAnimations = useRef([...Array(spokeCount)].map(() => new Animated.Value(0))).current;
+
+  const interpolateColor = (animation) => {
+    return animation.interpolate({
+      inputRange: [0, 1],
+      outputRange: ["rgb(0, 0, 0)", "rgb(224, 224, 224)"], // From black to light grey
+    });
+  };
+
   const progress = useRef(new Animated.Value(0)).current;
 
   const circleSize = Math.min(width, height) * 0.6;
@@ -65,20 +78,39 @@ const Timer = ({ route }) => {
       }
     }, 1000);
 
+    const animateSpokes = (progress) => {
+      const fadedSpokes = Math.floor(progress * spokeCount);
+      const animations = spokeAnimations.map((anim, index) => {
+        // Adjust the index to start from the top (270 degrees)
+        const adjustedIndex = (Math.floor(spokeCount) - index) % spokeCount;
+        return Animated.timing(anim, {
+          toValue: adjustedIndex < fadedSpokes ? 1 : 0,
+          duration: 500,
+          useNativeDriver: false,
+          easing: Easing.linear,
+        });
+      });
+      Animated.parallel(animations).start();
+    };
+
+    animateSpokes(1 - time / (route.params.time || 180));
+
     return () => clearInterval(timer);
   }, [time, isPaused]);
 
-  useEffect(() => {
-    const initialTime = route.params.time || 180;
-    const progressValue = 1 - time / initialTime;
+  // useEffect(() => {
+  //   const initialTime = route.params.time || 180;
+  //   const progressValue = 1 - time / initialTime;
 
-    Animated.timing(progress, {
-      toValue: progressValue,
-      duration: 1000,
-      useNativeDriver: true,
-      easing: Easing.linear,
-    }).start();
-  }, [time]);
+  //   Animated.timing(progress, {
+  //     toValue: progressValue,
+  //     duration: 1000,
+  //     useNativeDriver: true,
+  //     easing: Easing.linear,
+  //   }).start();
+
+  //   animateSpokes(progressValue);
+  // }, [time]);
 
   const strokeDashoffset = progress.interpolate({
     inputRange: [0, 1],
@@ -135,20 +167,17 @@ const Timer = ({ route }) => {
 
             <View style={[styles.timerContainer, { width: circleSize, height: circleSize }]}>
               <Svg width={circleSize} height={circleSize}>
-                <Path
-                  d={createDashedCirclePath(circleSize / 2, circleSize / 2, radius, 200)}
-                  stroke="#E0E0E0"
-                  strokeWidth={strokeWidth}
-                  fill="none"
-                />
-                <AnimatedPath
-                  d={createDashedCirclePath(circleSize / 2, circleSize / 2, radius, 200)}
-                  stroke="black"
-                  strokeWidth={strokeWidth}
-                  fill="none"
-                  strokeDasharray={circumference}
-                  strokeDashoffset={strokeDashoffset}
-                />
+                {createDashedCirclePath(circleSize / 2, circleSize / 2, radius, spokeCount).map(
+                  (path, index) => (
+                    <AnimatedPath
+                      key={index}
+                      d={path}
+                      stroke={interpolateColor(spokeAnimations[index])}
+                      strokeWidth={strokeWidth}
+                      fill="none"
+                    />
+                  ),
+                )}
               </Svg>
 
               <View style={styles.timerInnerCircle}>
