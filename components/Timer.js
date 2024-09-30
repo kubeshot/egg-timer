@@ -17,6 +17,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import Svg, { Path } from "react-native-svg";
 import BottomBar from "./BottomBar";
+import { Audio } from "expo-av";
 
 const { width, height } = Dimensions.get("window");
 
@@ -44,9 +45,12 @@ const Timer = ({ route }) => {
   const [time, setTime] = useState(route.params?.time || 180);
   const [isPaused, setIsPaused] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
+  const soundRef = useRef(null);
 
   const [spokeCount, setSpokeCount] = useState(200);
-  const spokeAnimations = useRef([...Array(spokeCount)].map(() => new Animated.Value(0))).current;
+  const spokeAnimations = useRef(
+    [...Array(spokeCount)].map(() => new Animated.Value(0))
+  ).current;
 
   const interpolateColor = (animation) => {
     return animation.interpolate({
@@ -111,6 +115,40 @@ const Timer = ({ route }) => {
   //   animateSpokes(progressValue);
   // }, [time]);
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (!isPaused && time > 0) {
+        setTime((prevTime) => prevTime - 1);
+      }
+    }, 1000);
+
+    if (time === 0 && soundOn) {
+      playCompletionSound();
+    }
+
+    return () => clearInterval(timer);
+  }, [time, isPaused]);
+
+  const playCompletionSound = async () => {
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        require("../assets/clucking.wav")
+      );
+      soundRef.current = sound;
+      await sound.playAsync();
+    } catch (error) {
+      console.log("Error playing sound", error);
+    }
+  };
+
+  const stopSound = async () => {
+    if (soundRef.current) {
+      await soundRef.current.stopAsync();
+      await soundRef.current.unloadAsync();
+      soundRef.current = null;
+    }
+  };
+
   const strokeDashoffset = progress.interpolate({
     inputRange: [0, 1],
     outputRange: [0, circumference],
@@ -147,7 +185,10 @@ const Timer = ({ route }) => {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.backButton}
+            >
               <Image source={require("../assets/images/btnback-arrow.png")} />
             </TouchableOpacity>
             <View style={styles.logoContainer}>
@@ -164,29 +205,42 @@ const Timer = ({ route }) => {
               </View>
             )}
 
-            <View style={[styles.timerContainer, { width: circleSize, height: circleSize }]}>
+            <View
+              style={[
+                styles.timerContainer,
+                { width: circleSize, height: circleSize },
+              ]}
+            >
               <Svg width={circleSize} height={circleSize}>
-                {createDashedCirclePath(circleSize / 2, circleSize / 2, radius, spokeCount).map(
-                  (path, index) => (
-                    <AnimatedPath
-                      key={index}
-                      d={path}
-                      stroke={interpolateColor(spokeAnimations[index])}
-                      strokeWidth={strokeWidth}
-                      fill="none"
-                    />
-                  ),
-                )}
+                {createDashedCirclePath(
+                  circleSize / 2,
+                  circleSize / 2,
+                  radius,
+                  spokeCount
+                ).map((path, index) => (
+                  <AnimatedPath
+                    key={index}
+                    d={path}
+                    stroke={interpolateColor(spokeAnimations[index])}
+                    strokeWidth={strokeWidth}
+                    fill="none"
+                  />
+                ))}
               </Svg>
 
               <View style={styles.timerInnerCircle}>
-                <Text style={styles.timerText}>{time !== 0 ? formatTime(time) : "Done!"}</Text>
-                <TouchableOpacity onPress={() => setSoundOn(!soundOn)} style={styles.soundButton}>
+                <Text style={styles.timerText}>
+                  {time !== 0 ? formatTime(time) : "Done!"}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setSoundOn(!soundOn)}
+                  style={styles.soundButton}
+                >
                   <Image
                     source={
                       soundOn
                         ? require("../assets/images/group-175.png")
-                        : require("../assets/images/group-175.png")
+                        : require("../assets/images/group-1752.png")
                     }
                   />
                 </TouchableOpacity>
@@ -204,7 +258,9 @@ const Timer = ({ route }) => {
                       progress.setValue(0);
                     }}
                   >
-                    <Text style={[styles.buttonText, { color: "black" }]}>Cancel</Text>
+                    <Text style={[styles.buttonText, { color: "black" }]}>
+                      Cancel
+                    </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.pauseTimerButton}
@@ -218,9 +274,14 @@ const Timer = ({ route }) => {
               ) : (
                 <TouchableOpacity
                   style={styles.pauseTimerButton}
-                  onPress={() => navigation.navigate("Success", { title: getTitle() })}
+                  onPress={() => {
+                    stopSound();
+                    navigation.navigate("Success", { title: getTitle() });
+                  }}
                 >
-                  <Text style={[styles.buttonText, { color: "white" }]}>Stop Timer</Text>
+                  <Text style={[styles.buttonText, { color: "white" }]}>
+                    Stop Timer
+                  </Text>
                 </TouchableOpacity>
               )}
             </View>
