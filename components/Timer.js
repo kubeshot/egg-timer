@@ -16,6 +16,7 @@ import { useNavigation } from "@react-navigation/native";
 import Svg, { Path } from "react-native-svg";
 import BottomBar from "./BottomBar";
 import { Audio } from "expo-av";
+import * as Notifications from 'expo-notifications';
 
 const { width, height } = Dimensions.get("window");
 
@@ -33,6 +34,14 @@ const createDashedCirclePath = (cx, cy, r, dashCount) => {
   });
 };
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+
 const Timer = ({ route }) => {
   const navigation = useNavigation();
   const [heading, setHeading] = useState(route.params?.heading || "");
@@ -45,6 +54,7 @@ const Timer = ({ route }) => {
   const spokeAnimations = useRef(
     [...Array(spokeCount)].map(() => new Animated.Value(0))
   ).current;
+  const fadeOutAnimation = useRef(new Animated.Value(1)).current;
   const progress = useRef(new Animated.Value(0)).current;
   const circleSize = Math.min(width, height) * 0.8;
   const strokeWidth = 30;
@@ -53,7 +63,17 @@ const Timer = ({ route }) => {
 
   const appState = useRef(AppState.currentState);
   const endTimeRef = useRef(null);
-  const timerRef = useRef(null);
+  const intervalRef = useRef(null);
+  const notificationId = useRef(null);
+  const lastUpdatedTime = useRef(Date.now());
+
+  useEffect(() => {
+    setupNotifications();
+    return () => {
+      cancelNotification();
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (route.params) {
@@ -62,6 +82,8 @@ const Timer = ({ route }) => {
       setTimeLeft(route.params.time || 180);
       progress.setValue(0);
       endTimeRef.current = null;
+      cancelNotification();
+      fadeOutAnimation.setValue(1);
     }
   }, [route.params]);
 
@@ -72,14 +94,17 @@ const Timer = ({ route }) => {
         nextAppState === "active"
       ) {
         console.log("App has come to the foreground!");
-        updateTimer();
+        const now = Date.now();
+        const timePassed = (now - lastUpdatedTime.current) / 1000;
+        updateTimer(timePassed);
       }
       appState.current = nextAppState;
+      lastUpdatedTime.current = Date.now();
     });
 
     return () => {
       subscription.remove();
-      if (timerRef.current) clearTimeout(timerRef.current);
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, []);
 
@@ -88,25 +113,73 @@ const Timer = ({ route }) => {
       if (!endTimeRef.current) {
         endTimeRef.current = Date.now() + timeLeft * 1000;
       }
-      updateTimer();
-    } else if (timeLeft === 0 && soundOn) {
-      playCompletionSound();
+      startTimer();
+      scheduleNotification();
+    } else if (timeLeft === 0) {
+      if (soundOn) {
+        playCompletionSound();
+      }
+      startFadeOutAnimation();
     }
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, [timeLeft, isPaused]);
 
-  const updateTimer = () => {
-    if (timerRef.current) clearTimeout(timerRef.current);
+  const setupNotifications = async () => {
+    const { status } = await Notifications.requestPermissionsAsync();
+    if (status !== 'granted') {
+      alert('You need to grant notification permissions to receive timer alerts.');
+    }
+  };
+
+  const scheduleNotification = async () => {
+    await cancelNotification();
+    notificationId.current = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Timer Alert",
+        body: getTitle(),
+        sound: true,
+      },
+      trigger: {
+        seconds: timeLeft,
+      },
+    });
+  };
+
+  const cancelNotification = async () => {
+    if (notificationId.current) {
+      await Notifications.cancelScheduledNotificationAsync(notificationId.current);
+    }
+  };
+
+  const startTimer = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
     
+    intervalRef.current = setInterval(() => {
+      updateTimer();
+    }, 1000);
+  };
+
+  const updateTimer = (additionalTime = 0) => {
     if (!isPaused && endTimeRef.current) {
-      const newTimeLeft = Math.max(0, Math.round((endTimeRef.current - Date.now()) / 1000));
+      const now = Date.now();
+      const newTimeLeft = Math.max(0, Math.round((endTimeRef.current - now) / 1000) - additionalTime);
       setTimeLeft(newTimeLeft);
       
-      const progress = 1 - newTimeLeft / (route.params.time || 180);
+      const totalTime = route.params.time || 180;
+      const elapsedTime = totalTime - newTimeLeft;
+      const progress = elapsedTime / totalTime;
       animateSpokes(progress);
 
-      if (newTimeLeft > 0) {
-        timerRef.current = setTimeout(updateTimer, 1000);
+      if (newTimeLeft === 0) {
+        cancelNotification();
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        startFadeOutAnimation();
       }
+
+      lastUpdatedTime.current = now;
     }
   };
 
@@ -122,6 +195,15 @@ const Timer = ({ route }) => {
       });
     });
     Animated.parallel(animations).start();
+  };
+
+  const startFadeOutAnimation = () => {
+    Animated.timing(fadeOutAnimation, {
+      toValue: 0,
+      duration: 2000,
+      useNativeDriver: false,
+      easing: Easing.linear,
+    }).start();
   };
 
   const playCompletionSound = async () => {
@@ -214,7 +296,7 @@ const Timer = ({ route }) => {
                   <AnimatedPath
                     key={index}
                     d={path}
-                    stroke={interpolateColor(spokeAnimations[index])}
+                    stroke={interpolateColor(Animated.multiply(spokeAnimations[index], fadeOutAnimation))}
                     strokeWidth={strokeWidth}
                     fill="none"
                   />
@@ -239,50 +321,58 @@ const Timer = ({ route }) => {
               </View>
             </View>
             <View style={styles.buttonContainer}>
-        {timeLeft !== 0 ? (
-          <>
-            <TouchableOpacity
-              style={styles.cancelTimerButton}
-              onPress={() => {
-                setTimeLeft(route.params.time);
-                setIsPaused(true);
-                progress.setValue(0);
-                endTimeRef.current = null;
-              }}
-            >
-              <Text style={[styles.buttonText, { color: "black" }]}>
-                Cancel
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.pauseTimerButton}
-              onPress={() => {
-                setIsPaused(!isPaused);
-                if (isPaused) {
-                  endTimeRef.current = Date.now() + timeLeft * 1000;
-                  updateTimer();
-                }
-              }}
-            >
-              <Text style={[styles.buttonText, { color: "white" }]}>
-                {isPaused ? "Resume Timer" : "Pause Timer"}
-              </Text>
-            </TouchableOpacity>
-          </>
-        ) : (
-          <TouchableOpacity
-            style={styles.pauseTimerButton}
-            onPress={() => {
-              stopSound();
-              navigation.navigate("Success", { title: getTitle() });
-            }}
-          >
-            <Text style={[styles.buttonText, { color: "white" }]}>
-              Stop Timer
-            </Text>
-          </TouchableOpacity>
-        )}
-      </View>
+              {timeLeft !== 0 ? (
+                <>
+                  <TouchableOpacity
+                    style={styles.cancelTimerButton}
+                    onPress={() => {
+                      setTimeLeft(route.params.time);
+                      setIsPaused(true);
+                      progress.setValue(0);
+                      endTimeRef.current = null;
+                      cancelNotification();
+                      animateSpokes(0);
+                      fadeOutAnimation.setValue(1);
+                      if (intervalRef.current) clearInterval(intervalRef.current);
+                    }}
+                  >
+                    <Text style={[styles.buttonText, { color: "black" }]}>
+                      Cancel
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.pauseTimerButton}
+                    onPress={() => {
+                      setIsPaused(!isPaused);
+                      if (isPaused) {
+                        endTimeRef.current = Date.now() + timeLeft * 1000;
+                        startTimer();
+                        scheduleNotification();
+                      } else {
+                        cancelNotification();
+                        if (intervalRef.current) clearInterval(intervalRef.current);
+                      }
+                    }}
+                  >
+                    <Text style={[styles.buttonText, { color: "white" }]}>
+                      {isPaused ? "Resume Timer" : "Pause Timer"}
+                    </Text>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <TouchableOpacity
+                  style={styles.pauseTimerButton}
+                  onPress={() => {
+                    stopSound();
+                    navigation.navigate("Success", { title: getTitle() });
+                  }}
+                >
+                  <Text style={[styles.buttonText, { color: "white" }]}>
+                    Stop Timer
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
         </View>
       </SafeAreaView>
