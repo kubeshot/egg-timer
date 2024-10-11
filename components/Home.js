@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: "5%",
     alignItems: "center",
-    paddingTop: 50,
+    paddingTop: 25,
   },
 
   eggStyleContainer: {
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 100,
     backgroundColor: "#FFCD32",
-    marginBottom: 100,
+    marginBottom: 130,
     alignItems: "center",
   },
 });
