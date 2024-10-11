@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-// import { Animated, Easing } from "react-native";
 import {
   View,
   Text,
@@ -11,16 +10,19 @@ import {
   Dimensions,
   ImageBackground,
   SafeAreaView,
+  AppState,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Svg, { Path } from "react-native-svg";
 import BottomBar from "./BottomBar";
 import { Audio } from "expo-av";
+
 const { width, height } = Dimensions.get("window");
-// const AnimatedPath = Animated.createAnimatedComponent(Path);
+
+const AnimatedPath = Animated.createAnimatedComponent(Path);
+
 const createDashedCirclePath = (cx, cy, r, dashCount) => {
   return [...Array(dashCount)].map((_, i) => {
-    // Adjust the angle calculation to start from the top (270 degrees)
     const angle = (i / dashCount) * Math.PI * 2 + Math.PI * 1.5;
     const startX = cx + Math.cos(angle) * r;
     const startY = cy + Math.sin(angle) * r;
@@ -30,12 +32,12 @@ const createDashedCirclePath = (cx, cy, r, dashCount) => {
     return `M${startX},${startY} A${r},${r} 0 0,1 ${endX},${endY}`;
   });
 };
-const AnimatedPath = Animated.createAnimatedComponent(Path);
+
 const Timer = ({ route }) => {
   const navigation = useNavigation();
   const [heading, setHeading] = useState(route.params?.heading || "");
   const [subHeading, setSubHeading] = useState(route.params?.subHeading || "");
-  const [time, setTime] = useState(route.params?.time || 180);
+  const [timeLeft, setTimeLeft] = useState(route.params?.time || 180);
   const [isPaused, setIsPaused] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
   const soundRef = useRef(null);
@@ -43,69 +45,85 @@ const Timer = ({ route }) => {
   const spokeAnimations = useRef(
     [...Array(spokeCount)].map(() => new Animated.Value(0))
   ).current;
-  const interpolateColor = (animation) => {
-    return animation.interpolate({
-      inputRange: [0, 1],
-      outputRange: ["rgb(0, 0, 0)", "rgb(224, 224, 224)"], // From black to light grey
-    });
-  };
   const progress = useRef(new Animated.Value(0)).current;
   const circleSize = Math.min(width, height) * 0.8;
   const strokeWidth = 30;
   const radius = (circleSize - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
+
+  const appState = useRef(AppState.currentState);
+  const endTimeRef = useRef(null);
+  const timerRef = useRef(null);
+
   useEffect(() => {
     if (route.params) {
       setHeading(route.params.heading || "");
       setSubHeading(route.params.subHeading || "");
-      setTime(route.params.time || 180);
+      setTimeLeft(route.params.time || 180);
       progress.setValue(0);
+      endTimeRef.current = null;
     }
   }, [route.params]);
+
   useEffect(() => {
-    const timer = setInterval(() => {
-      if (!isPaused && time > 0) {
-        setTime((prevTime) => prevTime - 1);
+    const subscription = AppState.addEventListener("change", nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        console.log("App has come to the foreground!");
+        updateTimer();
       }
-    }, 1000);
-    const animateSpokes = (progress) => {
-      const fadedSpokes = Math.floor(progress * spokeCount);
-      const animations = spokeAnimations.map((anim, index) => {
-        const adjustedIndex = (Math.floor(spokeCount) - index) % spokeCount;
-        return Animated.timing(anim, {
-          toValue: adjustedIndex < fadedSpokes ? 1 : 0,
-          duration: 500,
-          useNativeDriver: false,
-          easing: Easing.linear,
-        });
-      });
-      Animated.parallel(animations).start();
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
-    animateSpokes(1 - time / (route.params.time || 180));
-    return () => clearInterval(timer);
-  }, [time, isPaused]);
-  // useEffect(() => {
-  //   const initialTime = route.params.time || 180;
-  //   const progressValue = 1 - time / initialTime;
-  //   Animated.timing(progress, {
-  //     toValue: progressValue,
-  //     duration: 1000,
-  //     useNativeDriver: true,
-  //     easing: Easing.linear,
-  //   }).start();
-  //   animateSpokes(progressValue);
-  // }, [time]);
+  }, []);
+
   useEffect(() => {
-    const timer = setInterval(() => {
-      if (!isPaused && time > 0) {
-        setTime((prevTime) => prevTime - 1);
+    if (!isPaused && timeLeft > 0) {
+      if (!endTimeRef.current) {
+        endTimeRef.current = Date.now() + timeLeft * 1000;
       }
-    }, 1000);
-    if (time === 0 && soundOn) {
+      updateTimer();
+    } else if (timeLeft === 0 && soundOn) {
       playCompletionSound();
     }
-    return () => clearInterval(timer);
-  }, [time, isPaused]);
+  }, [timeLeft, isPaused]);
+
+  const updateTimer = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    
+    if (!isPaused && endTimeRef.current) {
+      const newTimeLeft = Math.max(0, Math.round((endTimeRef.current - Date.now()) / 1000));
+      setTimeLeft(newTimeLeft);
+      
+      const progress = 1 - newTimeLeft / (route.params.time || 180);
+      animateSpokes(progress);
+
+      if (newTimeLeft > 0) {
+        timerRef.current = setTimeout(updateTimer, 1000);
+      }
+    }
+  };
+
+  const animateSpokes = (progress) => {
+    const fadedSpokes = Math.floor(progress * spokeCount);
+    const animations = spokeAnimations.map((anim, index) => {
+      const adjustedIndex = (Math.floor(spokeCount) - index) % spokeCount;
+      return Animated.timing(anim, {
+        toValue: adjustedIndex < fadedSpokes ? 1 : 0,
+        duration: 500,
+        useNativeDriver: false,
+        easing: Easing.linear,
+      });
+    });
+    Animated.parallel(animations).start();
+  };
+
   const playCompletionSound = async () => {
     try {
       const { sound } = await Audio.Sound.createAsync(
@@ -117,6 +135,7 @@ const Timer = ({ route }) => {
       console.log("Error playing sound", error);
     }
   };
+
   const stopSound = async () => {
     if (soundRef.current) {
       await soundRef.current.stopAsync();
@@ -124,15 +143,13 @@ const Timer = ({ route }) => {
       soundRef.current = null;
     }
   };
-  const strokeDashoffset = progress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, circumference],
-  });
+
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
   };
+
   const getTitle = () => {
     if (heading === "Hard Boiled Eggs") {
       return "Your hard boiled eggs are done!";
@@ -144,13 +161,20 @@ const Timer = ({ route }) => {
       return "Your custom timer is done!";
     }
   };
+
+  const interpolateColor = (animation) => {
+    return animation.interpolate({
+      inputRange: [0, 1],
+      outputRange: ["rgb(0, 0, 0)", "rgb(224, 224, 224)"],
+    });
+  };
+
   return (
     <View style={styles.overlayContainer}>
       <ImageBackground
         source={require("../assets/images/hardboiledbackground-1.png")}
         style={styles.imageBackground}
       >
-        {/* Transparent overlay */}
         <View style={styles.opacityLayer} />
       </ImageBackground>
       <SafeAreaView style={styles.safeArea}>
@@ -198,7 +222,7 @@ const Timer = ({ route }) => {
               </Svg>
               <View style={styles.timerInnerCircle}>
                 <Text style={styles.timerText}>
-                  {time !== 0 ? formatTime(time) : "Done!"}
+                {timeLeft !== 0 ? formatTime(timeLeft) : "Done!"}
                 </Text>
                 <TouchableOpacity
                   onPress={() => setSoundOn(!soundOn)}
@@ -215,43 +239,50 @@ const Timer = ({ route }) => {
               </View>
             </View>
             <View style={styles.buttonContainer}>
-              {time !== 0 ? (
-                <>
-                  <TouchableOpacity
-                    style={styles.cancelTimerButton}
-                    onPress={() => {
-                      setTime(route.params.time);
-                      setIsPaused(true);
-                      progress.setValue(0);
-                    }}
-                  >
-                    <Text style={[styles.buttonText, { color: "black" }]}>
-                      Cancel
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.pauseTimerButton}
-                    onPress={() => setIsPaused(!isPaused)}
-                  >
-                    <Text style={[styles.buttonText, { color: "white" }]}>
-                      {isPaused ? "Resume Timer" : "Pause Timer"}
-                    </Text>
-                  </TouchableOpacity>
-                </>
-              ) : (
-                <TouchableOpacity
-                  style={styles.pauseTimerButton}
-                  onPress={() => {
-                    stopSound();
-                    navigation.navigate("Success", { title: getTitle() });
-                  }}
-                >
-                  <Text style={[styles.buttonText, { color: "white" }]}>
-                    Stop Timer
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </View>
+        {timeLeft !== 0 ? (
+          <>
+            <TouchableOpacity
+              style={styles.cancelTimerButton}
+              onPress={() => {
+                setTimeLeft(route.params.time);
+                setIsPaused(true);
+                progress.setValue(0);
+                endTimeRef.current = null;
+              }}
+            >
+              <Text style={[styles.buttonText, { color: "black" }]}>
+                Cancel
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.pauseTimerButton}
+              onPress={() => {
+                setIsPaused(!isPaused);
+                if (isPaused) {
+                  endTimeRef.current = Date.now() + timeLeft * 1000;
+                  updateTimer();
+                }
+              }}
+            >
+              <Text style={[styles.buttonText, { color: "white" }]}>
+                {isPaused ? "Resume Timer" : "Pause Timer"}
+              </Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <TouchableOpacity
+            style={styles.pauseTimerButton}
+            onPress={() => {
+              stopSound();
+              navigation.navigate("Success", { title: getTitle() });
+            }}
+          >
+            <Text style={[styles.buttonText, { color: "white" }]}>
+              Stop Timer
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
           </View>
         </View>
       </SafeAreaView>
@@ -259,6 +290,7 @@ const Timer = ({ route }) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -276,11 +308,10 @@ const styles = StyleSheet.create({
   },
   opacityLayer: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(255, 255, 255, 0.4)", // Adjust the opacity here
+    backgroundColor: "rgba(255, 255, 255, 0.4)",
   },
   container: {
     flex: 1,
-    // backgroundColor: "#F5F5F5",
   },
   header: {
     flexDirection: "row",
@@ -373,4 +404,5 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
+
 export default Timer;

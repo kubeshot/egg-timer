@@ -15,21 +15,30 @@
       "baseUrl": "/egg-timer"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIBackgroundModes": ["fetch"]
+      }
     },
     "android": {
-  "permissions": ["INTERNET"],
-  "adaptiveIcon": {
-    "foregroundImage": "./assets/images/adaptive-icon.png",
-    "backgroundColor": "#FFFFFF"
-  },
-  "package": "com.ansh_kubeshot.eggtimer"
-},
+      "permissions": ["INTERNET", "RECEIVE_BOOT_COMPLETED", "WAKE_LOCK"],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.ansh_kubeshot.eggtimer"
+    },
     "web": {
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      [
+        "expo-background-fetch",
+        {
+          "startOnBoot": true
+        }
+      ]
     ]
   }
 }

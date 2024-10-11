@@ -4,9 +4,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import NavigationStack from "./navigation/NavigationStack";
 import { StatusBar } from "expo-status-bar";
-import { I18n } from 'i18n-js';
-import * as Localization from 'expo-localization';
-import { translations } from './translations'; // Make sure this file exists
+import { I18n } from "i18n-js";
+import * as Localization from "expo-localization";
+import { translations } from "./translations"; // Make sure this file exists
+
+import { useKeepAwake } from "expo-keep-awake"; // Import KeepAwake
 
 const i18n = new I18n(translations);
 
@@ -21,25 +23,19 @@ export default function App() {
     "Kaleko-Bold": require("./assets/fonts/Kaleko205Round-Bold.ttf"),
   });
 
+  useKeepAwake(); // Keeps the app awake
+
   useEffect(() => {
     const initializeI18n = () => {
-      // Get the device's locale
       const deviceLocale = Localization.locale;
-
-      // Set the locale to the device's locale
       i18n.locale = deviceLocale;
-
-      // Enable fallback if a translation is missing
       i18n.enableFallback = true;
-
       setIsI18nInitialized(true);
     };
-
     initializeI18n();
   }, []);
 
   if (!fontsLoaded || !isI18nInitialized) {
-    // Display a loading indicator while fonts are loading or i18n is being initialized
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color="#0000ff" />
