@@ -98,7 +98,10 @@ const Timer = ({ route }) => {
         console.log("App has come to the foreground!");
         const now = Date.now();
         const timePassed = (now - lastUpdatedTime.current) / 1000;
-        updateTimer(timePassed);
+        // Update the timer based on the time passed
+        timeLeftRef.current = Math.max(0, timeLeftRef.current - Math.floor(timePassed));
+        setTimeLeft(timeLeftRef.current);
+        scheduleNotification(); // Reschedule notification based on updated time
       }
       appState.current = nextAppState;
       lastUpdatedTime.current = Date.now();
@@ -133,19 +136,18 @@ const Timer = ({ route }) => {
   };
 
   const scheduleNotification = async () => {
-    // Only schedule if time left is greater than zero
-    if (timeLeftRef.current > 0) {
-      await cancelNotification(); // Clear any existing notifications
-      notificationId.current = await Notifications.scheduleNotificationAsync({
-        content: {
-          title: "Timer Alert",
-          body: getTitle(),
-          sound: true,
-        },
-        trigger: {
-          seconds: timeLeftRef.current, // Schedule for the remaining time
-        },
-      });
+    // Only schedule if time left is greater than zero and not already scheduled
+    if (timeLeftRef.current > 0 && !notificationId.current) {
+        notificationId.current = await Notifications.scheduleNotificationAsync({
+            content: {
+                title: "Timer Alert",
+                body: getTitle(),
+                sound: true,
+            },
+            trigger: {
+                seconds: timeLeftRef.current, // Schedule for the remaining time
+            },
+        });
     }
   };
 
@@ -167,20 +169,28 @@ const Timer = ({ route }) => {
 
   const updateTimer = () => {
     if (!isPaused && timeLeftRef.current > 0) {
-      timeLeftRef.current -= 1; // Decrement time left by 1 second
-      setTimeLeft(timeLeftRef.current); // Update state for rendering
+        timeLeftRef.current -= 1; 
+        setTimeLeft(timeLeftRef.current); 
 
-      const totalTime = route.params.time || 180; // Default to 180 seconds if not provided
-      const elapsedTime = totalTime - timeLeftRef.current;
-      const progress = elapsedTime / totalTime;
-      animateSpokes(progress);
+        const totalTime = route.params.time || 180; // Default to 180 seconds if not provided
+        const elapsedTime = totalTime - timeLeftRef.current;
+        const progress = elapsedTime / totalTime;
+        animateSpokes(progress);
 
-      if (timeLeftRef.current === 0) {
-        cancelNotification(); // Clear notification when timer ends
-        if (intervalRef.current) clearInterval(intervalRef.current);
-        startFadeOutAnimation();
-        playCompletionSound(); // Ensure this is called when the timer ends
-      }
+        if (timeLeftRef.current === 0) {
+            cancelNotification(); 
+            if (intervalRef.current) clearInterval(intervalRef.current);
+            startFadeOutAnimation();
+            playCompletionSound(); 
+            // Ensure all spokes are faded out
+            animateSpokes(1); // Set all spokes to faded state
+            // Prevent further notifications from being scheduled
+            notificationId.current = null; // Reset notification ID to prevent scheduling
+        }
+    }
+    // Sync notification timer with component timer
+    if (timeLeftRef.current > 0 && !notificationId.current) {
+        scheduleNotification(); // Ensure notification is scheduled after updating the timer
     }
   };
 
@@ -195,6 +205,15 @@ const Timer = ({ route }) => {
         easing: Easing.linear,
       });
     });
+    
+    // If the timer is finished, set all spokes to their final faded state
+    if (timeLeftRef.current === 0) {
+      spokeAnimations.forEach((anim, index) => {
+        const adjustedIndex = (Math.floor(spokeCount) - index) % spokeCount;
+        anim.setValue(adjustedIndex < fadedSpokes ? 1 : 0); // Keep the last state
+      });
+    }
+
     Animated.parallel(animations).start();
   };
 
@@ -297,7 +316,7 @@ const Timer = ({ route }) => {
                   <AnimatedPath
                     key={index}
                     d={path}
-                    stroke={interpolateColor(Animated.multiply(spokeAnimations[index], fadeOutAnimation))}
+                    stroke={timeLeftRef.current === 0 ? interpolateColor(spokeAnimations[index]) : interpolateColor(Animated.multiply(spokeAnimations[index], fadeOutAnimation))}
                     strokeWidth={strokeWidth}
                     fill="none"
                   />
