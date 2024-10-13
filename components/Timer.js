@@ -50,14 +50,14 @@ const Timer = ({ route }) => {
   const [isPaused, setIsPaused] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
   const soundRef = useRef(null);
-  const [spokeCount, setSpokeCount] = useState(200);
+  const [spokeCount, setSpokeCount] = useState(300); // Increase the number of spokes
   const spokeAnimations = useRef(
     [...Array(spokeCount)].map(() => new Animated.Value(0))
   ).current;
   const fadeOutAnimation = useRef(new Animated.Value(1)).current;
   const progress = useRef(new Animated.Value(0)).current;
-  const circleSize = Math.min(width, height) * 0.8;
-  const strokeWidth = 30;
+  const circleSize = Math.min(width, height) * 0.9; // Increase the size of the circle
+  const strokeWidth = 15; // Adjust this value to reduce the width of the spokes
   const radius = (circleSize - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
 
@@ -66,6 +66,8 @@ const Timer = ({ route }) => {
   const intervalRef = useRef(null);
   const notificationId = useRef(null);
   const lastUpdatedTime = useRef(Date.now());
+
+  const timeLeftRef = useRef(route.params?.time || 180); // Use a ref for time left
 
   useEffect(() => {
     setupNotifications();
@@ -109,13 +111,9 @@ const Timer = ({ route }) => {
   }, []);
 
   useEffect(() => {
-    if (!isPaused && timeLeft > 0) {
-      if (!endTimeRef.current) {
-        endTimeRef.current = Date.now() + timeLeft * 1000;
-      }
+    if (!isPaused && timeLeftRef.current > 0) {
       startTimer();
-      scheduleNotification();
-    } else if (timeLeft === 0) {
+    } else if (timeLeftRef.current === 0) {
       if (soundOn) {
         playCompletionSound();
       }
@@ -125,7 +123,7 @@ const Timer = ({ route }) => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [timeLeft, isPaused]);
+  }, [timeLeftRef.current, isPaused]);
 
   const setupNotifications = async () => {
     const { status } = await Notifications.requestPermissionsAsync();
@@ -135,22 +133,26 @@ const Timer = ({ route }) => {
   };
 
   const scheduleNotification = async () => {
-    await cancelNotification();
-    notificationId.current = await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "Timer Alert",
-        body: getTitle(),
-        sound: true,
-      },
-      trigger: {
-        seconds: timeLeft,
-      },
-    });
+    // Only schedule if time left is greater than zero
+    if (timeLeftRef.current > 0) {
+      await cancelNotification(); // Clear any existing notifications
+      notificationId.current = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Timer Alert",
+          body: getTitle(),
+          sound: true,
+        },
+        trigger: {
+          seconds: timeLeftRef.current, // Schedule for the remaining time
+        },
+      });
+    }
   };
 
   const cancelNotification = async () => {
     if (notificationId.current) {
       await Notifications.cancelScheduledNotificationAsync(notificationId.current);
+      notificationId.current = null; // Reset the notification ID
     }
   };
 
@@ -159,27 +161,26 @@ const Timer = ({ route }) => {
     
     intervalRef.current = setInterval(() => {
       updateTimer();
+      scheduleNotification(); // Reschedule notification on each tick
     }, 1000);
   };
 
-  const updateTimer = (additionalTime = 0) => {
-    if (!isPaused && endTimeRef.current) {
-      const now = Date.now();
-      const newTimeLeft = Math.max(0, Math.round((endTimeRef.current - now) / 1000) - additionalTime);
-      setTimeLeft(newTimeLeft);
-      
-      const totalTime = route.params.time || 180;
-      const elapsedTime = totalTime - newTimeLeft;
+  const updateTimer = () => {
+    if (!isPaused && timeLeftRef.current > 0) {
+      timeLeftRef.current -= 1; // Decrement time left by 1 second
+      setTimeLeft(timeLeftRef.current); // Update state for rendering
+
+      const totalTime = route.params.time || 180; // Default to 180 seconds if not provided
+      const elapsedTime = totalTime - timeLeftRef.current;
       const progress = elapsedTime / totalTime;
       animateSpokes(progress);
 
-      if (newTimeLeft === 0) {
-        cancelNotification();
+      if (timeLeftRef.current === 0) {
+        cancelNotification(); // Clear notification when timer ends
         if (intervalRef.current) clearInterval(intervalRef.current);
         startFadeOutAnimation();
+        playCompletionSound(); // Ensure this is called when the timer ends
       }
-
-      lastUpdatedTime.current = now;
     }
   };
 
@@ -431,8 +432,9 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 32,
-    fontWeight: "bold",
+    fontFamily: "Kaleko-Bold",
     textAlign: "center",
+    marginTop: 48,
   },
   instructionsButton: {
     backgroundColor: "white",
@@ -454,13 +456,14 @@ const styles = StyleSheet.create({
     width: "90%",
     height: "90%",
     borderRadius: 1000,
-    backgroundColor: "white",
+    backgroundColor: "transparent", // Change this to transparent
     justifyContent: "center",
     alignItems: "center",
   },
   timerText: {
-    fontSize: 48,
-    fontWeight: "bold",
+    fontSize: 80,
+    fontFamily: "Kaleko-Bold",
+    // color: "#DADADA",
   },
   soundButton: {
     marginTop: 16,
