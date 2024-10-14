@@ -437,7 +437,7 @@ const Timer = ({ route }) => {
                   <TouchableOpacity
     style={styles.cancelTimerButton}
     onPress={() => {
-        setIsCanceled(true); // Set the canceled flag to true
+       // Set the canceled flag to true
         setTimeLeft(route.params.time);
         timeLeftRef.current = route.params.time;
         setIsPaused(true);
