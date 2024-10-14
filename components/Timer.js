@@ -131,23 +131,21 @@ const Timer = ({ route }) => {
   }, [timeLeftRef.current, isPaused]);
   
   const scheduleNotification = async (seconds) => {
-    if (seconds > 0 && !isPaused && !notificationScheduled.current) {
-      await cancelNotification();
-      notificationId.current = await Notifications.scheduleNotificationAsync({
-        content: {
-          title: "Timer Alert",
-          body: getTitle(),
-          sound: true,
-        },
-        trigger: {
-          seconds: seconds,
-        },
-      });
-      notificationScheduled.current = true;
-      console.log("Notification scheduled for", seconds, "seconds from now");
+    // Only schedule notification if seconds is 0 (timer completed)
+    if (seconds === 0 && !isPaused) {
+        await cancelNotification();
+        notificationId.current = await Notifications.scheduleNotificationAsync({
+            content: {
+                title: "Timer Completed",
+                body: getTitle(),
+                sound: true,
+            },
+            trigger: null, // Trigger immediately for completion notification
+        });
+        notificationScheduled.current = true;
+        console.log("Notification scheduled for timer completion");
     }
-  };
-
+};
   const cancelNotification = async () => {
     if (notificationId.current) {
       await Notifications.cancelScheduledNotificationAsync(notificationId.current);
@@ -181,6 +179,7 @@ const Timer = ({ route }) => {
             startFadeOutAnimation();
             playCompletionSound(); 
             animateSpokes(1);
+            scheduleNotification(0);
         }
     }
   };
