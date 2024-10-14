@@ -50,14 +50,14 @@ const Timer = ({ route }) => {
   const [isPaused, setIsPaused] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
   const soundRef = useRef(null);
-  const [spokeCount, setSpokeCount] = useState(300); // Increase the number of spokes
+  const [spokeCount, setSpokeCount] = useState(300);
   const spokeAnimations = useRef(
     [...Array(spokeCount)].map(() => new Animated.Value(0))
   ).current;
   const fadeOutAnimation = useRef(new Animated.Value(1)).current;
   const progress = useRef(new Animated.Value(0)).current;
-  const circleSize = Math.min(width, height) * 0.9; // Increase the size of the circle
-  const strokeWidth = 15; // Adjust this value to reduce the width of the spokes
+  const circleSize = Math.min(width, height) * 0.9;
+  const strokeWidth = 15;
   const radius = (circleSize - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
 
@@ -67,13 +67,14 @@ const Timer = ({ route }) => {
   const notificationId = useRef(null);
   const lastUpdatedTime = useRef(Date.now());
 
-  const timeLeftRef = useRef(route.params?.time || 180); // Use a ref for time left
+  const timeLeftRef = useRef(route.params?.time || 180);
 
   useEffect(() => {
     setupNotifications();
     return () => {
       cancelNotification();
       if (intervalRef.current) clearInterval(intervalRef.current);
+      stopSound();
     };
   }, []);
 
@@ -82,6 +83,7 @@ const Timer = ({ route }) => {
       setHeading(route.params.heading || "");
       setSubHeading(route.params.subHeading || "");
       setTimeLeft(route.params.time || 180);
+      timeLeftRef.current = route.params.time || 180;
       progress.setValue(0);
       endTimeRef.current = null;
       cancelNotification();
@@ -98,10 +100,13 @@ const Timer = ({ route }) => {
         console.log("App has come to the foreground!");
         const now = Date.now();
         const timePassed = (now - lastUpdatedTime.current) / 1000;
-        // Update the timer based on the time passed
         timeLeftRef.current = Math.max(0, timeLeftRef.current - Math.floor(timePassed));
         setTimeLeft(timeLeftRef.current);
-        scheduleNotification(); // Reschedule notification based on updated time
+        if (timeLeftRef.current > 0 && !isPaused) {
+          scheduleNotification(timeLeftRef.current);
+        } else {
+          cancelNotification();
+        }
       }
       appState.current = nextAppState;
       lastUpdatedTime.current = Date.now();
@@ -111,15 +116,16 @@ const Timer = ({ route }) => {
       subscription.remove();
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, []);
+  }, [isPaused]);
 
   useEffect(() => {
     if (!isPaused && timeLeftRef.current > 0) {
       startTimer();
+      scheduleNotification(timeLeftRef.current);
+    } else if (isPaused) {
+      cancelNotification();
     } else if (timeLeftRef.current === 0) {
-      if (soundOn) {
-        playCompletionSound();
-      }
+      playCompletionSound();
       startFadeOutAnimation();
     }
 
@@ -135,26 +141,28 @@ const Timer = ({ route }) => {
     }
   };
 
-  const scheduleNotification = async () => {
-    // Only schedule if time left is greater than zero and not already scheduled
-    if (timeLeftRef.current > 0 && !notificationId.current) {
-        notificationId.current = await Notifications.scheduleNotificationAsync({
-            content: {
-                title: "Timer Alert",
-                body: getTitle(),
-                sound: true,
-            },
-            trigger: {
-                seconds: timeLeftRef.current, // Schedule for the remaining time
-            },
-        });
+  const scheduleNotification = async (seconds) => {
+    if (seconds > 0 && !isPaused) {
+      await cancelNotification(); // Ensure any existing notification is cancelled
+      notificationId.current = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Timer Alert",
+          body: getTitle(),
+          sound: true,
+        },
+        trigger: {
+          seconds: seconds,
+        },
+      });
+      console.log("Notification scheduled for", seconds, "seconds from now");
     }
   };
 
   const cancelNotification = async () => {
     if (notificationId.current) {
       await Notifications.cancelScheduledNotificationAsync(notificationId.current);
-      notificationId.current = null; // Reset the notification ID
+      notificationId.current = null;
+      console.log("Notification cancelled");
     }
   };
 
@@ -163,7 +171,6 @@ const Timer = ({ route }) => {
     
     intervalRef.current = setInterval(() => {
       updateTimer();
-      scheduleNotification(); // Reschedule notification on each tick
     }, 1000);
   };
 
@@ -172,7 +179,7 @@ const Timer = ({ route }) => {
         timeLeftRef.current -= 1; 
         setTimeLeft(timeLeftRef.current); 
 
-        const totalTime = route.params.time || 180; // Default to 180 seconds if not provided
+        const totalTime = route.params.time || 180;
         const elapsedTime = totalTime - timeLeftRef.current;
         const progress = elapsedTime / totalTime;
         animateSpokes(progress);
@@ -182,15 +189,8 @@ const Timer = ({ route }) => {
             if (intervalRef.current) clearInterval(intervalRef.current);
             startFadeOutAnimation();
             playCompletionSound(); 
-            // Ensure all spokes are faded out
-            animateSpokes(1); // Set all spokes to faded state
-            // Prevent further notifications from being scheduled
-            notificationId.current = null; // Reset notification ID to prevent scheduling
+            animateSpokes(1);
         }
-    }
-    // Sync notification timer with component timer
-    if (timeLeftRef.current > 0 && !notificationId.current) {
-        scheduleNotification(); // Ensure notification is scheduled after updating the timer
     }
   };
 
@@ -206,11 +206,10 @@ const Timer = ({ route }) => {
       });
     });
     
-    // If the timer is finished, set all spokes to their final faded state
     if (timeLeftRef.current === 0) {
       spokeAnimations.forEach((anim, index) => {
         const adjustedIndex = (Math.floor(spokeCount) - index) % spokeCount;
-        anim.setValue(adjustedIndex < fadedSpokes ? 1 : 0); // Keep the last state
+        anim.setValue(adjustedIndex < fadedSpokes ? 1 : 0);
       });
     }
 
@@ -227,21 +226,27 @@ const Timer = ({ route }) => {
   };
 
   const playCompletionSound = async () => {
-    try {
-      const { sound } = await Audio.Sound.createAsync(
-        require("../assets/clucking.wav")
-      );
-      soundRef.current = sound;
-      await sound.playAsync();
-    } catch (error) {
-      console.log("Error playing sound", error);
+    if (soundOn) {
+      try {
+        const { sound } = await Audio.Sound.createAsync(
+          require("../assets/clucking.wav")
+        );
+        soundRef.current = sound;
+        await sound.playAsync();
+      } catch (error) {
+        console.log("Error playing sound", error);
+      }
     }
   };
 
   const stopSound = async () => {
     if (soundRef.current) {
-      await soundRef.current.stopAsync();
-      await soundRef.current.unloadAsync();
+      try {
+        await soundRef.current.stopAsync();
+        await soundRef.current.unloadAsync();
+      } catch (error) {
+        console.log("Error stopping sound", error);
+      }
       soundRef.current = null;
     }
   };
@@ -347,6 +352,7 @@ const Timer = ({ route }) => {
                     style={styles.cancelTimerButton}
                     onPress={() => {
                       setTimeLeft(route.params.time);
+                      timeLeftRef.current = route.params.time;
                       setIsPaused(true);
                       progress.setValue(0);
                       endTimeRef.current = null;
@@ -367,7 +373,7 @@ const Timer = ({ route }) => {
                       if (isPaused) {
                         endTimeRef.current = Date.now() + timeLeft * 1000;
                         startTimer();
-                        scheduleNotification();
+                        scheduleNotification(timeLeft);
                       } else {
                         cancelNotification();
                         if (intervalRef.current) clearInterval(intervalRef.current);
