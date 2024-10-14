@@ -94,15 +94,6 @@ const Timer = ({ route }) => {
   }, []);
 
   useEffect(() => {
-    setupNotifications();
-    return () => {
-      cancelNotification();
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      stopSound();
-    };
-  }, []);
-
-  useEffect(() => {
     if (route.params) {
       setHeading(route.params.heading || "");
       setSubHeading(route.params.subHeading || "");
