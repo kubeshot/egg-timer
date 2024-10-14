@@ -94,6 +94,15 @@ const Timer = ({ route }) => {
   }, []);
 
   useEffect(() => {
+    setupNotifications();
+    return () => {
+      cancelNotification();
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      stopSound();
+    };
+  }, []);
+
+  useEffect(() => {
     if (route.params) {
       setHeading(route.params.heading || "");
       setSubHeading(route.params.subHeading || "");
@@ -106,8 +115,39 @@ const Timer = ({ route }) => {
       fadeOutAnimation.setValue(1);
     }
   }, [route.params]);
-  
-  
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        console.log("App has come to the foreground!");
+        const now = Date.now();
+        const timePassed = (now - lastUpdatedTime.current) / 1000;
+        timeLeftRef.current = Math.max(0, timeLeftRef.current - Math.floor(timePassed));
+        setTimeLeft(timeLeftRef.current);
+
+        const totalTime = route.params.time || 180;
+        const elapsedTime = totalTime - timeLeftRef.current;
+        const progressValue = elapsedTime / totalTime;
+        animateSpokes(progressValue);
+
+        if (timeLeftRef.current === 0) {
+          cancelNotification();
+          notificationScheduled.current = false;
+        }
+      }
+      appState.current = nextAppState;
+      lastUpdatedTime.current = Date.now();
+    });
+
+    return () => {
+      subscription.remove();
+      cancelNotification();
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [isPaused, route.params.time]);
 
   useEffect(() => {
     if (!isPaused && timeLeftRef.current > 0) {
@@ -116,36 +156,37 @@ const Timer = ({ route }) => {
         scheduleNotification(timeLeftRef.current);
       }
     } else if (isPaused) {
-      console.log("Timer paused");
+      // Do not cancel notification when paused
     } else if (timeLeftRef.current === 0) {
-      console.log("Timer completed, playing completion sound...");
-      playCompletionSound(); // Play the completion sound when timer reaches 0
+      playCompletionSound();
       startFadeOutAnimation();
       cancelNotification();
       notificationScheduled.current = false;
     }
-  
+
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [timeLeftRef.current, isPaused]);
-  
+
   const scheduleNotification = async (seconds) => {
-    // Only schedule notification if seconds is 0 (timer completed)
-    if (seconds === 0 && !isPaused) {
-        await cancelNotification();
-        notificationId.current = await Notifications.scheduleNotificationAsync({
-            content: {
-                title: "Timer Completed",
-                body: getTitle(),
-                sound: true,
-            },
-            trigger: null, // Trigger immediately for completion notification
-        });
-        notificationScheduled.current = true;
-        console.log("Notification scheduled for timer completion");
+    if (seconds > 0 && !isPaused && !notificationScheduled.current) {
+      await cancelNotification();
+      notificationId.current = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Timer Alert",
+          body: getTitle(),
+          sound: true,
+        },
+        trigger: {
+          seconds: seconds,
+        },
+      });
+      notificationScheduled.current = true;
+      console.log("Notification scheduled for", seconds, "seconds from now");
     }
-};
+  };
+
   const cancelNotification = async () => {
     if (notificationId.current) {
       await Notifications.cancelScheduledNotificationAsync(notificationId.current);
@@ -179,10 +220,10 @@ const Timer = ({ route }) => {
             startFadeOutAnimation();
             playCompletionSound(); 
             animateSpokes(1);
-            scheduleNotification(0);
         }
     }
   };
+  
 
   const animateSpokes = (progress) => {
     const fadedSpokes = Math.floor(progress * spokeCount);
@@ -391,23 +432,25 @@ const Timer = ({ route }) => {
               {timeLeft !== 0 ? (
                 <>
                   <TouchableOpacity
-                    style={styles.cancelTimerButton}
-                    onPress={() => {
-                      setTimeLeft(route.params.time);
-                      timeLeftRef.current = route.params.time;
-                      setIsPaused(true);
-                      progress.setValue(0);
-                      endTimeRef.current = null;
-                      cancelNotification();
-                      animateSpokes(0);
-                      fadeOutAnimation.setValue(1);
-                      if (intervalRef.current) clearInterval(intervalRef.current);
-                    }}
-                  >
-                    <Text style={[styles.buttonText, { color: "black" }]}>
-                      Cancel
-                    </Text>
-                  </TouchableOpacity>
+    style={styles.cancelTimerButton}
+    onPress={() => {
+        setIsCanceled(true); // Set the canceled flag to true
+        setTimeLeft(route.params.time);
+        timeLeftRef.current = route.params.time;
+        setIsPaused(true);
+        progress.setValue(0);
+        endTimeRef.current = null;
+        cancelNotification();
+        animateSpokes(0);
+        fadeOutAnimation.setValue(1);
+        if (intervalRef.current) clearInterval(intervalRef.current);
+    }}
+>
+    <Text style={[styles.buttonText, { color: "black" }]}>
+        Cancel
+    </Text>
+</TouchableOpacity>
+
                   <TouchableOpacity
                     style={styles.pauseTimerButton}
                     onPress={() => {
