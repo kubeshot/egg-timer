@@ -106,34 +106,7 @@ const Timer = ({ route }) => {
       fadeOutAnimation.setValue(1);
     }
   }, [route.params]);
-
-  useEffect(() => {
-    const handleTimerComplete = async () => {
-      if (timeLeftRef.current === 0) {
-        console.log("Timer completed, playing completion sound...");
-        await playCompletionSound(); // Now this works correctly
-        startFadeOutAnimation();
-        cancelNotification();
-        notificationScheduled.current = false;
-      }
-    };
   
-    if (!isPaused && timeLeftRef.current > 0) {
-      startTimer();
-      if (!notificationScheduled.current) {
-        scheduleNotification(timeLeftRef.current);
-      }
-    } else if (isPaused) {
-      console.log("Timer paused");
-    }
-  
-    handleTimerComplete(); // Call the async function
-  
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      stopSound(); // Stop sound on cleanup
-    };
-  }, [timeLeftRef.current, isPaused]);
   
 
   useEffect(() => {
