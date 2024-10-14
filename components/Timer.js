@@ -117,37 +117,33 @@ const Timer = ({ route }) => {
   }, [route.params]);
 
   useEffect(() => {
-    const subscription = AppState.addEventListener("change", nextAppState => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === "active"
-      ) {
-        console.log("App has come to the foreground!");
-        const now = Date.now();
-        const timePassed = (now - lastUpdatedTime.current) / 1000;
-        timeLeftRef.current = Math.max(0, timeLeftRef.current - Math.floor(timePassed));
-        setTimeLeft(timeLeftRef.current);
-
-        const totalTime = route.params.time || 180;
-        const elapsedTime = totalTime - timeLeftRef.current;
-        const progressValue = elapsedTime / totalTime;
-        animateSpokes(progressValue);
-
-        if (timeLeftRef.current === 0) {
-          cancelNotification();
-          notificationScheduled.current = false;
-        }
+    const handleTimerComplete = async () => {
+      if (timeLeftRef.current === 0) {
+        console.log("Timer completed, playing completion sound...");
+        await playCompletionSound(); // Now this works correctly
+        startFadeOutAnimation();
+        cancelNotification();
+        notificationScheduled.current = false;
       }
-      appState.current = nextAppState;
-      lastUpdatedTime.current = Date.now();
-    });
-
-    return () => {
-      subscription.remove();
-      cancelNotification();
-      if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [isPaused, route.params.time]);
+  
+    if (!isPaused && timeLeftRef.current > 0) {
+      startTimer();
+      if (!notificationScheduled.current) {
+        scheduleNotification(timeLeftRef.current);
+      }
+    } else if (isPaused) {
+      console.log("Timer paused");
+    }
+  
+    handleTimerComplete(); // Call the async function
+  
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      stopSound(); // Stop sound on cleanup
+    };
+  }, [timeLeftRef.current, isPaused]);
+  
 
   useEffect(() => {
     if (!isPaused && timeLeftRef.current > 0) {
@@ -156,19 +152,20 @@ const Timer = ({ route }) => {
         scheduleNotification(timeLeftRef.current);
       }
     } else if (isPaused) {
-      // Do not cancel notification when paused
+      console.log("Timer paused");
     } else if (timeLeftRef.current === 0) {
-      playCompletionSound();
+      console.log("Timer completed, playing completion sound...");
+      playCompletionSound(); // Play the completion sound when timer reaches 0
       startFadeOutAnimation();
       cancelNotification();
       notificationScheduled.current = false;
     }
-
+  
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [timeLeftRef.current, isPaused]);
-
+  
   const scheduleNotification = async (seconds) => {
     if (seconds > 0 && !isPaused && !notificationScheduled.current) {
       await cancelNotification();
@@ -257,28 +254,56 @@ const Timer = ({ route }) => {
   const playCompletionSound = async () => {
     if (soundOn && timeLeftRef.current === 0) {
       try {
-        const { sound } = await Audio.Sound.createAsync(
-          require("../assets/clucking.wav")
-        );
-        soundRef.current = sound;
-        await sound.playAsync();
+        if (!soundRef.current) {
+          console.log("Loading sound...");
+          const { sound } = await Audio.Sound.createAsync(
+            require("../assets/clucking.wav")
+          );
+          soundRef.current = sound;
+        }
+  
+        // Check if the sound is already playing
+        const status = await soundRef.current.getStatusAsync();
+        if (!status.isPlaying) {
+          console.log("Playing sound...");
+          await soundRef.current.playAsync();
+        } else {
+          console.log("Sound is already playing, not starting again");
+        }
       } catch (error) {
-        console.log("Error playing sound", error);
+        console.log("Error playing sound:", error);
       }
+    } else {
+      console.log("Sound is off or timer hasn't completed");
+      await stopSound(); // Ensure sound is stopped if not playing
     }
   };
+  
+  
+  
 
   const stopSound = async () => {
     if (soundRef.current) {
       try {
-        await soundRef.current.stopAsync();
-        await soundRef.current.unloadAsync();
+        console.log("Pausing sound...");
+        await soundRef.current.pauseAsync(); // Pause sound first
+        console.log("Stopping sound...");
+        await soundRef.current.stopAsync(); // Stop the sound
+        console.log("Unloading sound...");
+        await soundRef.current.unloadAsync(); // Unload the sound
+        console.log("Sound stopped and unloaded successfully");
       } catch (error) {
-        console.log("Error stopping sound", error);
+        console.error("Error stopping sound:", error);
+      } finally {
+        soundRef.current = null; // Reset sound reference
       }
-      soundRef.current = null;
+    } else {
+      console.log("No sound to stop (soundRef is null)");
     }
   };
+  
+  
+  
 
   const stopTimer = async () => {
     try {
@@ -375,17 +400,28 @@ const Timer = ({ route }) => {
                 {timeLeft !== 0 ? formatTime(timeLeft) : "Done!"}
                 </Text>
                 <TouchableOpacity
-                  onPress={() => setSoundOn(!soundOn)}
-                  style={styles.soundButton}
-                >
-                  <Image
-                    source={
-                      soundOn
-                        ? require("../assets/images/group-175.png")
-                        : require("../assets/images/group-1752.png")
-                    }
-                  />
-                </TouchableOpacity>
+  onPress={async () => {
+    if (soundOn) {
+      await stopSound(); // Stop sound if it's currently on
+    } else {
+      if (soundRef.current) {
+        await soundRef.current.playAsync(); // Play sound if it's off
+      }
+    }
+    setSoundOn(!soundOn); // Toggle the sound state
+  }}
+  style={styles.soundButton}
+>
+  <Image
+    source={
+      soundOn
+        ? require("../assets/images/group-175.png")  // Sound is on
+        : require("../assets/images/group-1752.png")  // Sound is off
+    }
+  />
+</TouchableOpacity>
+
+
               </View>
             </View>
             <View style={styles.buttonContainer}>
