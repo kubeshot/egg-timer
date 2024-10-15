@@ -28,6 +28,27 @@ export const translations = {
       "Remove from heat and let stand for ",
       "Run eggs under cold water or place in an ice bath to stop cooking."
     ],
+    "Soft Boiled Steps": [
+    "In a saucepan, bring 3 inches of water to a gentle simmer.",
+    "Add 2 tsp of white vinegar to the water. ",
+    "One at a time, crack an egg into a bowl and gently slip into the water. ",
+    "Cook eggs for 3 minutes for a runny yolk, 4 minutes for a slightly set yolk and 5 minutes for a firm yolk. ",
+    "Remove eggs with a slotted spoon and drain on a paper towel. ",
+    ],
+    "Cover and simmer for": "Cover and simmer for",
+    "for a soft boil egg and": "for a soft boil egg and",
+    "for a jammy egg": "for a jammy egg",
+    "Poached Eggs Steps": [
+      "In a saucepan, bring 7 cm of water to a gentle simmer.",
+      "Add 2 teaspoons of white vinegar to the water.",
+      "Crack one egg at a time into a bowl, then gently slip it into the water.",
+      "Cook the eggs for 3 minutes for a runny yolk, 4 minutes for a slightly set yolk, and 5 minutes for a firm yolk.",
+      "Remove the eggs with a slotted spoon and drain them on a paper towel."
+    ],
+    "Cook eggs for": "Cook eggs for",
+    "for a runny yolk": "for a runny yolk",
+    "for a slightly set yolk and": "for a slightly set yolk and",
+    "for a firm yolk": "for a firm yolk",
     minutes: "minutes.",
     Instructions: "Instructions",
     Size: "Size",
@@ -42,6 +63,16 @@ export const translations = {
     "Resume Timer": "Resume Timer",
     "Pause Timer": "Pause Timer",
     "Stop Timer": "Stop Timer",
+    "Jammy Eggs": "Jammy Eggs",
+    "How do you like your eggs?": "How do you like your eggs?",
+    "Hard Boiled Eggs": "Hard Boiled Eggs",
+    "SoftBoiled Eggs": "Soft Boiled Eggs",
+    "Poached Eggs": "Poached Eggs",
+    Soft: "Soft",
+    Medium: "Medium",
+    Hard: "Hard",
+
+
     
   },
   fr: {
