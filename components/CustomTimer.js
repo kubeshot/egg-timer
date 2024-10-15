@@ -163,7 +163,7 @@ const CustomTimer = () => {
                   <TouchableOpacity
                     onPress={() => {
                       navigation.navigate("Timer", {
-                        heading: "Custom Timer",
+                        heading: i18n.t("Custom Timer"),
                         time: selectedMinutes * 60 + selectedSeconds,
                         subheading: "",
                       });

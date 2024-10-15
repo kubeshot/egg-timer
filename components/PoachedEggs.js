@@ -213,7 +213,7 @@ const PoachedEggs = () => {
                   style={styles.startTimerButton}
                   onPress={() => {
                     navigation.navigate("Timer", {
-                      heading: "Poached Eggs",
+                      heading: i18n.t("Poached Eggs"),
                       time:
                         selectedEggType === 0
                           ? timer1 * 60
