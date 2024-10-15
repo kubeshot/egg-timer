@@ -4,10 +4,10 @@
     "slug": "egg-timer",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "assets/images/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "assets/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#FFFFFF"
     },
@@ -17,19 +17,26 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": ["fetch"]
+        "UIBackgroundModes": ["fetch", "audio"]
       }
     },
     "android": {
-      "permissions": ["INTERNET", "RECEIVE_BOOT_COMPLETED", "WAKE_LOCK"],
+      "permissions": [
+        "INTERNET",
+        "RECEIVE_BOOT_COMPLETED",
+        "WAKE_LOCK",
+        "VIBRATE",
+        "SCHEDULE_EXACT_ALARM",
+        "USE_FULL_SCREEN_INTENT"
+      ],
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "assets/images/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.ansh_kubeshot.eggtimer"
     },
     "web": {
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "assets/images/favicon.png"
     },
     "plugins": [
       "expo-font",
@@ -38,7 +45,22 @@
         {
           "startOnBoot": true
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "assets/images/favicon.png",
+          "color": "#ffffff",
+          "sounds": ["assets/clucking.wav"]
+        }
       ]
-    ]
+    ],
+    "notification": {
+      "icon": "assets/images/favicon.png",
+      "color": "#ffffff",
+      "iosDisplayInForeground": true,
+      "androidMode": "default",
+      "androidCollapsedTitle": "Egg Timer Notification"
+    }
   }
 }

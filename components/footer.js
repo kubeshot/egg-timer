@@ -8,20 +8,23 @@ import {
   Image,
 } from "react-native";
 import { Linking } from "react-native";
+import i18n from '../i18nConfig'; // Import i18n
+
 const Footer = () => {
   const handleLinkPress = (Uri) => {
     Linking.openURL(Uri);
   };
+
   return (
     <View style={styles.container}>
       {/* Newsletter Subscription Section */}
       <View style={styles.newsletterContainer}>
         <Text style={styles.newsletterText}>
-          Subscribe to the eggs.ca newsletter
+          {i18n.t('subscribeNewsletter')}
         </Text>
         <View style={styles.inputContainer}>
           <TextInput
-            placeholder="Enter Your Email Address"
+            placeholder={i18n.t('enterEmail')}
             placeholderTextColor="#000"
             style={styles.textInput}
           />
@@ -49,22 +52,22 @@ const Footer = () => {
       {/* Footer Links */}
       <View style={styles.linksContainer}>
         <TouchableOpacity onPress={() => handleLinkPress("##")}>
-          <Text style={styles.linkText}>About Us</Text>
+          <Text style={styles.linkText}>{i18n.t('aboutUs')}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleLinkPress("##")}>
-          <Text style={styles.linkText}>Contact Us</Text>
+          <Text style={styles.linkText}>{i18n.t('contactUs')}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleLinkPress("##")}>
-          <Text style={styles.linkText}>Accessibility</Text>
+          <Text style={styles.linkText}>{i18n.t('accessibility')}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleLinkPress("##")}>
-          <Text style={styles.linkText}>FAQ</Text>
+          <Text style={styles.linkText}>{i18n.t('faq')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => handleLinkPress("#")}
           style={styles.internationalContainer}
         >
-          <Text style={styles.linkText}>International</Text>
+          <Text style={styles.linkText}>{i18n.t('international')}</Text>
           <Text style={styles.dropdownIcon}>▼</Text>
         </TouchableOpacity>
       </View>
@@ -129,7 +132,7 @@ const Footer = () => {
 
       {/* Copyright and Legal Links */}
       <Text style={styles.copyright}>
-        © 2023 Egg Farmers of Canada. All rights reserved.
+        {i18n.t('copyright')}
       </Text>
       <View style={styles.legalLinksContainer}>
         <TouchableOpacity
@@ -137,14 +140,14 @@ const Footer = () => {
             /* Add link to Privacy Policy */
           }}
         >
-          <Text style={styles.legalLinkText}>Privacy Policy</Text>
+          <Text style={styles.legalLinkText}>{i18n.t('privacyPolicy')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
             /* Add link to Terms & Conditions */
           }}
         >
-          <Text style={styles.legalLinkText}>Terms & Conditions</Text>
+          <Text style={styles.legalLinkText}>{i18n.t('termsConditions')}</Text>
         </TouchableOpacity>
       </View>
     </View>

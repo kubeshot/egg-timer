@@ -17,6 +17,7 @@ import Svg, { Path } from "react-native-svg";
 import BottomBar from "./BottomBar";
 import { Audio } from "expo-av";
 import * as Notifications from 'expo-notifications';
+import i18n from '../i18nConfig';
 
 const { width, height } = Dimensions.get("window");
 
@@ -177,9 +178,10 @@ const Timer = ({ route }) => {
       const triggerDate = new Date(Date.now() + (seconds+1) * 1000);
       notificationId.current = await Notifications.scheduleNotificationAsync({
         content: {
-          title: "Timer Alert",
+          title: i18n.t('Timer Alert'),
           body: getTitle(),
-          sound: true,
+          sound: 'clucking.wav',
+          data: { useCustomSound: true },
         },
         trigger: {
           date: triggerDate,
@@ -259,17 +261,17 @@ const Timer = ({ route }) => {
   };
 
   const playCompletionSound = async () => {
-    if (soundOn && timeLeftRef.current === 0) {
+    if (soundOn) {
       try {
         if (!soundRef.current) {
           console.log("Loading sound...");
           const { sound } = await Audio.Sound.createAsync(
-            require("../assets/clucking.wav")
+            require("../assets/clucking.wav"),
+            { shouldPlay: false }
           );
           soundRef.current = sound;
         }
-  
-        // Check if the sound is already playing
+
         const status = await soundRef.current.getStatusAsync();
         if (!status.isPlaying) {
           console.log("Playing sound...");
@@ -282,10 +284,10 @@ const Timer = ({ route }) => {
       }
     } else {
       console.log("Sound is off or timer hasn't completed");
-      await stopSound(); // Ensure sound is stopped if not playing
+      await stopSound();
     }
   };
-  
+
   
   
 
@@ -333,14 +335,14 @@ const Timer = ({ route }) => {
   };
 
   const getTitle = () => {
-    if (heading === "Hard Boiled Eggs") {
-      return "Your hard boiled eggs are done!";
-    } else if (heading === "Soft Boiled Eggs") {
-      return "Your soft boiled eggs are done!";
-    } else if (heading === "Poached Eggs") {
-      return "Your Poached Eggs are done!";
+    if (heading === i18n.t('Hard Boiled Eggs')) {
+      return i18n.t('Your hard boiled eggs are done!');
+    } else if (heading === i18n.t('Soft Boiled Eggs')) {
+      return i18n.t('Your soft boiled eggs are done!');
+    } else if (heading === i18n.t('Poached Eggs')) {
+      return i18n.t('Your Poached Eggs are done!');
     } else {
-      return "Your custom timer is done!";
+      return i18n.t('Your custom timer is done!');
     }
   };
 
@@ -404,7 +406,7 @@ const Timer = ({ route }) => {
               </Svg>
               <View style={styles.timerInnerCircle}>
                 <Text style={styles.timerText}>
-                {timeLeft !== 0 ? formatTime(timeLeft) : "Done!"}
+                {timeLeft !== 0 ? formatTime(timeLeft) : i18n.t('Done!')}
                 </Text>
                 <TouchableOpacity
   onPress={async () => {
@@ -450,7 +452,7 @@ const Timer = ({ route }) => {
     }}
 >
     <Text style={[styles.buttonText, { color: "black" }]}>
-        Cancel
+    {i18n.t('Cancel')}
     </Text>
 </TouchableOpacity>
 
@@ -470,7 +472,7 @@ const Timer = ({ route }) => {
                     }}
                   >
                     <Text style={[styles.buttonText, { color: "white" }]}>
-                      {isPaused ? "Resume Timer" : "Pause Timer"}
+                    {isPaused ? i18n.t('Resume Timer') : i18n.t('Pause Timer')}
                     </Text>
                   </TouchableOpacity>
                 </>
@@ -480,7 +482,7 @@ const Timer = ({ route }) => {
                   onPress={stopTimer}
                 >
                   <Text style={[styles.buttonText, { color: "white" }]}>
-                    Stop Timer
+                  {i18n.t('Stop Timer')}
                   </Text>
                 </TouchableOpacity>
               )}
@@ -572,7 +574,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   timerText: {
-    fontSize: 80,
+    fontSize: 58,
     fontFamily: "Kaleko-Bold",
     // color: "#DADADA",
   },

@@ -4,13 +4,9 @@ import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import NavigationStack from "./navigation/NavigationStack";
 import { StatusBar } from "expo-status-bar";
-import { I18n } from "i18n-js";
 import * as Localization from "expo-localization";
-import { translations } from "./translations"; // Make sure this file exists
-
-import { useKeepAwake } from "expo-keep-awake"; // Import KeepAwake
-
-const i18n = new I18n(translations);
+import { useKeepAwake } from "expo-keep-awake";
+import i18n from './i18nConfig';
 
 export default function App() {
   const [isI18nInitialized, setIsI18nInitialized] = useState(false);
@@ -23,16 +19,30 @@ export default function App() {
     "Kaleko-Bold": require("./assets/fonts/Kaleko205Round-Bold.ttf"),
   });
 
-  useKeepAwake(); // Keeps the app awake
+  useKeepAwake();
 
   useEffect(() => {
     const initializeI18n = () => {
-      const deviceLocale = Localization.locale;
-      i18n.locale = deviceLocale;
-      i18n.enableFallback = true;
+      i18n.locale = Localization.locale.split('-')[0];
       setIsI18nInitialized(true);
     };
+
     initializeI18n();
+  }, []);
+
+  // Add this effect to check for locale changes
+  useEffect(() => {
+    const checkLocale = setInterval(() => {
+      const currentLocale = Localization.locale.split('-')[0];
+      if (i18n.locale !== currentLocale) {
+        i18n.locale = currentLocale;
+        // Force a re-render of the app
+        setIsI18nInitialized(false);
+        setTimeout(() => setIsI18nInitialized(true), 0);
+      }
+    }, 1000); // Check every second
+
+    return () => clearInterval(checkLocale);
   }, []);
 
   if (!fontsLoaded || !isI18nInitialized) {
@@ -59,6 +69,3 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-
-// Export i18n instance to use in other components
-export { i18n };

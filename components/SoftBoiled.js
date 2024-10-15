@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import BottomBar from "./BottomBar";
 import { useNavigation } from "@react-navigation/native";
+import i18n from '../i18nConfig';
 
 const SoftBoiled = () => {
   const navigation = useNavigation();
@@ -26,12 +27,7 @@ const SoftBoiled = () => {
   const [timer1, setTimer1] = useState(3);
   const [timer2, setTimer2] = useState(6);
 
-  const steps = [
-    "In a saucepan, bring 4 inches of water to a boil and then reduce to a simmer.",
-    "Using a slotted spoon lower eggs into simmering water. ",
-    "Cover and simmer for 3 minutes for a soft boil egg and 6 minutes for a jammy egg. ",
-    "Run eggs under cold water or place in an ice bath to stop cooking.",
-  ];
+  const steps = i18n.t('Soft Boiled Steps', { returnObjects: true });
 
   return (
     <>
@@ -58,7 +54,7 @@ const SoftBoiled = () => {
 
             <View style={styles.innerContainer}>
               <View style={styles.uppperButtonsContainer}>
-                <Text style={styles.heading}>Soft Boiled Eggs</Text>
+                <Text style={styles.heading}>{i18n.t('Soft Boiled Eggs')}</Text>
                 <View style={styles.buttonContainer}>
                   <TouchableOpacity
                     style={styles.instructionsButton}
@@ -66,10 +62,10 @@ const SoftBoiled = () => {
                       setModalVisible(true);
                     }}
                   >
-                    <Text style={styles.instructionsText}>Instructions</Text>
+                    <Text style={styles.instructionsText}>{i18n.t('Instructions')}</Text>
                   </TouchableOpacity>
                   <View style={styles.sizeContainer}>
-                    <Text style={styles.sizeLabel}>Size</Text>
+                    <Text style={styles.sizeLabel}>{i18n.t('Size')}</Text>
                     <TouchableOpacity
                       onPress={() => {
                         setShowSizeSelection((prev) => !prev);
@@ -142,13 +138,13 @@ const SoftBoiled = () => {
               <View>
                 <View>
                   <Text style={styles.subHeading}>
-                    How do you like your eggs?
+                    {i18n.t('How do you like your eggs?')}
                   </Text>
                   <TouchableOpacity
                     onPress={() => {
                       setSelectedEggType(0);
 
-                      setTimerSubheading("3-Minute Eggs");
+                      setTimerSubheading(i18n.t('3-Minute Eggs'));
                     }}
                     style={[
                       styles.threeMinuteEggsButton,
@@ -164,7 +160,7 @@ const SoftBoiled = () => {
                         />
                       )}
                       <Text style={styles.eggsTimerButtonText}>
-                        3-Minute Eggs
+                      {i18n.t('3-Minute Eggs')}
                       </Text>
                     </View>
                     <Text style={styles.eggsTimerButtonText}>{timer1}:00</Text>
@@ -173,7 +169,7 @@ const SoftBoiled = () => {
                     onPress={() => {
                       setSelectedEggType(1);
 
-                      setTimerSubheading("Jammy Eggs");
+                      setTimerSubheading(i18n.t("Jammy Eggs"));
                     }}
                     style={[
                       styles.jammyEggsButton,
@@ -188,7 +184,7 @@ const SoftBoiled = () => {
                           source={require("../assets/images/checkcircle.png")}
                         />
                       )}
-                      <Text style={styles.eggsTimerButtonText}>Jammy Eggs</Text>
+                      <Text style={styles.eggsTimerButtonText}>{i18n.t('Jammy Eggs')}</Text>
                     </View>
 
                     <Text style={styles.eggsTimerButtonText}>{timer2}:00</Text>
@@ -212,7 +208,7 @@ const SoftBoiled = () => {
                   <Text
                     style={[styles.eggsTimerButtonText, { color: "white" }]}
                   >
-                    Start Timer
+                    {i18n.t('Start Timer')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -238,7 +234,7 @@ const SoftBoiled = () => {
             </TouchableOpacity>
 
             {/* Title */}
-            <Text style={styles.modalTitle}>Steps</Text>
+            <Text style={styles.modalTitle}>{i18n.t('Steps')}</Text>
 
             {/* Step List */}
             <ScrollView contentContainerStyle={styles.modalStepsContainer}>
@@ -251,15 +247,15 @@ const SoftBoiled = () => {
                     <Text style={styles.modalStepText}>
                       {index === 2 ? (
                         <>
-                          Cover and simmer for{" "}
+                          {i18n.t('Cover and simmer for')}{" "}
                           <Text style={{ fontFamily: "Inter-Bold" }}>
                             3 minutes
                           </Text>{" "}
-                          for a soft boil egg and{" "}
+                          {i18n.t('for a soft boil egg and')}{" "}
                           <Text style={{ fontFamily: "Inter-Bold" }}>
                             6 minutes
                           </Text>{" "}
-                          for a jammy egg.
+                          {i18n.t('for a jammy egg')}.
                         </>
                       ) : (
                         step

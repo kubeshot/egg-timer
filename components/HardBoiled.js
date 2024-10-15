@@ -12,23 +12,17 @@ import {
 } from "react-native";
 import BottomBar from "./BottomBar";
 import { useNavigation } from "@react-navigation/native";
+import i18n from '../i18nConfig';
 
 const HardBoiled = () => {
   const navigation = useNavigation();
 
   const [modalVisible, setModalVisible] = useState(false);
-
   const [selectedSize, setSelectedSize] = useState("L");
   const [showSizeSelection, setShowSizeSelection] = useState(false);
-
   const [timer, setTimer] = useState(12);
 
-  const steps = [
-    "In a saucepan, place eggs in a single layer and cover eggs with at least 1 inch of water.",
-    "Cover with a lid and bring to a boil over high heat.",
-    "Remove from heat and let stand for ",
-    "Run eggs under cold water or place in an ice bath to stop cooking.",
-  ];
+  const steps = i18n.t('Hard Boiled Steps', { returnObjects: true });
 
   return (
     <>
@@ -55,7 +49,7 @@ const HardBoiled = () => {
 
             <View style={styles.innerContainer}>
               <View style={styles.uppperButtonsContainer}>
-                <Text style={styles.heading}>Hard Boiled Eggs</Text>
+                <Text style={styles.heading}>{i18n.t('Hard Boiled Eggs')}</Text>
                 <View style={styles.buttonContainer}>
                   <TouchableOpacity
                     style={styles.instructionsButton}
@@ -63,10 +57,10 @@ const HardBoiled = () => {
                       setModalVisible(true);
                     }}
                   >
-                    <Text style={styles.instructionsText}>Instructions</Text>
+                    <Text style={styles.instructionsText}>{i18n.t('Instructions')}</Text>
                   </TouchableOpacity>
                   <View style={styles.sizeContainer}>
-                    <Text style={styles.sizeLabel}>Size</Text>
+                    <Text style={styles.sizeLabel}>{i18n.t('Size')}</Text>
                     <TouchableOpacity
                       onPress={() => {
                         setShowSizeSelection((prev) => !prev);
@@ -134,7 +128,7 @@ const HardBoiled = () => {
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate("Timer", {
-                    heading: "Hard Boiled Eggs",
+                    heading: i18n.t('Hard Boiled Eggs'),
                     time: timer * 60,
                     subheading: "",
                   });
@@ -151,7 +145,7 @@ const HardBoiled = () => {
                   <Image
                     source={require("../assets/images/basic--clock.png")}
                   />
-                  <Text style={styles.startTimerButtonText}>Start Timer</Text>
+                  <Text style={styles.startTimerButtonText}>{i18n.t('Start Timer')}</Text>
                 </View>
                 <Text style={styles.startTimerButtonText}>{timer}:00</Text>
               </TouchableOpacity>
@@ -159,7 +153,6 @@ const HardBoiled = () => {
           </View>
         </SafeAreaView>
       </ImageBackground>
-
       <Modal
         animationType="slide"
         transparent={true}
@@ -177,9 +170,8 @@ const HardBoiled = () => {
             </TouchableOpacity>
 
             {/* Title */}
-            <Text style={styles.modalTitle}>Steps</Text>
+            <Text style={styles.modalTitle}>{i18n.t('Steps')}</Text>
 
-            {/* Step List */}
             <ScrollView contentContainerStyle={styles.modalStepsContainer}>
               {steps.map((step, index) => (
                 <View style={styles.modalStepItem} key={index}>
@@ -196,7 +188,7 @@ const HardBoiled = () => {
                             { fontFamily: "Inter-Bold" },
                           ]}
                         >
-                          12 minutes.
+                          {timer} {i18n.t('minutes')}
                         </Text>
                       )}
                     </Text>

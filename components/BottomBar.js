@@ -4,6 +4,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View, Modal } from "react-na
 import SubscribeScreen from "./News Letter Signup/newsLetterSignup";
 import HowTo from "./How-To's/howTosPage"; // Make sure to import the HowTo component
 import RecipeScreen from "./Recipe/recipe";
+import i18n from '../i18nConfig'; // Import i18n
 
 const BottomBar = () => {
   const navigation = useNavigation();
@@ -25,28 +26,28 @@ const BottomBar = () => {
           style={styles.navigationButton}
         >
           <Image source={require("../assets/images/frame-189.png")} />
-          <Text style={styles.navigationButtonText}>EGG TIMER</Text>
+          <Text style={styles.navigationButtonText}>{i18n.t('EGG TIMER')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navigationButton}
           onPress={() => setIsRecipeModalVisible(true)}
         >
           <Image source={require("../assets/images/frame-190.png")} />
-          <Text style={styles.navigationButtonText}>RECIPES</Text>
+          <Text style={styles.navigationButtonText}>{i18n.t('RECIPES')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navigationButton}
           onPress={() => setIsHowToModalVisible(true)}
         >
           <Image source={require("../assets/images/frame-191.png")} />
-          <Text style={styles.navigationButtonText}>HOW-TOS</Text>
+          <Text style={styles.navigationButtonText}>{i18n.t('HOW-TOS')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navigationButton}
           onPress={() => setIsSignUpModalVisible(true)}
         >
           <Image source={require("../assets/images/frame-1911.png")} />
-          <Text style={styles.navigationButtonText}>SIGN UP</Text>
+          <Text style={styles.navigationButtonText}>{i18n.t('SIGN UP')}</Text>
         </TouchableOpacity>
       </View>
 
