@@ -66,7 +66,7 @@ export const translations = {
     "Jammy Eggs": "Jammy Eggs",
     "How do you like your eggs?": "How do you like your eggs?",
     "Hard Boiled Eggs": "Hard Boiled Eggs",
-    "SoftBoiled Eggs": "Soft Boiled Eggs",
+    "Soft Boiled Eggs": "Soft Boiled Eggs",
     "Poached Eggs": "Poached Eggs",
     Soft: "Soft",
     Medium: "Medium",

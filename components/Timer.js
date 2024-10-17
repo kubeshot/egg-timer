@@ -59,7 +59,7 @@ const Timer = ({ route }) => {
   const progress = useRef(new Animated.Value(0)).current;
   const circleSize = Math.min(width, height) * 0.9;
   const strokeWidth = 15;
-  const radius = (circleSize - strokeWidth) / 2;
+  const radius = (circleSize - strokeWidth) / 2.5;
   const circumference = radius * 2 * Math.PI;
 
   const appState = useRef(AppState.currentState);
@@ -574,7 +574,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   timerText: {
-    fontSize: 58,
+    fontSize: 90,
     fontFamily: "Kaleko-Bold",
     // color: "#DADADA",
   },
