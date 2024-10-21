@@ -11,14 +11,13 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import BottomBar from "./BottomBar";
+import i18n from '../i18nConfig'; 
 
 const SuccessPage = ({ route }) => {
   const navigation = useNavigation();
 
   // Destructure parameters from the route
   const { title, heading } = route.params;
-
-  console.log("Titleeeeeee",heading)
   
   const [pageTitle, setPageTitle] = useState(title || "");
 
@@ -163,20 +162,33 @@ const SuccessPage = ({ route }) => {
     "Poached Eggs": require("../assets/images/EFC-app-paoched-perfect-poached-eggs.jpg"),
   };
   const exploreMoreUrls = {
-    "Soft Boiled Eggs": "https://www.eggs.ca/recipe-category/soft-boiled-eggs/",
-    "Hard Boiled Eggs": "https://www.eggs.ca/recipe-category/hard-boiled-eggs/",
-    "Poached Eggs": "https://www.eggs.ca/recipe-category/poached-eggs/",
+    "Soft Boiled Eggs": {
+      en: "https://www.eggs.ca/recipe-category/soft-boiled-eggs/",
+      fr: "https://www.lesoeufs.ca/categorie-de-recette/les-oeufs-mollets-parfaits/"
+    },
+    "Hard Boiled Eggs": {
+      en: "https://www.eggs.ca/recipe-category/hard-boiled-eggs/",
+      fr: "https://www.lesoeufs.ca/categorie-de-recette/les-oeufs-cuits-durs/"
+    },
+    "Poached Eggs": {
+      en: "https://www.eggs.ca/recipe-category/poached-eggs/",
+      fr: "https://www.lesoeufs.ca/categorie-de-recette/oeufs-poches/ "
+    },
   };
+
+  const handleExploreMorePress = () => {
+    const currentLang = i18n.language; // Get the current language
+    const lang = currentLang === 'fr' ? 'fr' : 'en'; // Default to English if not French
+    const url = exploreMoreUrls[heading][lang]; // Use the appropriate URL based on the language
+    Linking.openURL(url).catch((err) => console.error("Error opening URL", err));
+  };
+
   
 
   const handleBackPress = () => {
     navigation.navigate("Home");
   };
 
-  const handleExploreMorePress = () => {
-    const url = exploreMoreUrls[heading];
-    Linking.openURL(url).catch((err) => console.error("Error opening URL", err));
-  };
 
   const openRecipeUrl = (url) => {
     Linking.openURL(url).catch((err) => console.error("Error opening URL", err));
@@ -203,7 +215,7 @@ const SuccessPage = ({ route }) => {
           </View>
 
           <View style={styles.sectionTitleContainer}>
-            <Text style={styles.sectionTitle}>More Delicious Ideas</Text>
+            <Text style={styles.sectionTitle}>{i18n.t('More Delicious Ideas')}</Text>
           </View>
 
           <View style={styles.recipeGrid}>
@@ -217,7 +229,7 @@ const SuccessPage = ({ route }) => {
 
           <TouchableOpacity style={styles.moreEggsButton} onPress={handleExploreMorePress}>
             <Text style={styles.moreEggsText}>
-              Explore More
+              {i18n.t('Explore More')}
             </Text>
           </TouchableOpacity>
         </View>

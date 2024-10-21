@@ -13,6 +13,8 @@ export const translations = {
     howToPoachEggs: "How to Poach Eggs",
     moreHowToVideos: "More How-To Videos",
     "EGG TIMER": "EGG TIMER",
+    "Explore More": "Explore More",
+    "More Delicious Ideas": "More Delicious Ideas",
     "RECIPES": "RECIPES",
     "HOW-TOS": "HOW-TOS",
     "SIGN UP": "SIGN UP",
