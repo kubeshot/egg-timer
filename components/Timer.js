@@ -335,11 +335,11 @@ const Timer = ({ route }) => {
   };
 
   const getTitle = () => {
-    if (heading === ('Hard Boiled Eggs')) {
+    if (heading === i18n.t('Hard Boiled Eggs')) {
       return i18n.t('Your hard boiled eggs are done!');
-    } else if (heading === ('Soft Boiled Eggs')) {
+    } else if (heading === i18n.t('Soft Boiled Eggs')) {
       return i18n.t('Your soft boiled eggs are done!');
-    } else if (heading === ('Poached Eggs')) {
+    } else if (heading === i18n.t('Poached Eggs')) {
       return i18n.t('Your Poached Eggs are done!');
     } else {
       return i18n.t('Your custom timer is done!');
