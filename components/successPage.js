@@ -11,22 +11,17 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import BottomBar from "./BottomBar";
-import i18n from '../i18nConfig'; 
-
+import i18n from '../i18nConfig';
 const SuccessPage = ({ route }) => {
   const navigation = useNavigation();
-
   // Destructure parameters from the route
   const { title, heading } = route.params;
-  
   const [pageTitle, setPageTitle] = useState(title || "");
-
   useEffect(() => {
     if (route.params && route.params.title) {
       setPageTitle(route.params.title);
     }
   }, [route.params]);
-
   // Define recipe ideas based on the eggType parameter
   const recipeIdeas = {
     "Soft Boiled Eggs": [
@@ -175,25 +170,18 @@ const SuccessPage = ({ route }) => {
       fr: "https://www.lesoeufs.ca/categorie-de-recette/oeufs-poches/ "
     },
   };
-
   const handleExploreMorePress = () => {
     const currentLang = i18n.language; // Get the current language
     const lang = currentLang === 'fr' ? 'fr' : 'en'; // Default to English if not French
     const url = exploreMoreUrls[heading][lang]; // Use the appropriate URL based on the language
     Linking.openURL(url).catch((err) => console.error("Error opening URL", err));
   };
-
-  
-
   const handleBackPress = () => {
     navigation.navigate("Home");
   };
-
-
   const openRecipeUrl = (url) => {
     Linking.openURL(url).catch((err) => console.error("Error opening URL", err));
   };
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -205,7 +193,6 @@ const SuccessPage = ({ route }) => {
               resizeMode="contain"
             />
           </View>
-
           <View style={styles.successCard}>
             <Text style={styles.successText}>{pageTitle}</Text>
             <Image
@@ -213,20 +200,17 @@ const SuccessPage = ({ route }) => {
               style={styles.mainImage}
             />
           </View>
-
           <View style={styles.sectionTitleContainer}>
             <Text style={styles.sectionTitle}>{i18n.t('More Delicious Ideas')}</Text>
           </View>
-
           <View style={styles.recipeGrid}>
-            {(recipeIdeas[heading] || fallbackRecipes).map((recipe, index) => (
+            {(recipeIdeas[heading] || [] ).map((recipe, index) => (
               <TouchableOpacity key={index} style={styles.recipeItem} onPress={() => openRecipeUrl(recipe.url)}>
                 <Image source={recipe.image} style={styles.recipeImage} />
                 <Text style={styles.recipeTitle}>{recipe.title}</Text>
               </TouchableOpacity>
             ))}
           </View>
-
           <TouchableOpacity style={styles.moreEggsButton} onPress={handleExploreMorePress}>
             <Text style={styles.moreEggsText}>
               {i18n.t('Explore More')}
@@ -234,7 +218,6 @@ const SuccessPage = ({ route }) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-
       <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
         <Image
           source={require("../assets/images/btnback-arrow.png")}
@@ -245,7 +228,6 @@ const SuccessPage = ({ route }) => {
     </SafeAreaView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -338,5 +320,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-
 export default SuccessPage;
