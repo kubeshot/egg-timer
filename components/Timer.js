@@ -118,7 +118,7 @@ const Timer = ({ route }) => {
   }, [route.params]);
 
   useEffect(() => {
-    const subscription = AppState.addEventListener("change", nextAppState => {
+    const subscription = AppState.addEventListener("change", async nextAppState => {
       if (
         appState.current.match(/inactive|background/) &&
         nextAppState === "active"
@@ -136,7 +136,13 @@ const Timer = ({ route }) => {
 
         if (timeLeftRef.current === 0) {
           cancelNotification();
+          triggerNotification();
           notificationScheduled.current = false;
+        }
+      } else if (nextAppState === "background") {
+        // Schedule a notification for the remaining time when the app goes to background
+        if (timeLeftRef.current > 0) {
+          await scheduleNotification(timeLeftRef.current);
         }
       }
       appState.current = nextAppState;
@@ -206,14 +212,6 @@ const Timer = ({ route }) => {
   const triggerNotification = async () => {
     try {
       console.log("Triggering notification because timer reached zero.");
-      // await Notifications.presentNotificationAsync({
-      //   content: {
-      //     title: i18n.t('Timer Alert'),
-      //     body: getTitle(),
-      //     sound: 'clucking.wav', // Ensure the sound file exists
-      //     data: { useCustomSound: true },
-      //   },
-      // });
 
       await Notifications.scheduleNotificationAsync({
         content: {
@@ -240,6 +238,7 @@ const Timer = ({ route }) => {
   };
 
   const updateTimer = () => {
+    console.log("update timer called", timeLeftRef.current)
     if (!isPaused && timeLeftRef.current > 0) {
       timeLeftRef.current -= 1;
       setTimeLeft(timeLeftRef.current);
@@ -250,8 +249,10 @@ const Timer = ({ route }) => {
       animateSpokes(progress);
 
       if (timeLeftRef.current === 0) {
-        triggerNotification();
         cancelNotification();
+
+        // console.log('triggered')
+        triggerNotification();
         if (intervalRef.current) clearInterval(intervalRef.current);
         startFadeOutAnimation();
         playCompletionSound();
