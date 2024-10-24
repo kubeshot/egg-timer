@@ -7,9 +7,36 @@ import { StatusBar } from "expo-status-bar";
 import * as Localization from "expo-localization";
 import { useKeepAwake } from "expo-keep-awake";
 import i18n from './i18nConfig';
+import * as Notifications from 'expo-notifications';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+
 
 export default function App() {
   const [isI18nInitialized, setIsI18nInitialized] = useState(false);
+
+ 
+
+  const setupNotifications = async () => {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
+    }
+    console.log('Notification permissions granted.');
+  };
+
 
   const [fontsLoaded] = useFonts({
     "Inter-Bold": require("./assets/fonts/Inter-Bold.ttf"),
@@ -26,6 +53,7 @@ export default function App() {
       i18n.locale = Localization.locale.split('-')[0];
       setIsI18nInitialized(true);
     };
+    setupNotifications();
 
     initializeI18n();
   }, []);

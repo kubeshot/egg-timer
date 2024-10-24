@@ -73,8 +73,8 @@ export const translations = {
     Soft: "Soft",
     Medium: "Medium",
     Hard: "Hard",
-
-
+    "Your Timer is done!": "Your Timer is done!",
+    
     
   },
   fr: {

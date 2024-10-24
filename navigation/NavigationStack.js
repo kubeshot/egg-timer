@@ -12,6 +12,7 @@ import SubscribeScreen from "../components/News Letter Signup/newsLetterSignup";
 import SearchScreen from "../components/searchScreenComponent";
 import SuccessPage from "../components/successPage";
 import CustomTimer from "../components/CustomTimer";
+import CustomSuccessPage from "../components/CustomTimerSuccessPage";
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,11 @@ export default function NavigationStack() {
        <Stack.Screen
         name="Success"
         component={SuccessPage}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CustomSuccess"
+        component={CustomSuccessPage}
         options={{ headerShown: false }}
       />
       <Stack.Screen
