@@ -42,7 +42,6 @@
         "foregroundImage": "assets/images/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.vratantkubeshot.eggtimer"
     },
     "web": {
       "favicon": "assets/images/favicon.png"
@@ -72,11 +71,6 @@
       "iosDisplayInForeground": true,
       "androidMode": "default",
       "androidCollapsedTitle": "Egg Timer Notification"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "b04b3e70-28af-4d5c-93ed-97189756d6f9"
-      }
     },
     "runtimeVersion": {
       "policy": "appVersion"
