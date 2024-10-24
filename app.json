@@ -21,8 +21,8 @@
           "fetch",
           "audio"
         ]
-      },
-      "bundleIdentifier": "com.vratantkubeshot.eggtimer"
+      }
+      
     },
     "android": {
       "useNextNotificationsApi": true,
@@ -41,7 +41,7 @@
       "adaptiveIcon": {
         "foregroundImage": "assets/images/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      },
+      }
     },
     "web": {
       "favicon": "assets/images/favicon.png"
