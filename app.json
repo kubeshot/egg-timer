@@ -22,12 +22,8 @@
           "audio"
         ]
       }
-      
     },
     "android": {
-      "useNextNotificationsApi": true,
-      "enableBackgroundNotification": true,
-      "priority": "max",
       "permissions": [
         "INTERNET",
         "RECEIVE_BOOT_COMPLETED",
@@ -41,7 +37,8 @@
       "adaptiveIcon": {
         "foregroundImage": "assets/images/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.vratantkubeshot.eggtimer"
     },
     "web": {
       "favicon": "assets/images/favicon.png"
@@ -76,7 +73,13 @@
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/b04b3e70-28af-4d5c-93ed-97189756d6f9"
-    }
+      "url": "https://u.expo.dev/9483eab5-0f7d-443e-8852-e73e616f71c1"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "35606c50-1b16-42a5-b142-203920cb7233"
+      }
+    },
+    "owner": "vratant-kubeshot"
   }
 }

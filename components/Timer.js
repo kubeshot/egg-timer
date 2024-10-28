@@ -18,175 +18,35 @@ import Svg, { Path } from "react-native-svg";
 import BottomBar from "./BottomBar";
 import { Audio } from "expo-av";
 import * as Notifications from 'expo-notifications';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '../i18nConfig';
-import * as TaskManager from 'expo-task-manager';
 
 const { width, height } = Dimensions.get("window");
-const TIMER_STORAGE_KEY = '@timer_data';
+
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
-TaskManager.defineTask('BACKGROUND_NOTIFICATION_TASK', async () => {
-  try {
-    const notification = await Notifications.getLastNotificationResponseAsync();
-    // Handle the notification, e.g., refresh app data or perform actions
-    console.log('Received background notification: ', notification);
-    // Optionally, you can implement any logic to refresh your data here
-  } catch (error) {
-    console.error('Error handling background notification: ', error);
-  }
-});
-
-// BackgroundTimerHandler class implementation (from previous artifact)
-class BackgroundTimerHandler {
-  constructor() {
-    this.timeoutId = null;
-    this.startTime = null;
-    this.initialDuration = null;
-  }
-
-  async setupBackgroundHandler({ title, heading, subHeading, initialTime }) {
-    try {
-      this.startTime = Date.now();
-      this.initialDuration = initialTime;
-
-      await AsyncStorage.setItem(TIMER_STORAGE_KEY, JSON.stringify({
-        title,
-        heading,
-        subHeading,
-        initialTime,
-        startTime: this.startTime,
-        endTime: this.startTime + (initialTime * 1000)
-      }));
-
-      if (Platform.OS !== 'web') {
-        const { status: existingStatus } = await Notifications.getPermissionsAsync();
-        let finalStatus = existingStatus;
-
-        if (existingStatus !== 'granted') {
-          const { status } = await Notifications.requestPermissionsAsync();
-          finalStatus = status;
-        }
-
-        if (finalStatus === 'granted') {
-          await Notifications.setNotificationHandler({
-            handleNotification: async () => ({
-              shouldShowAlert: false, // Don't show alert for background notifications
-              shouldPlaySound: false, // Don't play sound for background notifications
-              shouldSetBadge: false, // Don't set badge for background notifications
-            }),
-          });
-          await Notifications.registerTaskAsync('BACKGROUND_NOTIFICATION_TASK');
-        }
-      }
-    } catch (error) {
-      console.error('Error setting up background handler:', error);
-    }
-  }
-  async scheduleBackgroundNotification(timeLeft, title) {
-    try {
-      await Notifications.cancelAllScheduledNotificationsAsync();
-      
-      const trigger = new Date(Date.now() + (timeLeft * 1000) + 500);
-      
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: 'Timer Alert',
-          body: title,
-          sound: 'clucking.wav',
-          priority: 'high',
-          data: { useCustomSound: true },
-        },
-        trigger,
-      });
-
-      const backupTrigger = new Date(Date.now() + (timeLeft * 1000) + 1500);
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: 'Timer Alert',
-          body: title,
-          sound: 'clucking.wav',
-          priority: 'high',
-          data: { useCustomSound: true },
-        },
-        trigger: backupTrigger,
-      });
-    } catch (error) {
-      console.error('Error scheduling background notification:', error);
-    }
-  }
-
-  async handleAppStateChange(nextAppState, currentTimeLeft, isPaused) {
-    if (nextAppState === 'background' && currentTimeLeft > 0 && !isPaused) {
-      try {
-        const currentTime = Date.now();
-        const endTime = currentTime + (currentTimeLeft * 1000);
-
-        await AsyncStorage.setItem(TIMER_STORAGE_KEY, JSON.stringify({
-          timeLeft: currentTimeLeft,
-          startTime: currentTime,
-          endTime: endTime
-        }));
-
-        const storedData = await AsyncStorage.getItem(TIMER_STORAGE_KEY);
-        if (storedData) {
-          const { title } = JSON.parse(storedData);
-          await this.scheduleBackgroundNotification(currentTimeLeft, title);
-        }
-      } catch (error) {
-        console.error('Error handling background state:', error);
-      }
-    }
-  }
-
-  async checkBackgroundTime() {
-    try {
-      const storedData = await AsyncStorage.getItem(TIMER_STORAGE_KEY);
-      if (storedData) {
-        const { endTime } = JSON.parse(storedData);
-        const currentTime = Date.now();
-        const timeLeft = Math.max(0, Math.floor((endTime - currentTime) / 1000));
-        return timeLeft;
-      }
-      return null;
-    } catch (error) {
-      console.error('Error checking background time:', error);
-      return null;
-    }
-  }
-
-  async cleanup() {
-    try {
-      await AsyncStorage.removeItem(TIMER_STORAGE_KEY);
-      await Notifications.cancelAllScheduledNotificationsAsync();
-      
-      if (this.timeoutId) {
-        clearTimeout(this.timeoutId);
-        this.timeoutId = null;
-      }
-
-      this.startTime = null;
-      this.initialDuration = null;
-    } catch (error) {
-      console.error('Error cleaning up background handler:', error);
-    }
-  }
-}
-
-const backgroundTimerHandler = new BackgroundTimerHandler();
-
 const createDashedCirclePath = (cx, cy, r, dashCount) => {
-  return [...Array(dashCount)].map((_, i) => {
+  const paths = [];
+  for (let i = 0; i < dashCount; i++) {
     const angle = (i / dashCount) * Math.PI * 2 + Math.PI * 1.5;
     const startX = cx + Math.cos(angle) * r;
     const startY = cy + Math.sin(angle) * r;
     const endAngle = ((i + 0.5) / dashCount) * Math.PI * 2 + Math.PI * 1.5;
     const endX = cx + Math.cos(endAngle) * r;
     const endY = cy + Math.sin(endAngle) * r;
-    return `M${startX},${startY} A${r},${r} 0 0,1 ${endX},${endY}`;
-  });
+    paths.push({
+      id: `path-${i}`,
+      d: `M${startX},${startY} A${r},${r} 0 0,1 ${endX},${endY}`
+    });
+  }
+  return paths;
 };
-
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 const Timer = ({ route }) => {
   const navigation = useNavigation();
@@ -205,89 +65,126 @@ const Timer = ({ route }) => {
   const circleSize = Math.min(width, height) * 0.9;
   const strokeWidth = 15;
   const radius = (circleSize - strokeWidth) / 2.5;
+  const circumference = radius * 2 * Math.PI;
+
+  const [pathsData] = useState(() => 
+    createDashedCirclePath(
+      circleSize / 2,
+      circleSize / 2,
+      radius,
+      spokeCount
+    )
+  );
+
 
   const appState = useRef(AppState.currentState);
-  const intervalRef = useRef(null);
-  const timeLeftRef = useRef(route.params?.time || 180);
   const endTimeRef = useRef(null);
+  const intervalRef = useRef(null);
+  const notificationId = useRef(null);
+  const lastUpdatedTime = useRef(Date.now());
+
+  const timeLeftRef = useRef(route.params?.time || 180);
+  const notificationScheduled = useRef(false);
+
+  const setupNotifications = async () => {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
+    }
+    console.log('Notification permissions granted.');
+  };
+
+  // useEffect(() => {
+  //   setupNotifications();
+  //   return () => {
+  //     cancelNotification();
+  //     if (intervalRef.current) clearInterval(intervalRef.current);
+  //     stopSound();
+  //   };
+  // }, []);
 
   useEffect(() => {
-    const setupTimer = async () => {
-      await backgroundTimerHandler.setupBackgroundHandler({
-        title: getTitle(),
-        heading,
-        subHeading,
-        initialTime: route.params?.time || 180
-      });
-
-      endTimeRef.current = Date.now() + (timeLeftRef.current * 1000);
-    };
-
-    setupTimer();
-    
+    setupNotifications();
     return () => {
-      backgroundTimerHandler.cleanup();
+      cancelNotification();
       if (intervalRef.current) clearInterval(intervalRef.current);
       stopSound();
     };
   }, []);
 
-  // Route params effect
   useEffect(() => {
     if (route.params) {
       setHeading(route.params.heading || "");
       setSubHeading(route.params.subHeading || "");
       setTimeLeft(route.params.time || 180);
       timeLeftRef.current = route.params.time || 180;
-      endTimeRef.current = Date.now() + ((route.params.time || 180) * 1000);
       progress.setValue(0);
+      endTimeRef.current = null;
+      cancelNotification();
+      notificationScheduled.current = false;
       fadeOutAnimation.setValue(1);
     }
   }, [route.params]);
 
-  // App state effect
   useEffect(() => {
     const subscription = AppState.addEventListener("change", async nextAppState => {
-      if (appState.current.match(/inactive|background/) && nextAppState === "active") {
-        const remainingTime = await backgroundTimerHandler.checkBackgroundTime();
-        if (remainingTime !== null) {
-          timeLeftRef.current = remainingTime;
-          setTimeLeft(remainingTime);
-          
-          const totalTime = route.params.time || 180;
-          const elapsedTime = totalTime - remainingTime;
-          const progressValue = elapsedTime / totalTime;
-          animateSpokes(progressValue);
-
-          if (remainingTime === 0) {
-            await backgroundTimerHandler.cleanup();
-            await triggerNotification();
-            playCompletionSound();
-          }
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        console.log("App has come to the foreground!");
+        const now = Date.now();
+        const timePassed = (now - lastUpdatedTime.current) / 1000;
+        timeLeftRef.current = Math.max(0, timeLeftRef.current - Math.floor(timePassed));
+        setTimeLeft(timeLeftRef.current);
+  
+        const totalTime = route.params.time || 180;
+        const elapsedTime = totalTime - timeLeftRef.current;
+        const progressValue = elapsedTime / totalTime;
+        animateSpokes(progressValue);
+  
+        if (timeLeftRef.current === 0 && !notificationScheduled.current) {
+          cancelNotification();
+          triggerNotification();
+          notificationScheduled.current = true;
         }
       } else if (nextAppState === "background") {
-        await backgroundTimerHandler.handleAppStateChange(
-          nextAppState,
-          timeLeftRef.current,
-          isPaused
-        );
+        // Schedule a notification for the remaining time when the app goes to background
+        if (timeLeftRef.current > 0) {
+          await scheduleNotification(timeLeftRef.current);
+        }
       }
       appState.current = nextAppState;
+      lastUpdatedTime.current = Date.now();
     });
-
+  
     return () => {
       subscription.remove();
-      backgroundTimerHandler.cleanup();
+      cancelNotification();
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [isPaused]);
-  // Timer effect
+  }, [isPaused, route.params.time]);
+
   useEffect(() => {
     if (!isPaused && timeLeftRef.current > 0) {
       startTimer();
+      // if (!notificationScheduled.current) {
+      //   scheduleNotification(timeLeftRef.current);
+      // }
+    } else if (isPaused) {
+      // Cancel the notification when paused
+      cancelNotification();
     } else if (timeLeftRef.current === 0) {
       playCompletionSound();
       startFadeOutAnimation();
+      cancelNotification();
+      notificationScheduled.current = false;
     }
 
     return () => {
@@ -295,76 +192,105 @@ const Timer = ({ route }) => {
     };
   }, [timeLeftRef.current, isPaused]);
 
-  const startTimer = () => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
 
-    if (!endTimeRef.current) {
-      endTimeRef.current = Date.now() + (timeLeftRef.current * 1000);
+  const scheduleNotification = async (seconds) => {
+    if (seconds > 0 && !isPaused && !notificationScheduled.current) {
+      await cancelNotification();
+      const currentTime = Date.now();
+      const triggerDate = new Date(currentTime + (seconds + 1) * 1000);
+      notificationId.current = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: i18n.t('Timer Alert'),
+          body: getTitle(),
+          sound: 'clucking.wav',
+          data: { useCustomSound: true },
+        },
+        trigger: {
+          date: triggerDate,
+        },
+      });
+      notificationScheduled.current = true;
+      console.log("Notification scheduled for", triggerDate);
+      console.log("current time : ", new Date(currentTime));
+      console.log("Notification ID: ", notificationId.current);
     }
-
-    intervalRef.current = setInterval(() => {
-      const now = Date.now();
-      const remaining = Math.max(0, Math.floor((endTimeRef.current - now) / 1000));
-      
-      if (remaining !== timeLeftRef.current) {
-        timeLeftRef.current = remaining;
-        setTimeLeft(remaining);
-
-        const totalTime = route.params.time || 180;
-        const elapsedTime = totalTime - remaining;
-        const progress = elapsedTime / totalTime;
-        animateSpokes(progress);
-
-        if (remaining === 0) {
-          if (intervalRef.current) clearInterval(intervalRef.current);
-          startFadeOutAnimation();
-          playCompletionSound();
-          triggerNotification();
-          animateSpokes(1);
-          backgroundTimerHandler.cleanup();
-        }
-      }
-    }, 100); // More frequent updates for smoother display
+  };
+  const cancelNotification = async () => {
+    if (notificationId.current) {
+      await Notifications.cancelScheduledNotificationAsync(notificationId.current);
+      notificationId.current = null;
+      notificationScheduled.current = false;
+      console.log("Notification cancelled");
+    }
   };
 
   const triggerNotification = async () => {
     try {
+      console.log("Triggering notification because timer reached zero.");
+
       await Notifications.scheduleNotificationAsync({
         content: {
           title: i18n.t('Timer Alert'),
           body: getTitle(),
           sound: 'clucking.wav',
-          priority: 'high',
           data: { useCustomSound: true },
         },
         trigger: null,
       });
+
+
     } catch (error) {
       console.error("Error triggering notification: ", error);
     }
   };
 
-  const animateSpokes = (progress) => {
-    const fadedSpokes = Math.floor(progress * spokeCount);
-    const animations = spokeAnimations.map((anim, index) => {
-      const adjustedIndex = (Math.floor(spokeCount) - index) % spokeCount;
-      return Animated.timing(anim, {
-        toValue: adjustedIndex < fadedSpokes || progress === 1 ? 1 : 0,
-        duration: 500,
-        useNativeDriver: false,
-        easing: Easing.linear,
-      });
-    });
+  const startTimer = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
 
-    if (timeLeftRef.current === 0 || progress === 1) {
-      spokeAnimations.forEach((anim) => {
-        anim.setValue(1);
-      });
-    }
-
-    Animated.parallel(animations).start();
+    intervalRef.current = setInterval(() => {
+      updateTimer();
+    }, 1000);
   };
 
+  const updateTimer = () => {
+    console.log("update timer called", timeLeftRef.current)
+    if (!isPaused && timeLeftRef.current > 0) {
+      timeLeftRef.current -= 1;
+      setTimeLeft(timeLeftRef.current);
+
+      const totalTime = route.params.time || 180;
+      const elapsedTime = totalTime - timeLeftRef.current;
+      const progress = elapsedTime / totalTime;
+      animateSpokes(progress);
+
+      if (timeLeftRef.current === 0) {
+        cancelNotification();
+
+        // console.log('triggered')
+        triggerNotification();
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        startFadeOutAnimation();
+        playCompletionSound();
+        animateSpokes(1);
+      }
+    }
+  };
+
+
+
+  const animateSpokes = (progress) => {
+    const fadedSpokes = Math.floor(progress * spokeCount);
+
+    spokeAnimations.forEach((anim, index) => {
+        const adjustedIndex = (spokeCount - index) % spokeCount;
+        Animated.timing(anim, {
+            toValue: adjustedIndex < fadedSpokes || progress === 1 ? 1 : 0,
+            duration: 500,
+            easing: Easing.linear,
+            useNativeDriver: Platform.OS === 'ios',  // Avoid using native driver on both platforms
+        }).start();
+    });
+};
   const startFadeOutAnimation = () => {
     Animated.timing(fadeOutAnimation, {
       toValue: 0,
@@ -378,6 +304,7 @@ const Timer = ({ route }) => {
     if (soundOn) {
       try {
         if (!soundRef.current) {
+          console.log("Loading sound...");
           const { sound } = await Audio.Sound.createAsync(
             require("../assets/clucking.wav"),
             { shouldPlay: false }
@@ -387,45 +314,55 @@ const Timer = ({ route }) => {
 
         const status = await soundRef.current.getStatusAsync();
         if (!status.isPlaying) {
+          console.log("Playing sound...");
           await soundRef.current.playAsync();
+        } else {
+          console.log("Sound is already playing, not starting again");
         }
       } catch (error) {
         console.log("Error playing sound:", error);
       }
     } else {
+      console.log("Sound is off or timer hasn't completed");
       await stopSound();
     }
   };
 
+
+
+
   const stopSound = async () => {
     if (soundRef.current) {
       try {
-        await soundRef.current.pauseAsync();
-        await soundRef.current.stopAsync();
-        await soundRef.current.unloadAsync();
+        console.log("Pausing sound...");
+        await soundRef.current.pauseAsync(); // Pause sound first
+        console.log("Stopping sound...");
+        await soundRef.current.stopAsync(); // Stop the sound
+        console.log("Unloading sound...");
+        await soundRef.current.unloadAsync(); // Unload the sound
+        console.log("Sound stopped and unloaded successfully");
       } catch (error) {
         console.error("Error stopping sound:", error);
       } finally {
-        soundRef.current = null;
+        soundRef.current = null; // Reset sound reference
       }
+    } else {
+      console.log("No sound to stop (soundRef is null)");
     }
   };
+
+
+
 
   const stopTimer = async () => {
     try {
       setTimeLeft(0);
       timeLeftRef.current = 0;
       setIsPaused(true);
+      await cancelNotification();
       if (intervalRef.current) clearInterval(intervalRef.current);
       await stopSound();
-      await backgroundTimerHandler.cleanup();
-      navigation.navigate(
-        heading === "Custom Timer" ? "CustomSuccess" : "Success",
-        { 
-          title: getTitle(),
-          heading 
-        }
-      );
+      navigation.navigate("Success", { title: getTitle() });
     } catch (error) {
       console.error("Error stopping timer:", error);
     }
@@ -437,8 +374,6 @@ const Timer = ({ route }) => {
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
-  console.log("Headinggggggggg",heading);
-
   const getTitle = () => {
     if (heading === i18n.t('Hard Boiled Eggs')) {
       return i18n.t('Your hard boiled eggs are done!');
@@ -447,10 +382,22 @@ const Timer = ({ route }) => {
     } else if (heading === i18n.t('Poached Eggs')) {
       return i18n.t('Your Poached Eggs are done!');
     } else {
-      return i18n.t('Your Timer is done!');
+      return i18n.t('Your custom timer is done!');
     }
   };
-
+  const renderTimerCircle = () => (
+    <Svg width={circleSize} height={circleSize}>
+      {pathsData.map((path, index) => (
+        <Path
+          key={path.id}
+          d={path.d}
+          stroke={spokeAnimations[index].__getValue() ? "rgb(224, 224, 224)" : "rgb(0, 0, 0)"}
+          strokeWidth={strokeWidth}
+          fill="none"
+        />
+      ))}
+    </Svg>
+);
   const interpolateColor = (animation) => {
     return animation.interpolate({
       inputRange: [0, 1],
@@ -490,25 +437,11 @@ const Timer = ({ route }) => {
             <View
               style={[
                 styles.timerContainer,
-                { width: circleSize, height: circleSize },
+                
               ]}
             >
-              <Svg width={circleSize} height={circleSize}>
-                {createDashedCirclePath(
-                  circleSize / 2,
-                  circleSize / 2,
-                  radius,
-                  spokeCount
-                ).map((path, index) => (
-                  <AnimatedPath
-                    key={index}
-                    d={path}
-                    stroke={timeLeftRef.current === 0 ? interpolateColor(spokeAnimations[index]) : interpolateColor(Animated.multiply(spokeAnimations[index], fadeOutAnimation))}
-                    strokeWidth={strokeWidth}
-                    fill="none"
-                  />
-                ))}
-              </Svg>
+            {renderTimerCircle()}
+
               <View style={styles.timerInnerCircle}>
                 <Text style={styles.timerText}>
                   {timeLeft !== 0 ? formatTime(timeLeft) : i18n.t('Done!')}
@@ -550,7 +483,7 @@ const Timer = ({ route }) => {
                       setIsPaused(true);
                       progress.setValue(0);
                       endTimeRef.current = null;
-                      // cancelNotification();
+                      cancelNotification();
                       animateSpokes(0);
                       fadeOutAnimation.setValue(1);
                       if (intervalRef.current) clearInterval(intervalRef.current);
