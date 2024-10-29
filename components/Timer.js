@@ -202,6 +202,7 @@ const Timer = ({ route }) => {
         content: {
           title: i18n.t('Timer Alert'),
           body: getTitle(),
+          
           sound: 'clucking.wav',
           data: { useCustomSound: true },
         },
@@ -362,7 +363,11 @@ const Timer = ({ route }) => {
       await cancelNotification();
       if (intervalRef.current) clearInterval(intervalRef.current);
       await stopSound();
-      navigation.navigate("Success", { title: getTitle() });
+      if (heading === "Custom Timer") {
+        navigation.navigate("CustomSuccess", { title: getTitle(), heading });
+      } else {
+        navigation.navigate("Success", { title: getTitle(), heading });
+      }
     } catch (error) {
       console.error("Error stopping timer:", error);
     }
@@ -375,6 +380,7 @@ const Timer = ({ route }) => {
   };
 
   const getTitle = () => {
+    console.log("Headinggggggg",heading);
     if (heading === i18n.t('Hard Boiled Eggs')) {
       return i18n.t('Your hard boiled eggs are done!');
     } else if (heading === i18n.t('Soft Boiled Eggs')) {

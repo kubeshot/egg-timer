@@ -5,65 +5,93 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  Linking,
   StyleSheet,
+  ActivityIndicator,
+  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import BottomBar from "./BottomBar";
+import { WebView } from "react-native-webview";
 
 const CustomSuccessPage = ({ route }) => {
   const navigation = useNavigation();
-
-  const [title, setTitle] = useState(route.params.title) || "";
+  const [title, setTitle] = useState(route.params.title || "");
+  const [showWebView, setShowWebView] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (route.params && route.params.title) {
       setTitle(route.params.title);
     }
-  });
+  }, [route.params]);
 
   const handleBackPress = () => {
-    navigation.navigate("Home");
+    if (showWebView) {
+      setShowWebView(false); // Close WebView when back is pressed
+    } else {
+      navigation.navigate("Home");
+    }
   };
+
   const openRecipeUrl = () => {
-    Linking.openURL("https://eggs.ca/").catch((err) => console.error("Error opening URL", err));
+    setShowWebView(true); // Show WebView instead of opening in browser
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.content}>
-          <View style={styles.header}>
-            <Image
-              source={require("../assets/images/Logo.png")}
-              style={styles.logo}
-              resizeMode="contain"
+      {showWebView ? (
+        <View style={styles.container}>
+          {loading && (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#000000" />
+            </View>
+          )}
+          {Platform.OS === "web" ? (
+            <iframe
+              src="https://eggs.ca/"
+              style={{ width: "100%", height: "100%" }}
+              onLoad={() => setLoading(false)}
             />
-          </View>
-
-          <View style={styles.successCard}>
-            <Text style={styles.successText}>{title}</Text>
-            <Image
-              source={require("../assets/images/rectangle-299.png")}
-              style={styles.mainImage}
+          ) : (
+            <WebView
+              source={{ uri: "https://eggs.ca/" }}
+              onLoadStart={() => setLoading(true)}
+              onLoadEnd={() => setLoading(false)}
             />
-          </View>
-
-          <View style={styles.sectionTitleContainer}>
-            <Text style={styles.sectionTitle}>Explore eggs.ca for even more eggceptional recipes!</Text>
-          </View>
-          
-
-
-          
-          <TouchableOpacity style={styles.moreEggsButton} onPress={() => openRecipeUrl()}>
-            <Text style={styles.moreEggsText}>
-              Visit eggs.ca
-            </Text>
-          </TouchableOpacity>
+          )}
         </View>
-      </ScrollView>
+      ) : (
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <View style={styles.content}>
+            <View style={styles.header}>
+              <Image
+                source={require("../assets/images/Logo.png")}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+
+            <View style={styles.successCard}>
+              <Text style={styles.successText}>{title}</Text>
+              <Image
+                source={require("../assets/images/rectangle-299.png")}
+                style={styles.mainImage}
+              />
+            </View>
+
+            <View style={styles.sectionTitleContainer}>
+              <Text style={styles.sectionTitle}>
+                Explore eggs.ca for even more eggceptional recipes!
+              </Text>
+            </View>
+
+            <TouchableOpacity style={styles.moreEggsButton} onPress={openRecipeUrl}>
+              <Text style={styles.moreEggsText}>Visit eggs.ca</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      )}
 
       <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
         <Image
@@ -75,6 +103,7 @@ const CustomSuccessPage = ({ route }) => {
     </SafeAreaView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

@@ -5,23 +5,31 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  Linking,
   StyleSheet,
+  Linking,
+  Platform,
+  ActivityIndicator,
 } from "react-native";
+import Header from "./TopHeadingBar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import BottomBar from "./BottomBar";
 import i18n from '../i18nConfig';
+import { WebView } from 'react-native-webview';
+
 const SuccessPage = ({ route }) => {
   const navigation = useNavigation();
-  // Destructure parameters from the route
   const { title, heading } = route.params;
   const [pageTitle, setPageTitle] = useState(title || "");
+  const [loading, setLoading] = useState(true);
+  const [webUrl, setWebUrl] = useState(null);  // New state to manage WebView URL
+
   useEffect(() => {
     if (route.params && route.params.title) {
       setPageTitle(route.params.title);
     }
   }, [route.params]);
+
   // Define recipe ideas based on the eggType parameter
   const recipeIdeas = {
     "Soft Boiled Eggs": [
@@ -151,11 +159,14 @@ const SuccessPage = ({ route }) => {
       },
     ],
   };
+
   const mainImages = {
     "Soft Boiled Eggs": require("../assets/images/EFC-app-soft-boiled-eggs-perfect-soft-boiled-egg.jpg"),
     "Hard Boiled Eggs": require("../assets/images/EFC-app-hard-boiled-perfect-hard-boiled-egg.jpg"),
     "Poached Eggs": require("../assets/images/EFC-app-paoched-perfect-poached-eggs.jpg"),
   };
+
+
   const exploreMoreUrls = {
     "Soft Boiled Eggs": {
       en: "https://www.eggs.ca/recipe-category/soft-boiled-eggs/",
@@ -170,54 +181,89 @@ const SuccessPage = ({ route }) => {
       fr: "https://www.lesoeufs.ca/categorie-de-recette/oeufs-poches/ "
     },
   };
+
   const handleExploreMorePress = () => {
-    const currentLang = i18n.language; // Get the current language
-    const lang = currentLang === 'fr' ? 'fr' : 'en'; // Default to English if not French
-    const url = exploreMoreUrls[heading][lang]; // Use the appropriate URL based on the language
-    Linking.openURL(url).catch((err) => console.error("Error opening URL", err));
+    const currentLang = i18n.language;
+    const lang = currentLang === 'fr' ? 'fr' : 'en';
+    const url = exploreMoreUrls[heading][lang];
+    openRecipeUrl(url);
   };
-  const handleBackPress = () => {
-    navigation.navigate("Home");
+
+  const handleImagePress = (url) => {
+    openRecipeUrl(url);
   };
+
   const openRecipeUrl = (url) => {
-    Linking.openURL(url).catch((err) => console.error("Error opening URL", err));
+    setWebUrl(url); // Set the URL to show the WebView
   };
+
+  const handleBackPress = () => {
+    if (webUrl) {
+      setWebUrl(null); // Close WebView when back is pressed
+    } else {
+      navigation.navigate("Home");
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.content}>
-          <View style={styles.header}>
-            <Image
-              source={require("../assets/images/Logo.png")}
-              style={styles.logo}
-              resizeMode="contain"
+      {webUrl ? (
+        <View style={styles.container}>
+          {loading && (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#000000" />
+            </View>
+          )}
+          {Platform.OS === "web" ? (
+            <iframe
+              src={webUrl}
+              style={{ width: "100%", height: "100%" }}
+              onLoad={() => setLoading(false)}
             />
-          </View>
-          <View style={styles.successCard}>
-            <Text style={styles.successText}>{pageTitle}</Text>
-            <Image
-              source={mainImages[heading] || require("../assets/images/EFC-app-soft-boiled-eggs-perfect-soft-boiled-egg.jpg")}
-              style={styles.mainImage}
+          ) : (
+            <WebView
+              source={{ uri: webUrl }}
+              onLoadStart={() => setLoading(true)}
+              onLoadEnd={() => setLoading(false)}
             />
-          </View>
-          <View style={styles.sectionTitleContainer}>
-            <Text style={styles.sectionTitle}>{i18n.t('More Delicious Ideas')}</Text>
-          </View>
-          <View style={styles.recipeGrid}>
-            {(recipeIdeas[heading] || [] ).map((recipe, index) => (
-              <TouchableOpacity key={index} style={styles.recipeItem} onPress={() => openRecipeUrl(recipe.url)}>
-                <Image source={recipe.image} style={styles.recipeImage} />
-                <Text style={styles.recipeTitle}>{recipe.title}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-          <TouchableOpacity style={styles.moreEggsButton} onPress={handleExploreMorePress}>
-            <Text style={styles.moreEggsText}>
-              {i18n.t('Explore More')}
-            </Text>
-          </TouchableOpacity>
+          )}
         </View>
-      </ScrollView>
+      ) : (
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <View style={styles.content}>
+            <View style={styles.header}>
+              <Image
+                source={require("../assets/images/Logo.png")}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+            <View style={styles.successCard}>
+              <Text style={styles.successText}>{pageTitle}</Text>
+              <Image
+                source={mainImages[heading] || require("../assets/images/EFC-app-soft-boiled-eggs-perfect-soft-boiled-egg.jpg")}
+                style={styles.mainImage}
+              />
+            </View>
+            <View style={styles.sectionTitleContainer}>
+              <Text style={styles.sectionTitle}>{i18n.t('More Delicious Ideas')}</Text>
+            </View>
+            <View style={styles.recipeGrid}>
+              {(recipeIdeas[heading] || []).map((recipe, index) => (
+                <TouchableOpacity key={index} style={styles.recipeItem} onPress={() => handleImagePress(recipe.url)}>
+                  <Image source={recipe.image} style={styles.recipeImage} />
+                  <Text style={styles.recipeTitle}>{recipe.title}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <TouchableOpacity style={styles.moreEggsButton} onPress={handleExploreMorePress}>
+              <Text style={styles.moreEggsText}>
+                {i18n.t('Explore More')}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      )}
       <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
         <Image
           source={require("../assets/images/btnback-arrow.png")}
@@ -228,6 +274,7 @@ const SuccessPage = ({ route }) => {
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

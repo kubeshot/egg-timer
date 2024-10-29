@@ -24,9 +24,11 @@
       }
     },
     "android": {
+       
       "permissions": [
         "INTERNET",
         "RECEIVE_BOOT_COMPLETED",
+        "Notifications.AndroidImportance.MAX",
         "WAKE_LOCK",
         "VIBRATE",
         "SCHEDULE_EXACT_ALARM",
