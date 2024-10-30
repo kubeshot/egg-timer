@@ -75,7 +75,7 @@ const CustomSuccessPage = ({ route }) => {
             <View style={styles.successCard}>
               <Text style={styles.successText}>{title}</Text>
               <Image
-                source={require("../assets/images/rectangle-299.png")}
+                source={require("../assets/images/Egg tablescape.jpg")}
                 style={styles.mainImage}
               />
             </View>
