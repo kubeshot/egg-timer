@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Linking,
+  Modal,
   Platform,
   ActivityIndicator,
 } from "react-native";
@@ -22,6 +23,8 @@ const SuccessPage = ({ route }) => {
   const { title, heading } = route.params;
   const [pageTitle, setPageTitle] = useState(title || "");
   const [loading, setLoading] = useState(true);
+  const [showWebView, setShowWebView] = useState(false);
+
   const [webUrl, setWebUrl] = useState(null);  // New state to manage WebView URL
 
   useEffect(() => {
@@ -194,12 +197,13 @@ const SuccessPage = ({ route }) => {
   };
 
   const openRecipeUrl = (url) => {
-    setWebUrl(url); // Set the URL to show the WebView
+    setWebUrl(url);
+    setShowWebView(true); // Set the URL to show the WebView
   };
 
   const handleBackPress = () => {
-    if (webUrl) {
-      setWebUrl(null); // Close WebView when back is pressed
+    if (showWebView) {
+      setShowWebView(false); // Close WebView when back is pressed
     } else {
       navigation.navigate("Home");
     }
@@ -207,28 +211,7 @@ const SuccessPage = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {webUrl ? (
-        <View style={styles.container}>
-          {loading && (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#000000" />
-            </View>
-          )}
-          {Platform.OS === "web" ? (
-            <iframe
-              src={webUrl}
-              style={{ width: "100%", height: "100%" }}
-              onLoad={() => setLoading(false)}
-            />
-          ) : (
-            <WebView
-              source={{ uri: webUrl }}
-              onLoadStart={() => setLoading(true)}
-              onLoadEnd={() => setLoading(false)}
-            />
-          )}
-        </View>
-      ) : (
+      
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.content}>
             <View style={styles.header}>
@@ -263,7 +246,6 @@ const SuccessPage = ({ route }) => {
             </TouchableOpacity>
           </View>
         </ScrollView>
-      )}
       <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
         <Image
           source={require("../assets/images/btnback-arrow.png")}
@@ -271,6 +253,38 @@ const SuccessPage = ({ route }) => {
         />
       </TouchableOpacity>
       <BottomBar />
+      <Modal
+        visible={showWebView}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowWebView(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.bottomModal}>
+            {loading && (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#000000" />
+              </View>
+            )}
+            {Platform.OS === "web" ? (
+              <iframe
+                src={webUrl}
+                style={{ width: "100%", height: "100%" }}
+                onLoad={() => setLoading(false)}
+              />
+            ) : (
+              <WebView
+                source={{ uri: webUrl }}
+                onLoadStart={() => setLoading(true)}
+                onLoadEnd={() => setLoading(false)}
+              />
+            )}
+            <TouchableOpacity style={styles.closeButton} onPress={() => setShowWebView(false)}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -365,6 +379,39 @@ const styles = StyleSheet.create({
     color: "#000",
     fontWeight: "bold",
     fontSize: 16,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
+  },
+  bottomModal: {
+    width: "100%",
+    height: "90%",
+    backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  webView: {
+    flex: 1,
+  },
+  closeButton: {
+    padding: 10,
+    backgroundColor: "#FFD700",
+    alignItems: "center",
+    borderTopWidth: 1,
+    borderTopColor: "#ddd",
+  },
+  closeButtonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#000",
   },
 });
 export default SuccessPage;

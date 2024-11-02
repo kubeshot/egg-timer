@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
+  Modal,
   Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -40,58 +41,35 @@ const CustomSuccessPage = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {showWebView ? (
-        <View style={styles.container}>
-          {loading && (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#000000" />
-            </View>
-          )}
-          {Platform.OS === "web" ? (
-            <iframe
-              src="https://eggs.ca/"
-              style={{ width: "100%", height: "100%" }}
-              onLoad={() => setLoading(false)}
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.content}>
+          <View style={styles.header}>
+            <Image
+              source={require("../assets/images/Logo.png")}
+              style={styles.logo}
+              resizeMode="contain"
             />
-          ) : (
-            <WebView
-              source={{ uri: "https://eggs.ca/" }}
-              onLoadStart={() => setLoading(true)}
-              onLoadEnd={() => setLoading(false)}
-            />
-          )}
-        </View>
-      ) : (
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          <View style={styles.content}>
-            <View style={styles.header}>
-              <Image
-                source={require("../assets/images/Logo.png")}
-                style={styles.logo}
-                resizeMode="contain"
-              />
-            </View>
-
-            <View style={styles.successCard}>
-              <Text style={styles.successText}>{title}</Text>
-              <Image
-                source={require("../assets/images/Egg tablescape.jpg")}
-                style={styles.mainImage}
-              />
-            </View>
-
-            <View style={styles.sectionTitleContainer}>
-              <Text style={styles.sectionTitle}>
-                Explore eggs.ca for even more eggceptional recipes!
-              </Text>
-            </View>
-
-            <TouchableOpacity style={styles.moreEggsButton} onPress={openRecipeUrl}>
-              <Text style={styles.moreEggsText}>Visit eggs.ca</Text>
-            </TouchableOpacity>
           </View>
-        </ScrollView>
-      )}
+
+          <View style={styles.successCard}>
+            <Text style={styles.successText}>{title}</Text>
+            <Image
+              source={require("../assets/images/Egg tablescape.jpg")}
+              style={styles.mainImage}
+            />
+          </View>
+
+          <View style={styles.sectionTitleContainer}>
+            <Text style={styles.sectionTitle}>
+              Explore eggs.ca for even more eggceptional recipes!
+            </Text>
+          </View>
+
+          <TouchableOpacity style={styles.moreEggsButton} onPress={openRecipeUrl}>
+            <Text style={styles.moreEggsText}>Visit eggs.ca</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
 
       <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
         <Image
@@ -100,10 +78,48 @@ const CustomSuccessPage = ({ route }) => {
         />
       </TouchableOpacity>
       <BottomBar />
+
+      <Modal
+        visible={showWebView}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowWebView(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.bottomModal}>
+            {loading && (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#000000" />
+              </View>
+            )}
+            {/* <WebView
+              source={{ uri: "https://eggs.ca/" }}
+              onLoadStart={() => setLoading(true)}
+              onLoadEnd={() => setLoading(false)}
+              style={styles.webView}
+            /> */}
+            {Platform.OS === "web" ? (
+              <iframe
+                src="https://eggs.ca/"
+                style={{ width: "100%", height: "100%" }}
+                onLoad={() => setLoading(false)}
+              />
+            ) : (
+              <WebView
+                source={{ uri: "https://eggs.ca/" }}
+                onLoadStart={() => setLoading(true)}
+                onLoadEnd={() => setLoading(false)}
+              />
+            )}
+            <TouchableOpacity style={styles.closeButton} onPress={() => setShowWebView(false)}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -119,11 +135,11 @@ const styles = StyleSheet.create({
   header: {
     alignItems: "center",
     marginBottom: 20,
-    marginTop: 10, // Add some top margin
+    marginTop: 10,
   },
   logo: {
-    width: 140, // Reduced from 210
-    height: 50, // Reduced from 70
+    width: 140,
+    height: 50,
   },
   successCard: {
     backgroundColor: "#FFD700",
@@ -133,7 +149,6 @@ const styles = StyleSheet.create({
   },
   successText: {
     fontSize: 24,
-    // fontWeight: "bold",
     fontFamily: "Kaleko-Bold",
     textAlign: "center",
     marginTop: 20,
@@ -156,36 +171,6 @@ const styles = StyleSheet.create({
     lineHeight: 28,
     marginBottom: 20,
   },
-  recipeGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-  },
-  recipeItem: {
-    width: "48%",
-    marginBottom: 20,
-  },
-  recipeImage: {
-    width: "100%",
-    height: 150,
-    borderRadius: 10,
-    marginBottom: 5,
-  },
-  recipeTitle: {
-    fontSize: 16,
-    fontFamily:'Kaleko-Bold',
-    textAlign: "center",
-  },
-  backButton: {
-    position: "absolute",
-    top: 80,
-    left: 30,
-    zIndex: 1,
-  },
-  backIcon: {
-    width: 40,
-    height: 40,
-  },
   moreEggsButton: {
     backgroundColor: "#FFD700",
     width: 250,
@@ -200,6 +185,49 @@ const styles = StyleSheet.create({
     color: "#000",
     fontWeight: "bold",
     fontSize: 16,
+  },
+  backButton: {
+    position: "absolute",
+    top: 80,
+    left: 30,
+    zIndex: 1,
+  },
+  backIcon: {
+    width: 40,
+    height: 40,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
+  },
+  bottomModal: {
+    width: "100%",
+    height: "90%",
+    backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  webView: {
+    flex: 1,
+  },
+  closeButton: {
+    padding: 10,
+    backgroundColor: "#FFD700",
+    alignItems: "center",
+    borderTopWidth: 1,
+    borderTopColor: "#ddd",
+  },
+  closeButtonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#000",
   },
 });
 
