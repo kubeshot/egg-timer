@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   Image,
   ImageBackground,
-  Modal,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -15,27 +14,24 @@ import { useNavigation } from "@react-navigation/native";
 import i18n from '../i18nConfig';
 
 const CustomTimer = () => {
-  // console.log(route);
   const navigation = useNavigation();
-
-  const [time, setTime] = useState(180); // Timer starts at 3 minutes (180 seconds)
 
   const [selectedMinutes, setSelectedMinutes] = useState(0);
   const [selectedSeconds, setSelectedSeconds] = useState(0);
 
+  // Check if the timer is set to non-zero
+  const isStartButtonDisabled = selectedMinutes === 0 && selectedSeconds === 0;
+
   return (
     <>
-      {/* Wrapper with opacity overlay */}
       <View style={styles.overlayContainer}>
         <ImageBackground
           source={require("../assets/images/hardboiledbackground-12.png")}
           style={styles.imageBackground}
         >
-          {/* Transparent overlay */}
           <View style={styles.opacityLayer} />
         </ImageBackground>
 
-        {/* Main content */}
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
@@ -168,7 +164,11 @@ const CustomTimer = () => {
                         subheading: "",
                       });
                     }}
-                    style={styles.startTimerButton}
+                    style={[
+                      styles.startTimerButton,
+                      isStartButtonDisabled && styles.disabledButton,
+                    ]}
+                    disabled={isStartButtonDisabled}
                   >
                     <Text style={[styles.bottomButtonText, { color: "white" }]}>
                       {i18n.t('Start Timer')}
@@ -318,6 +318,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 24,
     paddingVertical: 16,
+  },
+  disabledButton: {
+    backgroundColor: "#A9A9A9", // Faded color for disabled state
   },
   cancelTimerButton: {
     flex: 1,
