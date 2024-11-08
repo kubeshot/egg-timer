@@ -31,11 +31,10 @@ export const translations = {
       "Run eggs under cold water or place in an ice bath to stop cooking."
     ],
     "Soft Boiled Steps": [
-    "In a saucepan, bring 3 inches of water to a gentle simmer.",
-    "Add 2 tsp of white vinegar to the water. ",
-    "One at a time, crack an egg into a bowl and gently slip into the water. ",
-    "Cook eggs for 3 minutes for a runny yolk, 4 minutes for a slightly set yolk and 5 minutes for a firm yolk. ",
-    "Remove eggs with a slotted spoon and drain on a paper towel. ",
+    "In a saucepan, bring 4 inches of water to a boil and then reduce to a simmer.",
+    "Using a slotted spoon lower eggs into simmering water. ",
+    "Cover and simmer for 3 minutes for a soft boil egg and 6 minutes for a jammy egg. ",
+    "Run eggs under cold water or place in an ice bath to stop cooking.",
     ],
     "Cover and simmer for": "Cover and simmer for",
     "for a soft boil egg and": "for a soft boil egg and",

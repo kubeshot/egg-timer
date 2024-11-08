@@ -351,10 +351,6 @@ const Timer = ({ route }) => {
       console.log("No sound to stop (soundRef is null)");
     }
   };
-
-
-
-
   const stopTimer = async () => {
     try {
       setTimeLeft(0);
@@ -404,12 +400,6 @@ const Timer = ({ route }) => {
       ))}
     </Svg>
 );
-  const interpolateColor = (animation) => {
-    return animation.interpolate({
-      inputRange: [0, 1],
-      outputRange: ["rgb(0, 0, 0)", "rgb(224, 224, 224)"],
-    });
-  };
 
   return (
     <View style={styles.overlayContainer}>
