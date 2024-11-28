@@ -17,11 +17,13 @@ import { WebView } from "react-native-webview";
 import i18n from '../i18nConfig';
 
 
+
 const CustomSuccessPage = ({ route }) => {
   const navigation = useNavigation();
   const [title, setTitle] = useState(route.params.title || "");
   const [showWebView, setShowWebView] = useState(false);
   const [loading, setLoading] = useState(true);
+  
 
   useEffect(() => {
     if (route.params && route.params.title) {
@@ -63,12 +65,12 @@ const CustomSuccessPage = ({ route }) => {
 
           <View style={styles.sectionTitleContainer}>
             <Text style={styles.sectionTitle}>
-              {i18n.t('Explore eggs.ca for even more eggceptional recipes!')}
+              {i18n.t('Explore eggs')}
             </Text>
           </View>
 
           <TouchableOpacity style={styles.moreEggsButton} onPress={openRecipeUrl}>
-            <Text style={styles.moreEggsText}>{i18n.t('Visit eggs.ca')}</Text>
+            <Text style={styles.moreEggsText}>{i18n.t('Visit eggs')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

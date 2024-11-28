@@ -69,12 +69,13 @@ export const translations = {
     "Hard Boiled Eggs": "Hard Boiled Eggs",
     "Soft Boiled Eggs": "Soft Boiled Eggs",
     "Poached Eggs": "Poached Eggs",
+    "Your Timer is done!": "Your Timer is done!",
+    "Visit eggs": "Visit eggs.ca",
+    "Explore eggs" : "Explore eggs.ca for even more eggceptional recipes!",
     Soft: "Soft",
     Medium: "Medium",
     Hard: "Hard",
-    "Your Timer is done!": "Your Timer is done!",
-    "Explore eggs.ca for even more eggceptional recipes!":"Explore eggs.ca for even more eggceptional recipes!",
-    "Visit eggs.ca":"Visit eggs.ca",
+
     
     
   },
@@ -148,12 +149,13 @@ export const translations = {
     "3-Minute Eggs": "Œufs cuits en 3 minutes",
     "Jammy Eggs": "Œufs mollets",
     "Poached Eggs": "Œufs pochés",
+    "Your Timer is done!":"Votre minuterie est terminée!",
+    "Explore eggs": "Explorez lesoeufs.ca pour découvrir toutes nos recettes exceptionnelles!",
+    "Visit eggs":"Visitez lesoeufs.ca",
     Soft: "À la coque",
     Medium: "Mollets",
     Hard: "Durs",
-    "Your Timer is done!":"Votre minuterie est terminée!",
-    "Explore eggs.ca for even more eggceptional recipes!":"Explorez lesoeufs.ca pour découvrir toutes nos recettes exceptionnelles!",
-    "Visit eggs.ca":"Visitez lesoeufs.ca",
+
   },
   // Add more languages as needed
 };
