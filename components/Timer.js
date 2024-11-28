@@ -390,16 +390,31 @@ const Timer = ({ route }) => {
   const renderTimerCircle = () => (
     <Svg width={circleSize} height={circleSize}>
       {pathsData.map((path, index) => (
-        <Path
+        <AnimatedPath
           key={path.id}
           d={path.d}
-          stroke={spokeAnimations[index].__getValue() ? "rgb(224, 224, 224)" : "rgb(0, 0, 0)"}
+          stroke="rgb(0, 0, 0)" // Background circle
           strokeWidth={strokeWidth}
           fill="none"
+          strokeOpacity={fadeOutAnimation} // Fade-out for the entire background
+        />
+      ))}
+      {pathsData.map((path, index) => (
+        <AnimatedPath
+          key={`spoke-${path.id}`}
+          d={path.d}
+          stroke="rgb(224, 224, 224)" // Progress animation in black
+          strokeWidth={strokeWidth}
+          fill="none"
+          strokeOpacity={Animated.multiply(
+            fadeOutAnimation,
+            spokeAnimations[index]
+          )} // Combine fade-out with progress animation
         />
       ))}
     </Svg>
-);
+  );
+  
 
   return (
     <View style={styles.overlayContainer}>
