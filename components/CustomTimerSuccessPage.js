@@ -14,6 +14,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import BottomBar from "./BottomBar";
 import { WebView } from "react-native-webview";
+import i18n from '../i18nConfig';
+
 
 const CustomSuccessPage = ({ route }) => {
   const navigation = useNavigation();
@@ -61,12 +63,12 @@ const CustomSuccessPage = ({ route }) => {
 
           <View style={styles.sectionTitleContainer}>
             <Text style={styles.sectionTitle}>
-              Explore eggs.ca for even more eggceptional recipes!
+              {i18n.t('Explore eggs.ca for even more eggceptional recipes!')}
             </Text>
           </View>
 
           <TouchableOpacity style={styles.moreEggsButton} onPress={openRecipeUrl}>
-            <Text style={styles.moreEggsText}>Visit eggs.ca</Text>
+            <Text style={styles.moreEggsText}>{i18n.t('Visit eggs.ca')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
