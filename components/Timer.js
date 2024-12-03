@@ -57,6 +57,9 @@ const Timer = ({ route }) => {
   const [soundOn, setSoundOn] = useState(true);
   const soundRef = useRef(null);
   const [spokeCount, setSpokeCount] = useState(300);
+  const [isTimerComplete, setIsTimerComplete] = useState(false);
+  const backgroundStartTime = useRef(null);
+  const hasTriggeredNotification = useRef(false);
   const spokeAnimations = useRef(
     [...Array(spokeCount)].map(() => new Animated.Value(0))
   ).current;
@@ -100,37 +103,31 @@ const Timer = ({ route }) => {
     console.log('Notification permissions granted.');
   };
 
-  // useEffect(() => {
-  //   setupNotifications();
-  //   return () => {
-  //     cancelNotification();
-  //     if (intervalRef.current) clearInterval(intervalRef.current);
-  //     stopSound();
-  //   };
-  // }, []);
-
   useEffect(() => {
-    setupNotifications();
+    let isMounted = true;
+
+    const setup = async () => {
+      if (isMounted) {
+        await setupNotifications();
+        await Audio.setAudioModeAsync({
+          playsInSilentModeIOS: true,
+          staysActiveInBackground: true,
+          shouldDuckAndroid: true,
+        });
+      }
+    };
+
+    setup();
+
     return () => {
-      cancelNotification();
+      isMounted = false;
       if (intervalRef.current) clearInterval(intervalRef.current);
       stopSound();
+      cancelNotification();
+      notificationScheduled.current = false;
     };
   }, []);
 
-  useEffect(() => {
-    if (route.params) {
-      setHeading(route.params.heading || "");
-      setSubHeading(route.params.subHeading || "");
-      setTimeLeft(route.params.time || 180);
-      timeLeftRef.current = route.params.time || 180;
-      progress.setValue(0);
-      endTimeRef.current = null;
-      cancelNotification();
-      notificationScheduled.current = false;
-      fadeOutAnimation.setValue(1);
-    }
-  }, [route.params]);
 
   useEffect(() => {
     const subscription = AppState.addEventListener("change", async nextAppState => {
@@ -171,6 +168,7 @@ const Timer = ({ route }) => {
     };
   }, [isPaused, route.params.time]);
 
+
   useEffect(() => {
     if (!isPaused && timeLeftRef.current > 0) {
       startTimer();
@@ -191,37 +189,77 @@ const Timer = ({ route }) => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [timeLeftRef.current, isPaused]);
+  
 
 
   const scheduleNotification = async (seconds) => {
-    if (seconds > 0 && !isPaused && !notificationScheduled.current) {
+    if (seconds <= 0 || isPaused || notificationScheduled.current) {
+      return;
+    }
+    
+    try {
       await cancelNotification();
-      const currentTime = Date.now();
-      const triggerDate = new Date(currentTime + (seconds + 1) * 1000);
+      
+      // Calculate the exact time the timer should complete
+      const triggerDate = new Date(Date.now() + (seconds * 1000));
+      
       notificationId.current = await Notifications.scheduleNotificationAsync({
         content: {
           title: i18n.t('Timer Alert'),
           body: getTitle(),
-          
           sound: 'clucking.wav',
           data: { useCustomSound: true },
         },
         trigger: {
-          date: triggerDate,
+          date: triggerDate, // Use exact date instead of seconds
         },
       });
+      
       notificationScheduled.current = true;
-      console.log("Notification scheduled for", triggerDate);
-      console.log("current time : ", new Date(currentTime));
-      console.log("Notification ID: ", notificationId.current);
+      console.log(`Notification scheduled for: ${triggerDate.toISOString()}`);
+    } catch (error) {
+      console.error('Error scheduling notification:', error);
+      notificationScheduled.current = false;
     }
   };
+
   const cancelNotification = async () => {
     if (notificationId.current) {
       await Notifications.cancelScheduledNotificationAsync(notificationId.current);
       notificationId.current = null;
       notificationScheduled.current = false;
       console.log("Notification cancelled");
+    }
+  };
+  const startTimer = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+
+    intervalRef.current = setInterval(() => {
+      updateTimer();
+    }, 1000);
+  };
+
+  
+
+  const updateTimer = () => {
+    if (!isPaused && timeLeftRef.current > 0) {
+      const newTimeLeft = timeLeftRef.current - 1;
+      timeLeftRef.current = newTimeLeft;
+      setTimeLeft(newTimeLeft);
+
+      const totalTime = route.params.time || 180;
+      const elapsedTime = totalTime - newTimeLeft;
+      const progress = elapsedTime / totalTime;
+      animateSpokes(progress);
+
+      if (newTimeLeft === 0) {
+        cancelNotification();
+        triggerNotification();
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        startFadeOutAnimation();
+        playCompletionSound();
+        animateSpokes(1);
+      }
     }
   };
 
@@ -244,63 +282,30 @@ const Timer = ({ route }) => {
       console.error("Error triggering notification: ", error);
     }
   };
-
-  const startTimer = () => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-
-    intervalRef.current = setInterval(() => {
-      updateTimer();
-    }, 1000);
-  };
-
-  const updateTimer = () => {
-    console.log("update timer called", timeLeftRef.current)
-    if (!isPaused && timeLeftRef.current > 0) {
-      timeLeftRef.current -= 1;
-      setTimeLeft(timeLeftRef.current);
-
-      const totalTime = route.params.time || 180;
-      const elapsedTime = totalTime - timeLeftRef.current;
-      const progress = elapsedTime / totalTime;
-      animateSpokes(progress);
-
-      if (timeLeftRef.current === 0) {
-        cancelNotification();
-
-        // console.log('triggered')
-        triggerNotification();
-        if (intervalRef.current) clearInterval(intervalRef.current);
-        startFadeOutAnimation();
-        playCompletionSound();
-        animateSpokes(1);
-      }
-    }
-  };
-
-
-
+  
+  
   const animateSpokes = (progress) => {
     const fadedSpokes = Math.floor(progress * spokeCount);
 
     spokeAnimations.forEach((anim, index) => {
-        const adjustedIndex = (spokeCount - index) % spokeCount;
-        Animated.timing(anim, {
-            toValue: adjustedIndex < fadedSpokes || progress === 1 ? 1 : 0,
-            duration: 500,
-            easing: Easing.linear,
-            useNativeDriver: Platform.OS === 'ios',  // Avoid using native driver on both platforms
-        }).start();
+      const adjustedIndex = (spokeCount - index) % spokeCount;
+      Animated.timing(anim, {
+        toValue: progress === 1 || adjustedIndex < fadedSpokes ? 1 : 0,
+        duration: 500,
+        easing: Easing.linear,
+        useNativeDriver: true,  // Make sure all animations use native driver consistently
+      }).start();
     });
-};
+  };
+
   const startFadeOutAnimation = () => {
     Animated.timing(fadeOutAnimation, {
       toValue: 0,
       duration: 2000,
-      useNativeDriver: false,
+      useNativeDriver: true,  // Make consistent with other animations
       easing: Easing.linear,
     }).start();
   };
-
   const playCompletionSound = async () => {
     if (soundOn) {
       try {
@@ -328,10 +333,6 @@ const Timer = ({ route }) => {
       await stopSound();
     }
   };
-
-
-
-
   const stopSound = async () => {
     if (soundRef.current) {
       try {
@@ -351,6 +352,7 @@ const Timer = ({ route }) => {
       console.log("No sound to stop (soundRef is null)");
     }
   };
+
   const stopTimer = async () => {
     try {
       setTimeLeft(0);
@@ -368,6 +370,7 @@ const Timer = ({ route }) => {
       console.error("Error stopping timer:", error);
     }
   };
+
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -409,7 +412,8 @@ const Timer = ({ route }) => {
           strokeOpacity={Animated.multiply(
             fadeOutAnimation,
             spokeAnimations[index]
-          )} // Combine fade-out with progress animation
+          ) || 1} // Default opacity for safety
+          // Combine fade-out with progress animation
         />
       ))}
     </Svg>
