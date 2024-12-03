@@ -11,6 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#FFFFFF"
     },
+    "newArchEnabled": true,
     "experiments": {
       "baseUrl": "/egg-timer"
     },
@@ -24,7 +25,6 @@
       }
     },
     "android": {
-       
       "permissions": [
         "INTERNET",
         "RECEIVE_BOOT_COMPLETED",
@@ -62,7 +62,8 @@
             "assets/clucking.wav"
           ]
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "notification": {
       "icon": "assets/images/favicon.png",
