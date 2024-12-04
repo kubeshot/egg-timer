@@ -153,7 +153,7 @@ const Timer = ({ route }) => {
         }
       } else if (nextAppState === "background") {
         // Schedule a notification for the remaining time when the app goes to background
-        if (timeLeftRef.current > 0) {
+        if (timeLeftRef.current > 0 && !isPaused) {
           await scheduleNotification(timeLeftRef.current);
         }
       }
