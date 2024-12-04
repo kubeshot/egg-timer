@@ -136,23 +136,27 @@ const Timer = ({ route }) => {
         nextAppState === "active"
       ) {
         console.log("App has come to the foreground!");
-        const now = Date.now();
-        const timePassed = (now - lastUpdatedTime.current) / 1000;
-        timeLeftRef.current = Math.max(0, timeLeftRef.current - Math.floor(timePassed));
-        setTimeLeft(timeLeftRef.current);
-  
-        const totalTime = route.params.time || 180;
-        const elapsedTime = totalTime - timeLeftRef.current;
-        const progressValue = elapsedTime / totalTime;
-        animateSpokes(progressValue);
-  
-        if (timeLeftRef.current === 0 && !notificationScheduled.current) {
-          cancelNotification();
-          triggerNotification();
-          notificationScheduled.current = true;
+        
+        // Only update timer if not paused
+        if (!isPaused) {
+          const now = Date.now();
+          const timePassed = (now - lastUpdatedTime.current) / 1000;
+          timeLeftRef.current = Math.max(0, timeLeftRef.current - Math.floor(timePassed));
+          setTimeLeft(timeLeftRef.current);
+      
+          const totalTime = route.params.time || 180;
+          const elapsedTime = totalTime - timeLeftRef.current;
+          const progressValue = elapsedTime / totalTime;
+          animateSpokes(progressValue);
+      
+          if (timeLeftRef.current === 0 && !notificationScheduled.current) {
+            cancelNotification();
+            triggerNotification();
+            notificationScheduled.current = true;
+          }
         }
       } else if (nextAppState === "background") {
-        // Schedule a notification for the remaining time when the app goes to background
+        // Only schedule notification if timer is running (not paused)
         if (timeLeftRef.current > 0 && !isPaused) {
           await scheduleNotification(timeLeftRef.current);
         }
@@ -160,12 +164,13 @@ const Timer = ({ route }) => {
       appState.current = nextAppState;
       lastUpdatedTime.current = Date.now();
     });
+    
     return () => {
-        subscription.remove();
-        cancelNotification();
-        if (intervalRef.current) clearInterval(intervalRef.current);
+      subscription.remove();
+      cancelNotification();
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
-}, [isPaused]);
+  }, [isPaused]);
 
   useEffect(() => {
     if (!isPaused && timeLeftRef.current > 0) {
