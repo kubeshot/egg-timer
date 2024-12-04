@@ -130,53 +130,36 @@ const Timer = ({ route }) => {
 
 
   useEffect(() => {
-    const subscription = AppState.addEventListener("change", async (nextAppState) => {
-        if (appState.current.match(/inactive|background/) && nextAppState === "active") {
-            // App coming to foreground
-            console.log("App has come to the foreground!");
-
-            if (backgroundStartTime.current && !isPaused) {
-                const now = Date.now();
-                const backgroundDuration = (now - backgroundStartTime.current) / 1000;
-                const newTimeLeft = Math.max(0, timeLeftRef.current - Math.floor(backgroundDuration));
-
-                console.log('Background duration:', backgroundDuration);
-                console.log('New time left:', newTimeLeft);
-
-                timeLeftRef.current = newTimeLeft;
-                setTimeLeft(newTimeLeft);
-
-                const totalTime = route.params.time || 180;
-                const elapsedTime = totalTime - newTimeLeft;
-                const progressValue = elapsedTime / totalTime;
-                animateSpokes(progressValue);
-            }
-
-            backgroundStartTime.current = null;
-            await cancelNotification();
-
-            // Restart the timer if there's still time left and it's not paused
-            if (timeLeftRef.current > 0 && !isPaused) {
-                startTimer();
-            } else if (timeLeftRef.current === 0) {
-                // If time ran out while in background, trigger completion
-                playCompletionSound();
-                startFadeOutAnimation();
-            }
-
-        } else if (nextAppState === "background") {
-            // Store the exact time we went to background
-            backgroundStartTime.current = Date.now();
-
-            // Schedule notification only if the timer is running and not paused
-            if (!isPaused && timeLeftRef.current > 0) {
-                console.log(`Scheduling notification for ${timeLeftRef.current} seconds from now`);
-                await scheduleNotification(timeLeftRef.current);
-            }
+    const subscription = AppState.addEventListener("change", async nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        console.log("App has come to the foreground!");
+        const now = Date.now();
+        const timePassed = (now - lastUpdatedTime.current) / 1000;
+        timeLeftRef.current = Math.max(0, timeLeftRef.current - Math.floor(timePassed));
+        setTimeLeft(timeLeftRef.current);
+  
+        const totalTime = route.params.time || 180;
+        const elapsedTime = totalTime - timeLeftRef.current;
+        const progressValue = elapsedTime / totalTime;
+        animateSpokes(progressValue);
+  
+        if (timeLeftRef.current === 0 && !notificationScheduled.current) {
+          cancelNotification();
+          triggerNotification();
+          notificationScheduled.current = true;
         }
-        appState.current = nextAppState;
+      } else if (nextAppState === "background") {
+        // Schedule a notification for the remaining time when the app goes to background
+        if (timeLeftRef.current > 0) {
+          await scheduleNotification(timeLeftRef.current);
+        }
+      }
+      appState.current = nextAppState;
+      lastUpdatedTime.current = Date.now();
     });
-
     return () => {
         subscription.remove();
         cancelNotification();
@@ -226,6 +209,7 @@ const Timer = ({ route }) => {
           data: { useCustomSound: true },
         },
         trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.DATE,
           date: triggerDate, // Use exact date instead of seconds
         },
       });
@@ -260,14 +244,14 @@ const Timer = ({ route }) => {
     if (!isPaused && timeLeftRef.current > 0) {
       const newTimeLeft = timeLeftRef.current - 1;
       timeLeftRef.current = newTimeLeft;
-      setTimeLeft(newTimeLeft);
+      setTimeLeft(timeLeftRef.current);
 
       const totalTime = route.params.time || 180;
       const elapsedTime = totalTime - newTimeLeft;
       const progress = elapsedTime / totalTime;
       animateSpokes(progress);
 
-      if (newTimeLeft === 0) {
+      if (timeLeftRef.current === 0) {
         cancelNotification();
         triggerNotification();
         if (intervalRef.current) clearInterval(intervalRef.current);
