@@ -40,7 +40,7 @@ export const translations = {
     "for a soft boil egg and": "for a soft boil egg and",
     "for a jammy egg": "for a jammy egg",
     "Poached Eggs Steps": [
-      "n a saucepan, bring 3 inches (7.5 cm) of water to a gentle simmer.",
+      "In a saucepan, bring 3 inches (7.5 cm) of water to a gentle simmer.",
       "Add 2 teaspoons of white vinegar to the water.",
       "One at a time, crack an egg into a bowl and gently slip into the water.",
       "Cook the eggs for 3 minutes for a runny yolk, 4 minutes for a slightly set yolk, and 5 minutes for a firm yolk.",
