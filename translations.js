@@ -25,13 +25,13 @@ export const translations = {
     Cancel: "Cancel",
     Steps: "Steps",
     "Hard Boiled Steps": [
-      "In a saucepan, place eggs in a single layer and cover eggs with at least 1 inch of water.",
+      "In a saucepan, place eggs in a single layer and cover eggs with at least 1 inch (2.5 cm) of water.",
       "Cover with a lid and bring to a boil over high heat.",
       "Remove from heat and let stand for ",
       "Run eggs under cold water or place in an ice bath to stop cooking."
     ],
     "Soft Boiled Steps": [
-    "In a saucepan, bring 4 inches of water to a boil and then reduce to a simmer.",
+    "In a saucepan, bring 4 inches (10 cm) of water to a boil and then reduce to a simmer.",
     "Using a slotted spoon lower eggs into simmering water. ",
     "Cover and simmer for 3 minutes for a soft boil egg and 6 minutes for a jammy egg. ",
     "Run eggs under cold water or place in an ice bath to stop cooking.",
