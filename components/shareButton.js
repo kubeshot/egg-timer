@@ -1,4 +1,3 @@
-// ShareButton.js
 import React from 'react';
 import { Platform, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Linking } from 'react-native';
@@ -15,7 +14,13 @@ const ShareButton = ({ url }) => {
   };
 
   return (
-    <TouchableOpacity style={styles.shareButton} onPress={handlePress}>
+    <TouchableOpacity
+      style={[
+        styles.shareButton,
+        Platform.OS === 'web' ? styles.webPosition : styles.mobilePosition
+      ]}
+      onPress={handlePress}
+    >
       <Image source={image1} style={styles.image} />
     </TouchableOpacity>
   );
@@ -24,8 +29,6 @@ const ShareButton = ({ url }) => {
 const styles = StyleSheet.create({
   shareButton: {
     position: 'absolute',
-    left: 16,
-    top: 65,
     zIndex: 10,
     width: 40,
     height: 40,
@@ -41,6 +44,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  webPosition: {
+    left: 16,
+    top: 170, // Adjusted for web
+  },
+  mobilePosition: {
+    left: 16,
+    top: 65, // Adjusted for mobile
   },
   image: {
     width: 24,
