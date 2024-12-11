@@ -18,6 +18,7 @@ export const translations = {
     "Explore More": "Explore More",
     "More Delicious Ideas": "More Delicious Ideas",
     "Recipes": "Recipes",
+    "RECIPES": "RECIPES",
     "HOW-TOS": "HOW-TOS",
     "SIGN UP": "SIGN UP",
     "Start Timer": "Start Timer",
