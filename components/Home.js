@@ -204,24 +204,28 @@ const styles = StyleSheet.create({
   },
   videoButton: {
     flexDirection: "row",
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     marginBottom: 24,
     width: "100%",
   },
   videoTextContainer: {
+    display: "flex",
     flex: 1,
     backgroundColor: "white",
     flexDirection: "row",
     paddingVertical: 24,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     alignItems: "center",
-    gap: 8,
+    gap: 8, // Increased gap between icon and text
     borderTopRightRadius: 12,
     borderBottomRightRadius: 12,
   },
   videoContainerText: {
-    fontSize: 16,
+    fontSize: 14, // Increased from 10 to 14
     fontFamily: "Kaleko-Bold",
+    flex: 1, // Added flex: 1 to allow text to wrap
+    flexWrap: 'wrap', // Enable text wrapping
+    paddingRight: 8, // Add some padding on the right
   },
   moreVideosButton: {
     width: "95%",
