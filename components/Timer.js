@@ -66,14 +66,14 @@ const Timer = ({ route }) => {
   ).current;
   const fadeOutAnimation = useRef(new Animated.Value(1)).current;
   const progress = useRef(new Animated.Value(0)).current;
-  const circleSize = Math.min(width, height) * 1.0;
+  const circleSize = Math.min(width, height) * 0.9;
   const strokeWidth = 15;
-  const radius = (circleSize - strokeWidth) / 2.0;
+  const radius = (circleSize - strokeWidth) / 2.5;
   const circumference = radius * 2 * Math.PI;
 
   const [pathsData] = useState(() => 
     createDashedCirclePath(
-      circleSize / 2,
+      circleSize / 2.1,
       circleSize / 2,
       radius,
       spokeCount
@@ -629,10 +629,10 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent", // Change this to transparent
     justifyContent: "center",
     alignItems: "center",
-    left: 40,
+    left: 10,
   },
   timerText: {
-    fontSize: 110,
+    fontSize: 82,
     fontFamily: "Kaleko-Bold",
     // color: "#DADADA",
   },
