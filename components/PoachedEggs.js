@@ -221,8 +221,15 @@ const PoachedEggs = () => {
               <Image source={require("../assets/images/xcircle.png")} />
             </TouchableOpacity>
 
-            {/* Title */}
-            <Text style={styles.modalTitle}>{i18n.t('Steps')}</Text>
+            <Image
+        source={
+          i18n.locale === "fr"
+            ? require("../assets/images/Etapes.png")
+            : require("../assets/images/Steps.png")
+        }
+        style={styles.modalTitleImage}
+        resizeMode="contain"
+      />
 
             {/* Step List */}
             <ScrollView contentContainerStyle={styles.modalStepsContainer}>
@@ -471,6 +478,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Inter-Regular",
   },
+  modalTitleImage: {
+    height: 40, // Adjust the size as necessary
+    alignSelf: "center",
+    marginBottom: 24,
+  },
+  
 });
 
 export default PoachedEggs;
