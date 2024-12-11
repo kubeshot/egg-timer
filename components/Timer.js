@@ -629,9 +629,10 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent", // Change this to transparent
     justifyContent: "center",
     alignItems: "center",
-    left: 20,
+    left: 10,
   },
   timerText: {
+    textAlign: "center",
     fontSize: 70,
     fontFamily: "Kaleko-Bold",
     // color: "#DADADA",
