@@ -29,9 +29,6 @@ export default function RecipeScreen({ onClose }) {
   const [selectedTab, setSelectedTab] = useState("Breakfast");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const handleMenuPress = () => {
-    // Handle menu button press
-  };
 
   const handleSearchPress = (text) => {
     setSearchQuery(text);
