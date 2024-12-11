@@ -423,6 +423,7 @@ const styles = StyleSheet.create({
     fontFamily: "Kaleko-Bold",
     textAlign: "center",
     marginBottom: 24,
+    zIndex: 999,
   },
   modalStepsContainer: {
     paddingBottom: 56,
