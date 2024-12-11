@@ -31,13 +31,21 @@ const Home = () => {
   const softBoiledImage = require("../assets/images/btn--hard-boiled1.png");
   const poachedEggImage = require("../assets/images/btn--hard-boiled2.png");
   const customTimerImage = require("../assets/images/BTN - Hard Boiled.png");
+  const getLogo = () => {
+    return i18n.locale === 'fr' 
+      ? require("../assets/images/Group1.png")
+      : require("../assets/images/Logo.png");
+  };
+
 
   return (
     <>
       <SafeAreaView style={styles.safeArea}>
         <ScrollView style={styles.scrollViewContainer}>
           <View style={styles.container}>
-            <Image source={require("../assets/images/Logo.png")} />
+            <Image source={getLogo()} />
+            
+
 
             <View style={styles.eggStyleContainer}>
               <Text style={styles.heading}>{i18n.t('letsGetCracking')}</Text>
