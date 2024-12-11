@@ -1,8 +1,9 @@
 // ShareButton.js
 import React from 'react';
-import { Platform, TouchableOpacity, StyleSheet } from 'react-native';
-import { Ionicons } from "@expo/vector-icons";
+import { Platform, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Linking } from 'react-native';
+
+const image1 = require("../assets/images/shareLogo.png");
 
 const ShareButton = ({ url }) => {
   const handlePress = () => {
@@ -14,11 +15,8 @@ const ShareButton = ({ url }) => {
   };
 
   return (
-    <TouchableOpacity 
-      onPress={handlePress}
-      style={styles.shareButton}
-    >
-      <Ionicons name="share-outline" size={24} color="#333" />
+    <TouchableOpacity style={styles.shareButton} onPress={handlePress}>
+      <Image source={image1} style={styles.image} />
     </TouchableOpacity>
   );
 };
@@ -43,7 +41,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-  }
+  },
+  image: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
+  },
 });
 
 export default ShareButton;
