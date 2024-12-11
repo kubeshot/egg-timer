@@ -421,7 +421,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     padding: 12,
     fontSize: 30,
-    fontFamily: "Kaleko-Bold",
+    fontFamily: "Inter-Bold",
     textAlign: "center",
     marginBottom: 24,
     zIndex: 999,
