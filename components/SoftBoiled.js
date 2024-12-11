@@ -421,6 +421,8 @@ const styles = StyleSheet.create({
   modalTitle: {
     padding: 12,
     fontSize: 30,
+    lineHeight: 60,
+    overflow: "visible",
     fontFamily: "Kaleko-Bold",
     textAlign: "center",
     marginBottom: 24,
