@@ -137,7 +137,7 @@ const eggTypeMapping = {
 
   // Helper function to get explore more URL
   const getExploreMoreUrl = () => {
-    const currentLang = i18n.language;
+    const currentLang = i18n.locale;
     const lang = currentLang === 'fr' ? 'fr' : 'en';
     const englishKey = getEnglishKey(heading);
     
