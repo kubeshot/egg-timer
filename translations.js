@@ -10,15 +10,18 @@ export const translations = {
     watchVideoInstructions: "Watch the video. See how it's done!",
     howToHardBoilEggs: "How to Hard Boil Eggs",
     howToSoftBoilEggs: "How to Soft Boil Eggs",
+    "How-To's": "How-To's",
     howToPoachEggs: "How to Poach Eggs",
     moreHowToVideos: "More How-To Videos",
     "EGG TIMER": "EGG TIMER",
+    "Newsletter Sign-up": "Newsletter Sign-up",
     "Explore More": "Explore More",
     "More Delicious Ideas": "More Delicious Ideas",
     "RECIPES": "RECIPES",
     "HOW-TOS": "HOW-TOS",
     "SIGN UP": "SIGN UP",
     "Start Timer": "Start Timer",
+    "Recipies": "Recipies",
     Minutes: "Minutes",
     Seconds: "Seconds",
     "Custom Timer": "Custom Timer",
@@ -75,6 +78,15 @@ export const translations = {
     Soft: "Soft",
     Medium: "Medium",
     Hard: "Hard",
+    "Soft Poached": "Soft Poached",
+    "Medium Poached": "Medium Poached",
+    "Hard Poached": "Hard Poached",
+    videoLinks: {
+      hardBoiledVideo: "https://www.youtube.com/shorts/DPt0CX7zwFA",
+      softBoiledVideo: "https://www.youtube.com/shorts/JHcwHcRCxrk",
+      poachedVideo: "https://www.youtube.com/shorts/I-PDJ-uBQwE",
+      channelLink: "https://www.youtube.com/channel/UCq6p--GVSjdVKp_B4zQbqgQ"
+    }
 
     
     
@@ -96,12 +108,12 @@ export const translations = {
     "Explore More":"Découvrir plus",
     "More Delicious Ideas":"Encore plus d’idées délicieuses",
     "RECIPES": "RECETTES",
-    "HOW-TOS": "VIDÉOS « COMMENT FAIRE? »",
+    "HOW-TOS": "« COMMENT FAIRE? »",
     "SIGN UP": "S’INSCRIRE",
     "Custom Timer": "Minuterie personnalisée",
     Minutes: "Minutes",
     Seconds: "Secondes",
-    "Start Timer": "Démarrer la minuterie",
+    "Start Timer": "Démarrer",
     Cancel: "Annuler",
     "Hard Boiled Eggs": "Œufs cuits durs",
     Instructions: "Préparation",
@@ -155,6 +167,18 @@ export const translations = {
     Soft: "À la coque",
     Medium: "Mollets",
     Hard: "Durs",
+    "Soft Poached": "Œuf poché mollet",
+    "Medium Poached": "Œuf poché à point",
+    "Hard Poached": "Œuf poché bien cuit",
+    videoLinks: {
+      hardBoiledVideo: "https://www.youtube.com/shorts/8oqd0HHZ_z8",
+      softBoiledVideo: "https://www.youtube.com/shorts/nEF1L8W0o_k",
+      poachedVideo: "https://www.youtube.com/shorts/UyeSFOxOuZ8",
+      channelLink: "https://www.youtube.com/channel/UCb3dOZMZCU9Y-1Yp2kUS0cg"
+    },
+    "Recipes": "Recettes",
+    "Newsletter Sign-up": "Abonnez-Bulletin",
+    "How-To's": "Œufs 101"
 
   },
   // Add more languages as needed

@@ -14,6 +14,8 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../TopHeadingBar.js";
+import ShareButton from "../shareButton.js";
+
 
 import { Linking } from "react-native";
 import Navbar from "../Navbar.js";
@@ -23,6 +25,8 @@ import Navbar from "../Navbar.js";
 import image11 from "../../assets/images/file021.png";
 
 import WebView from "react-native-webview";
+import i18n from '../../i18nConfig.js'; // Import i18n
+
 
 export default function HowTo({ onClose }) {
   const navigation = useNavigation();
@@ -33,12 +37,16 @@ export default function HowTo({ onClose }) {
     setCurrentVideoId(videoId); // Directly pass the video ID
     setModalVisible(true);
   };
+  const EGGS_CA_URL = i18n.locale === 'fr' 
+  ? "https://www.lesoeufs.ca/oeufs101/" 
+  : "https://www.eggs.ca/eggs101/";
 
   const [loading, setLoading] = useState(true);
 
  return (
     <View style={styles.container}>
-      <Header title="How-To's" logoSource={image11} onClose={onClose} />
+      <ShareButton url={EGGS_CA_URL} />
+      <Header title={i18n.t("How-To's")} logoSource={image11} onClose={onClose} />
 
       {loading && (
         <View style={styles.loadingContainer}>
@@ -49,13 +57,13 @@ export default function HowTo({ onClose }) {
       {/* Conditionally rendering iframe for web and WebView for mobile */}
       {Platform.OS === "web" ? (
         <iframe
-          src="https://www.eggs.ca/eggs101"
+          src={EGGS_CA_URL}
           style={{ width: "100%", height: "100%" }}
           onLoad={() => setLoading(false)}
         />
       ) : (
         <WebView
-          source={{ uri: "https://www.eggs.ca/eggs101" }}
+          source={{ uri: EGGS_CA_URL }}
           onLoadStart={() => setLoading(true)}
           onLoadEnd={() => setLoading(false)}
         />

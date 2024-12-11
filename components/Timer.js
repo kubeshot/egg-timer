@@ -58,6 +58,7 @@ const Timer = ({ route }) => {
   const soundRef = useRef(null);
   const [spokeCount, setSpokeCount] = useState(300);
   const [isTimerComplete, setIsTimerComplete] = useState(false);
+  const isBackButtonDisabled = !isPaused && timeLeft > 0;
   const backgroundStartTime = useRef(null);
   const hasTriggeredNotification = useRef(false);
   const spokeAnimations = useRef(
@@ -65,9 +66,9 @@ const Timer = ({ route }) => {
   ).current;
   const fadeOutAnimation = useRef(new Animated.Value(1)).current;
   const progress = useRef(new Animated.Value(0)).current;
-  const circleSize = Math.min(width, height) * 0.9;
+  const circleSize = Math.min(width, height) * 1.0;
   const strokeWidth = 15;
-  const radius = (circleSize - strokeWidth) / 2.5;
+  const radius = (circleSize - strokeWidth) / 2.0;
   const circumference = radius * 2 * Math.PI;
 
   const [pathsData] = useState(() => 
@@ -101,6 +102,11 @@ const Timer = ({ route }) => {
       return;
     }
     console.log('Notification permissions granted.');
+  };
+  const handleBackPress = () => {
+    if (!isBackButtonDisabled) {
+      navigation.goBack();
+    }
   };
 
   useEffect(() => {
@@ -365,7 +371,7 @@ const Timer = ({ route }) => {
       await cancelNotification();
       if (intervalRef.current) clearInterval(intervalRef.current);
       await stopSound();
-      if (heading === "Custom Timer") {
+      if (heading === i18n.t("Custom Timer") ) {
         navigation.navigate("CustomSuccess", { title: getTitle(), heading });
       } else {
         navigation.navigate("Success", { title: getTitle(), heading });
@@ -435,11 +441,18 @@ const Timer = ({ route }) => {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.backButton}
+          <TouchableOpacity
+              onPress={handleBackPress}
+              style={[
+                styles.backButton,
+                isBackButtonDisabled && styles.backButtonDisabled
+              ]}
+              disabled={isBackButtonDisabled}
             >
-              <Image source={require("../assets/images/btnback-arrow.png")} />
+              <Image source={require("../assets/images/btnback-arrow.png")}
+                style={[
+                  isBackButtonDisabled && styles.backButtonImageDisabled
+                ]} />
             </TouchableOpacity>
             <View style={styles.logoContainer}>
               <Image source={require("../assets/images/Logo.png")} />
@@ -465,29 +478,6 @@ const Timer = ({ route }) => {
                 <Text style={styles.timerText}>
                   {timeLeft !== 0 ? formatTime(timeLeft) : i18n.t('Done!')}
                 </Text>
-                <TouchableOpacity
-                  onPress={async () => {
-                    if (soundOn) {
-                      await stopSound(); // Stop sound if it's currently on
-                    } else {
-                      if (soundRef.current) {
-                        await soundRef.current.playAsync(); // Play sound if it's off
-                      }
-                    }
-                    setSoundOn(!soundOn); // Toggle the sound state
-                  }}
-                  style={styles.soundButton}
-                >
-                  <Image
-                    source={
-                      soundOn
-                        ? require("../assets/images/group-175.png")  // Sound is on
-                        : require("../assets/images/group-1752.png")  // Sound is off
-                    }
-                  />
-                </TouchableOpacity>
-
-
               </View>
             </View>
             <View style={styles.buttonContainer}>
@@ -586,6 +576,13 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     padding: 8,
   },
+  backButtonDisabled: {
+    backgroundColor: "#E0E0E0", // Grey background for disabled state
+    opacity: 0.5,
+  },
+  backButtonImageDisabled: {
+    opacity: 0.5, // Make the arrow image more transparent when disabled
+  },
   logoContainer: {
     flex: 1,
     alignItems: "center",
@@ -604,13 +601,16 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontFamily: "Kaleko-Bold",
     textAlign: "center",
-    marginTop: 48,
+    marginTop: 20,
+    marginBottom: 10
   },
   instructionsButton: {
     backgroundColor: "white",
     borderRadius: 30,
     paddingHorizontal: 16,
     paddingVertical: 16,
+    marginBottom: 10
+
   },
   instructionsText: {
     textAlign: "center",
@@ -629,9 +629,10 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent", // Change this to transparent
     justifyContent: "center",
     alignItems: "center",
+    left: 40,
   },
   timerText: {
-    fontSize: 90,
+    fontSize: 110,
     fontFamily: "Kaleko-Bold",
     // color: "#DADADA",
   },
@@ -642,7 +643,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    marginBottom: 20,
+    marginBottom: 40,
   },
   cancelTimerButton: {
     flex: 1,

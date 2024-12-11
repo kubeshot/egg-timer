@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
   labelText: {
     color: "white",
     fontSize: 16,
-    fontFamily: "Inter-SemiBold",
+    fontFamily: "Kaleko-Bold", 
   },
   timerContainer: {
     flexDirection: "row",
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
 
   semiColon: {
     fontSize: 80,
-    fontFamily: "Inter-SemiBold",
+    fontFamily: "Kaleko-Bold", 
   },
 
   timerValueContainer: {
@@ -293,12 +293,12 @@ const styles = StyleSheet.create({
   },
   timerValueLight: {
     fontSize: 80,
-    fontFamily: "Inter-Bold",
+    fontFamily: "Kaleko-Bold", 
     color: "#DADADA",
   },
   timerValue: {
     fontSize: 80,
-    fontFamily: "Inter-Bold",
+    fontFamily: "Kaleko-Bold", 
   },
   soundButton: {
     marginTop: 16,

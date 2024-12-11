@@ -13,6 +13,7 @@ import {
 import BottomBar from "./BottomBar";
 import { useNavigation } from "@react-navigation/native";
 import i18n from '../i18nConfig';
+import AnimatedSelectionButton from "./AnimatedSelectButton";
 
 const SoftBoiled = () => {
   const navigation = useNavigation();
@@ -140,55 +141,28 @@ const SoftBoiled = () => {
                   <Text style={styles.subHeading}>
                     {i18n.t('How do you like your eggs?')}
                   </Text>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSelectedEggType(0);
+                  {/* Replace the existing egg type buttons with: */}
+<AnimatedSelectionButton
+  selected={selectedEggType === 0}
+  onPress={() => {
+    setSelectedEggType(0);
+    setTimerSubheading(i18n.t('3-Minute Eggs'));
+  }}
+  label={i18n.t('3-Minute Eggs')}
+  time={`${timer1}:00`}
+  icon={<Image source={require("../assets/images/checkcircle.png")} />}
+/>
 
-                      setTimerSubheading(i18n.t('3-Minute Eggs'));
-                    }}
-                    style={[
-                      styles.threeMinuteEggsButton,
-                      {
-                        borderWidth: selectedEggType === 0 ? 2 : 0,
-                      },
-                    ]}
-                  >
-                    <View style={styles.eggsButtonInnerContainer}>
-                      {selectedEggType === 0 && (
-                        <Image
-                          source={require("../assets/images/checkcircle.png")}
-                        />
-                      )}
-                      <Text style={styles.eggsTimerButtonText}>
-                      {i18n.t('3-Minute Eggs')}
-                      </Text>
-                    </View>
-                    <Text style={styles.eggsTimerButtonText}>{timer1}:00</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSelectedEggType(1);
-
-                      setTimerSubheading(i18n.t("Jammy Eggs"));
-                    }}
-                    style={[
-                      styles.jammyEggsButton,
-                      {
-                        borderWidth: selectedEggType === 1 ? 2 : 0,
-                      },
-                    ]}
-                  >
-                    <View style={styles.eggsButtonInnerContainer}>
-                      {selectedEggType === 1 && (
-                        <Image
-                          source={require("../assets/images/checkcircle.png")}
-                        />
-                      )}
-                      <Text style={styles.eggsTimerButtonText}>{i18n.t('Jammy Eggs')}</Text>
-                    </View>
-
-                    <Text style={styles.eggsTimerButtonText}>{timer2}:00</Text>
-                  </TouchableOpacity>
+<AnimatedSelectionButton
+  selected={selectedEggType === 1}
+  onPress={() => {
+    setSelectedEggType(1);
+    setTimerSubheading(i18n.t('Jammy Eggs'));
+  }}
+  label={i18n.t('Jammy Eggs')}
+  time={`${timer2}:00`}
+  icon={<Image source={require("../assets/images/checkcircle.png")} />}
+/>
                 </View>
 
                 <TouchableOpacity
@@ -348,7 +322,7 @@ const styles = StyleSheet.create({
   },
   instructionsText: {
     fontSize: 16,
-    fontFamily: "Inter-Bold",
+    fontFamily: "Kaleko-Bold",
   },
 
   sizeSelectorButton: {
@@ -445,7 +419,7 @@ const styles = StyleSheet.create({
   },
 
   modalTitle: {
-    fontSize: 32,
+    fontSize: 30,
     fontFamily: "Kaleko-Bold",
     textAlign: "center",
     marginBottom: 24,

@@ -91,9 +91,7 @@ const Home = () => {
 
               <TouchableOpacity
                 style={styles.videoButton}
-                onPress={() =>
-                  handleVideoPress("https://www.youtube.com/shorts/DPt0CX7zwFA")
-                }
+                onPress={() => handleVideoPress(i18n.t('videoLinks.hardBoiledVideo'))}
               >
                 <Image source={require("../assets/images/btnhardboiled.png")} />
                 <View style={styles.videoTextContainer}>
@@ -103,11 +101,10 @@ const Home = () => {
                   </Text>
                 </View>
               </TouchableOpacity>
+
               <TouchableOpacity
                 style={styles.videoButton}
-                onPress={() =>
-                  handleVideoPress("https://www.youtube.com/shorts/JHcwHcRCxrk")
-                }
+                onPress={() => handleVideoPress(i18n.t('videoLinks.softBoiledVideo'))}
               >
                 <Image source={require("../assets/images/btn--hard-boiled4.png")} />
                 <View style={styles.videoTextContainer}>
@@ -117,11 +114,10 @@ const Home = () => {
                   </Text>
                 </View>
               </TouchableOpacity>
+
               <TouchableOpacity
                 style={styles.videoButton}
-                onPress={() =>
-                  handleVideoPress("https://www.youtube.com/shorts/I-PDJ-uBQwE")
-                }
+                onPress={() => handleVideoPress(i18n.t('videoLinks.poachedVideo'))}
               >
                 <Image source={require("../assets/images/btnhardboiled2.png")} />
                 <View style={styles.videoTextContainer}>
@@ -134,11 +130,7 @@ const Home = () => {
 
               <TouchableOpacity
                 style={styles.moreVideosButton}
-                onPress={() =>
-                  handleLinkPress(
-                    "https://www.youtube.com/channel/UCq6p--GVSjdVKp_B4zQbqgQ"
-                  )
-                }
+                onPress={() => handleLinkPress(i18n.t('videoLinks.channelLink'))}
               >
                 <Text style={styles.videoContainerText}>
                   {i18n.t('moreHowToVideos')}
@@ -161,7 +153,7 @@ const Home = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#f2f2f2", // Apply background color to safe area
+    backgroundColor: "#f2f2f2",
   },
   scrollViewContainer: {
     flex: 1,
@@ -173,7 +165,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 25,
   },
-
   eggStyleContainer: {
     backgroundColor: "white",
     alignItems: "center",
@@ -183,12 +174,10 @@ const styles = StyleSheet.create({
     marginTop: 24,
     gap: 16,
   },
-
   heading: {
     fontSize: 24,
     fontFamily: "Kaleko-Bold",
   },
-
   subHeading: {
     marginTop: 8,
     marginBottom: 16,
@@ -196,7 +185,6 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     fontFamily: "Inter-Regular",
   },
-
   eggStyleButton: {
     alignItems: "center",
     gap: 8,
@@ -205,12 +193,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: "Kaleko-Bold",
   },
-
   row: {
     flexDirection: "row",
     gap: 16,
   },
-
   videoContainer: {
     marginTop: 36,
     alignItems: "center",
@@ -218,7 +204,6 @@ const styles = StyleSheet.create({
   },
   videoButton: {
     flexDirection: "row",
-    // alignItems: "center",
     paddingHorizontal: 16,
     marginBottom: 24,
     width: "100%",
@@ -236,7 +221,7 @@ const styles = StyleSheet.create({
   },
   videoContainerText: {
     fontSize: 16,
-    fontFamily: "Inter-Bold",
+    fontFamily: "Kaleko-Bold",
   },
   moreVideosButton: {
     width: "95%",

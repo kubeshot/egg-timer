@@ -15,32 +15,34 @@ import { useNavigation } from "@react-navigation/native";
 import BottomBar from "./BottomBar";
 import { WebView } from "react-native-webview";
 import i18n from '../i18nConfig';
+import ShareButton from "./shareButton";
 
-
-
-const CustomSuccessPage = ({ route }) => {
+const CustomTimerSuccessPage = ({ route }) => {
   const navigation = useNavigation();
-  const [title, setTitle] = useState(route.params.title || "");
+  const [title, setTitle] = useState(route.params?.title || "");
   const [showWebView, setShowWebView] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const EGGS_CA_URL = i18n.locale === 'fr' ? "https://lesoeufs.ca/" : "https://eggs.ca/";
   
+  const defaultTitle = i18n.locale === 'fr' 
+    ? "Votre minuterie personnalisée est terminée !" 
+    : "Your custom timer is done!";
 
   useEffect(() => {
-    if (route.params && route.params.title) {
-      setTitle(route.params.title);
-    }
+    setTitle(route.params?.title || defaultTitle);
   }, [route.params]);
 
   const handleBackPress = () => {
     if (showWebView) {
-      setShowWebView(false); // Close WebView when back is pressed
+      setShowWebView(false);
     } else {
       navigation.navigate("Home");
     }
   };
 
   const openRecipeUrl = () => {
-    setShowWebView(true); // Show WebView instead of opening in browser
+    setShowWebView(true);
   };
 
   return (
@@ -60,6 +62,7 @@ const CustomSuccessPage = ({ route }) => {
             <Image
               source={require("../assets/images/successCustomImage.png")}
               style={styles.mainImage}
+              resizeMode="cover"
             />
           </View>
 
@@ -81,6 +84,7 @@ const CustomSuccessPage = ({ route }) => {
           style={styles.backIcon}
         />
       </TouchableOpacity>
+      
       <BottomBar />
 
       <Modal
@@ -90,34 +94,42 @@ const CustomSuccessPage = ({ route }) => {
         onRequestClose={() => setShowWebView(false)}
       >
         <View style={styles.modalOverlay}>
+          <ShareButton url={EGGS_CA_URL} />
+          
           <View style={styles.bottomModal}>
+            <View style={styles.modalHeader}>
+              <TouchableOpacity 
+                style={styles.closeButton} 
+                onPress={() => setShowWebView(false)}
+              >
+                <Image
+                  source={require("../assets/images/xcircle1.png")}
+                  style={styles.closeButtonImage}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
+            </View>
+            
             {loading && (
               <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="#000000" />
               </View>
             )}
-            {/* <WebView
-              source={{ uri: "https://eggs.ca/" }}
-              onLoadStart={() => setLoading(true)}
-              onLoadEnd={() => setLoading(false)}
-              style={styles.webView}
-            /> */}
+            
             {Platform.OS === "web" ? (
               <iframe
-                src="https://eggs.ca/"
+                src={EGGS_CA_URL}
                 style={{ width: "100%", height: "100%" }}
                 onLoad={() => setLoading(false)}
               />
             ) : (
               <WebView
-                source={{ uri: "https://eggs.ca/" }}
+                source={{ uri: EGGS_CA_URL }}
                 onLoadStart={() => setLoading(true)}
                 onLoadEnd={() => setLoading(false)}
+                style={styles.webView}
               />
             )}
-            <TouchableOpacity style={styles.closeButton} onPress={() => setShowWebView(false)}>
-              <Text style={styles.closeButtonText}>Close</Text>
-            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -150,6 +162,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     marginBottom: 20,
+    overflow: 'hidden',
   },
   successText: {
     fontSize: 24,
@@ -157,11 +170,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
     marginBottom: 20,
+    paddingHorizontal: 15,
   },
   mainImage: {
     width: "100%",
     height: 250,
-    borderRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   sectionTitleContainer: {
     alignItems: "center",
@@ -207,32 +222,58 @@ const styles = StyleSheet.create({
   },
   bottomModal: {
     width: "100%",
-    height: "90%",
+    height: "92%",
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     overflow: "hidden",
+  },
+  modalHeader: {
+    backgroundColor: '#FFFFFF',
+    height: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5E5',
+  },
+  closeButton: {
+    position: "absolute",
+    right: 20,
+    top: 6,
+    zIndex: 10,
+    width: 40,
+    height: 40,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: -2 },
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
     shadowOpacity: 0.25,
-    shadowRadius: 4,
+    shadowRadius: 3.84,
     elevation: 5,
+  },
+  closeButtonImage: {
+    width: 24,
+    height: 24,
   },
   webView: {
     flex: 1,
   },
-  closeButton: {
-    padding: 10,
-    backgroundColor: "#FFD700",
-    alignItems: "center",
-    borderTopWidth: 1,
-    borderTopColor: "#ddd",
-  },
-  closeButtonText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#000",
+  loadingContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
   },
 });
 
-export default CustomSuccessPage;
+export default CustomTimerSuccessPage;

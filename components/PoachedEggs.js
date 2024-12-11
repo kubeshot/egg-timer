@@ -13,6 +13,7 @@ import {
 import BottomBar from "./BottomBar";
 import { useNavigation } from "@react-navigation/native";
 import i18n from '../i18nConfig';
+import AnimatedSelectionButton from "./AnimatedSelectButton";
 
 
 const PoachedEggs = () => {
@@ -143,70 +144,30 @@ const PoachedEggs = () => {
                   <Text style={styles.subHeading}>
                   {i18n.t('How do you like your eggs?')}
                   </Text>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSelectedEggType(0);
-                    }}
-                    style={[
-                      styles.threeMinuteEggsButton,
-                      {
-                        borderWidth: selectedEggType === 0 ? 2 : 0,
-                      },
-                    ]}
-                  >
-                    <View style={styles.eggsButtonInnerContainer}>
-                      {selectedEggType === 0 && (
-                        <Image
-                          source={require("../assets/images/checkcircle.png")}
-                        />
-                      )}
-                      <Text style={styles.eggsTimerButtonText}>{i18n.t('Soft')}</Text>
-                    </View>
-                    <Text style={styles.eggsTimerButtonText}>{timer1}:00</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSelectedEggType(1);
-                    }}
-                    style={[
-                      styles.threeMinuteEggsButton,
-                      {
-                        borderWidth: selectedEggType === 1 ? 2 : 0,
-                      },
-                    ]}
-                  >
-                    <View style={styles.eggsButtonInnerContainer}>
-                      {selectedEggType === 1 && (
-                        <Image
-                          source={require("../assets/images/checkcircle.png")}
-                        />
-                      )}
-                      <Text style={styles.eggsTimerButtonText}>{i18n.t('Medium')}</Text>
-                    </View>
-                    <Text style={styles.eggsTimerButtonText}>{timer2}:00</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSelectedEggType(2);
-                    }}
-                    style={[
-                      styles.jammyEggsButton,
-                      {
-                        borderWidth: selectedEggType === 2 ? 2 : 0,
-                      },
-                    ]}
-                  >
-                    <View style={styles.eggsButtonInnerContainer}>
-                      {selectedEggType === 2 && (
-                        <Image
-                          source={require("../assets/images/checkcircle.png")}
-                        />
-                      )}
-                      <Text style={styles.eggsTimerButtonText}>{i18n.t('Hard')}</Text>
-                    </View>
+                  <AnimatedSelectionButton
+  selected={selectedEggType === 0}
+  onPress={() => setSelectedEggType(0)}
+  label={i18n.t('Soft')}
+  time={`${timer1}:00`}
+  icon={<Image source={require("../assets/images/checkcircle.png")} />}
+/>
 
-                    <Text style={styles.eggsTimerButtonText}>{timer3}:00</Text>
-                  </TouchableOpacity>
+<AnimatedSelectionButton
+  selected={selectedEggType === 1}
+  onPress={() => setSelectedEggType(1)}
+  label={i18n.t('Medium')}
+  time={`${timer2}:00`}
+  icon={<Image source={require("../assets/images/checkcircle.png")} />}
+/>
+
+<AnimatedSelectionButton
+  selected={selectedEggType === 2}
+  onPress={() => setSelectedEggType(2)}
+  label={i18n.t('Hard')}
+  time={`${timer3}:00`}
+  icon={<Image source={require("../assets/images/checkcircle.png")} />}
+  style={styles.jammyEggsButton}
+/>
                 </View>
 
                 <TouchableOpacity
@@ -222,10 +183,10 @@ const PoachedEggs = () => {
                           : timer3 * 60,
                       subHeading:
                         selectedEggType === 0
-                          ? "Soft Poached"
+                          ? i18n.t("Soft Poached")
                           : selectedEggType === 1
-                          ? "Medium Poached"
-                          : "Hard Poached",
+                          ? i18n.t("Medium Poached")
+                          : i18n.t("Hard Poached"),
                     });
                   }}
                 >

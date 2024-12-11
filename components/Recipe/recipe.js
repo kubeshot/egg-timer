@@ -16,6 +16,9 @@ import { Ionicons } from "@expo/vector-icons";
 import Header from "../TopHeadingBar.js";
 import Navbar from "../Navbar.js";
 import Footer from "../footer.js";
+import ShareButton from "../shareButton.js";
+import i18n from '../../i18nConfig.js'; // Import i18n
+
 
 import { WebView } from "react-native-webview";
 
@@ -33,12 +36,16 @@ export default function RecipeScreen({ onClose }) {
   const handleSearchPress = (text) => {
     setSearchQuery(text);
   };
+  const EGGS_CA_URL = i18n.locale === 'fr' 
+  ? "https://lesoeufs.ca/recettes/" 
+  : "https://www.eggs.ca/recipes/";
 
   const [loading, setLoading] = useState(true);
 
   return (
     <View style={styles.container}>
-      <Header title="Recipes" logoSource={image1} onClose={onClose} />
+      <ShareButton url={EGGS_CA_URL} />
+      <Header title={i18n.t("Recipes")} logoSource={image1} onClose={onClose} />
 
       {loading && (
         <View style={styles.loadingContainer}>
@@ -46,16 +53,15 @@ export default function RecipeScreen({ onClose }) {
         </View>
       )}
 
-      {/* Conditionally rendering iframe for web and WebView for mobile */}
       {Platform.OS === "web" ? (
         <iframe
-          src="https://www.eggs.ca/recipes/"
+          src={EGGS_CA_URL}
           style={{ width: "100%", height: "100%" }}
           onLoad={() => setLoading(false)}
         />
       ) : (
         <WebView
-          source={{ uri: "https://www.eggs.ca/recipes/" }}
+          source={{ uri: EGGS_CA_URL }}
           onLoadStart={() => setLoading(true)}
           onLoadEnd={() => setLoading(false)}
         />

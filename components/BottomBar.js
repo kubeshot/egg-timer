@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 16,
     paddingBottom:48,
-    paddingHorizontal: 36,
+    paddingHorizontal: 30,
     position: "absolute",
     bottom: 0,
     left: 0,
@@ -96,11 +96,11 @@ const styles = StyleSheet.create({
   },
   navigationButton: {
     alignItems: "center",
-    gap: 8,
+    gap: 10,
   },
   navigationButtonText: {
-    fontSize: 10,
-    fontFamily: "Inter-Bold",
+    fontSize: 9,
+    fontFamily: "Kaleko-Bold", 
   },
 });
 
