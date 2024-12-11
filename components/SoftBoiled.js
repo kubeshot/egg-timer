@@ -23,7 +23,7 @@ const SoftBoiled = () => {
   const [selectedSize, setSelectedSize] = useState("L");
   const [showSizeSelection, setShowSizeSelection] = useState(false);
   const [selectedEggType, setSelectedEggType] = useState(0);
-  const [timerSubHeading, setTimerSubheading] = useState("3-Minute Eggs");
+  const [timerSubHeading, setTimerSubheading] = useState(" ");
 
   const [timer1, setTimer1] = useState(3);
   const [timer2, setTimer2] = useState(6);
@@ -171,7 +171,7 @@ const SoftBoiled = () => {
                       heading: i18n.t("Soft Boiled Eggs"),
                       time: selectedEggType === 0 ? timer1 * 60 : timer2 * 60,
                       subHeading:
-                        selectedEggType === 0 ? "3-Minute Eggs" : "Jammy Eggs",
+                        selectedEggType === 0 ? i18n.t("3-Minute Eggs") : i18n.t("Jammy Eggs"),
                     });
                   }}
                   style={styles.startTimerButton}

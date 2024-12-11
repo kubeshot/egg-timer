@@ -104,7 +104,7 @@ export const translations = {
     howToHardBoilEggs: "Comment cuire des œufs cuits durs",
     howToSoftBoilEggs: "Comment cuire des œufs à la coque",
     howToPoachEggs: "Comment cuire des œufs pochés",
-    moreHowToVideos: "Plus de vidéos «Comment faire? »",
+    moreHowToVideos: "Plus de vidéos « Comment faire? »",
     "EGG TIMER": "MINUTE-COCO",
     "Explore More":"Découvrir plus",
     "More Delicious Ideas":"Encore plus d’idées délicieuses",
