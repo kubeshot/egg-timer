@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   modalTitleImage: {
-    height: 40, // Adjust the size as necessary
+    height: 60, // Adjust the size as necessary
     alignSelf: "center",
     marginBottom: 24,
   },  
