@@ -19,16 +19,19 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
   const youtubePlayerRef = useRef(null);
   const video = useRef(null);
   const [showCloseButton, setShowCloseButton] = useState(false);
-  const opacityAnim = useRef(new Animated.Value(0)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const loaderFadeAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     if (isVisible) {
-      // Reset states
+      // Reset states when modal opens
       setIsVideoReady(false);
       setShowCloseButton(false);
       setError(null);
-      opacityAnim.setValue(0);
+      fadeAnim.setValue(0);
+      loaderFadeAnim.setValue(1);
 
+      // Show close button after a delay
       const timer = setTimeout(() => {
         setShowCloseButton(true);
       }, 4000);
@@ -42,11 +45,20 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
 
   const handleReady = () => {
     setIsVideoReady(true);
-    Animated.timing(opacityAnim, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
+    
+    // Crossfade animation between loader and video
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.timing(loaderFadeAnim, {
+        toValue: 0,
+        duration: 600,
+        useNativeDriver: true,
+      })
+    ]).start();
   };
 
   const { width, height } = Dimensions.get("window");
@@ -62,10 +74,15 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
       return <Text style={styles.errorText}>{error}</Text>;
     }
 
-    if (isYouTubeUrl && videoId) {
-      return (
-        <View style={styles.videoWrapper}>
-          <View style={[styles.videoContainer, !isVideoReady && styles.hidden]}>
+    return (
+      <View style={styles.videoWrapper}>
+        <Animated.View 
+          style={[
+            styles.videoContainer, 
+            { opacity: fadeAnim }
+          ]}
+        >
+          {isYouTubeUrl && videoId ? (
             <YoutubePlayer
               ref={youtubePlayerRef}
               height={height - 250}
@@ -86,40 +103,33 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
                 `,
               }}
             />
-          </View>
-          {!isVideoReady && (
-            <View style={styles.loaderContainer}>
-              <ActivityIndicator size="large" color="white" />
-            </View>
+          ) : (
+            <Video
+              ref={video}
+              style={styles.video}
+              source={{ uri: videoUri }}
+              useNativeControls
+              resizeMode={ResizeMode.COVER}
+              isLooping
+              shouldPlay={isVisible}
+              onLoadStart={() => setIsVideoReady(false)}
+              onLoad={handleReady}
+              onError={(error) => {
+                console.error("Video Error:", error);
+                setError("Failed to load video. Please try again later.");
+              }}
+            />
           )}
-        </View>
-      );
-    }
-
-    return (
-      <View style={styles.videoWrapper}>
-        <Animated.View style={[styles.videoContainer, { opacity: opacityAnim }]}>
-          <Video
-            ref={video}
-            style={styles.video}
-            source={{ uri: videoUri }}
-            useNativeControls
-            resizeMode={ResizeMode.COVER}
-            isLooping
-            shouldPlay={isVisible}
-            onLoadStart={() => setIsVideoReady(false)}
-            onLoad={handleReady}
-            onError={(error) => {
-              console.error("Video Error:", error);
-              setError("Failed to load video. Please try again later.");
-            }}
-          />
         </Animated.View>
-        {!isVideoReady && (
-          <View style={styles.loaderContainer}>
-            <ActivityIndicator size="large" color="white" />
-          </View>
-        )}
+        <Animated.View 
+          style={[
+            styles.loaderContainer,
+            { opacity: loaderFadeAnim },
+            isVideoReady && styles.loaderAbsolute
+          ]}
+        >
+          <ActivityIndicator size="large" color="#FFFFFF" />
+        </Animated.View>
       </View>
     );
   };
@@ -133,19 +143,27 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
       backdropTransitionOutTiming={0}
       animationIn="fadeIn"
       animationOut="fadeOut"
-      animationInTiming={300}
-      animationOutTiming={300}
+      animationInTiming={500}
+      animationOutTiming={400}
       useNativeDriver={true}
       hideModalContentWhileAnimating={true}
     >
-      <View style={[styles.container, { width: modalWidth, height: modalHeight }]}>
+      <Animated.View 
+        style={[
+          styles.container, 
+          { 
+            width: modalWidth, 
+            height: modalHeight,
+          }
+        ]}
+      >
         {showCloseButton && (
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <AntDesign name="closecircle" size={24} color="white" />
           </TouchableOpacity>
         )}
         {renderVideoContent()}
-      </View>
+      </Animated.View>
     </Modal>
   );
 };
@@ -194,15 +212,19 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  hidden: {
-    opacity: 0,
-  },
   loaderContainer: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     backgroundColor: "black",
     justifyContent: "center",
     alignItems: "center",
   },
+  loaderAbsolute: {
+    position: 'absolute',
+  }
 });
 
 export default VideoModal;
