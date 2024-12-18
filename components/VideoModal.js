@@ -7,77 +7,75 @@ import {
   ActivityIndicator,
   Dimensions,
   Text,
+  Animated,
 } from "react-native";
 import Modal from "react-native-modal";
 import { AntDesign } from "@expo/vector-icons";
 import YoutubePlayer from "react-native-youtube-iframe";
 
 const VideoModal = ({ isVisible, videoUri, onClose }) => {
-  const [loading, setLoading] = useState(true);
+  const [isVideoReady, setIsVideoReady] = useState(false);
   const [error, setError] = useState(null);
   const youtubePlayerRef = useRef(null);
   const video = useRef(null);
-  const [status, setStatus] = useState({});
   const [showCloseButton, setShowCloseButton] = useState(false);
+  const opacityAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (isVisible) {
+      // Reset states
+      setIsVideoReady(false);
       setShowCloseButton(false);
+      setError(null);
+      opacityAnim.setValue(0);
+
       const timer = setTimeout(() => {
         setShowCloseButton(true);
       }, 4000);
 
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        setIsVideoReady(false);
+      };
     }
   }, [isVisible]);
 
   const handleReady = () => {
-    setLoading(false);
+    setIsVideoReady(true);
+    Animated.timing(opacityAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
   };
 
   const { width, height } = Dimensions.get("window");
-
   const modalWidth = width;
   const modalHeight = height - 250;
-
-  const isYouTubeUrl =
-    videoUri.includes("youtube.com") ||
-    videoUri.includes("youtu.be") ||
-    videoUri.includes("shorts");
-
+  const isYouTubeUrl = videoUri.includes("youtube.com") || 
+                       videoUri.includes("youtu.be") || 
+                       videoUri.includes("shorts");
   const videoId = extractVideoId(videoUri);
 
-  return (
-    <Modal
-      isVisible={isVisible}
-      onBackdropPress={onClose}
-      onBackButtonPress={onClose}
-      style={styles.modal}
-    >
-      <View style={[styles.container, { width: modalWidth, height: modalHeight }]}>
-        {showCloseButton && (
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <AntDesign name="closecircle" size={24} color="white" />
-          </TouchableOpacity>
-        )}
+  const renderVideoContent = () => {
+    if (error) {
+      return <Text style={styles.errorText}>{error}</Text>;
+    }
 
-        {loading && <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />}
-
-        {error ? (
-          <Text style={styles.errorText}>{error}</Text>
-        ) : isYouTubeUrl && videoId ? (
-          <View style={styles.youtubeContainer}>
+    if (isYouTubeUrl && videoId) {
+      return (
+        <View style={styles.videoWrapper}>
+          <View style={[styles.videoContainer, !isVideoReady && styles.hidden]}>
             <YoutubePlayer
               ref={youtubePlayerRef}
-              height={height - 250} // Increase height by 10%
+              height={height - 250}
               width={width}
               videoId={videoId}
-              play={true}
+              play={isVisible}
               onReady={handleReady}
               onError={(e) => {
                 console.error("YouTube Error:", e);
                 setError("Failed to load video. Please try again later.");
-                setLoading(false);
               }}
               webViewProps={{
                 injectedJavaScript: `
@@ -89,7 +87,18 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
               }}
             />
           </View>
-        ) : (
+          {!isVideoReady && (
+            <View style={styles.loaderContainer}>
+              <ActivityIndicator size="large" color="white" />
+            </View>
+          )}
+        </View>
+      );
+    }
+
+    return (
+      <View style={styles.videoWrapper}>
+        <Animated.View style={[styles.videoContainer, { opacity: opacityAnim }]}>
           <Video
             ref={video}
             style={styles.video}
@@ -97,9 +106,45 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
             useNativeControls
             resizeMode={ResizeMode.COVER}
             isLooping
-            onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+            shouldPlay={isVisible}
+            onLoadStart={() => setIsVideoReady(false)}
+            onLoad={handleReady}
+            onError={(error) => {
+              console.error("Video Error:", error);
+              setError("Failed to load video. Please try again later.");
+            }}
           />
+        </Animated.View>
+        {!isVideoReady && (
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color="white" />
+          </View>
         )}
+      </View>
+    );
+  };
+
+  return (
+    <Modal
+      isVisible={isVisible}
+      onBackdropPress={onClose}
+      onBackButtonPress={onClose}
+      style={styles.modal}
+      backdropTransitionOutTiming={0}
+      animationIn="fadeIn"
+      animationOut="fadeOut"
+      animationInTiming={300}
+      animationOutTiming={300}
+      useNativeDriver={true}
+      hideModalContentWhileAnimating={true}
+    >
+      <View style={[styles.container, { width: modalWidth, height: modalHeight }]}>
+        {showCloseButton && (
+          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+            <AntDesign name="closecircle" size={24} color="white" />
+          </TouchableOpacity>
+        )}
+        {renderVideoContent()}
       </View>
     </Modal>
   );
@@ -122,9 +167,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 10,
     right: 10,
-    zIndex: 3, // Increase zIndex to ensure it's on top
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Add a semi-transparent background
-    borderRadius: 12, // Make it circular
+    zIndex: 3,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    borderRadius: 12,
     padding: 5,
   },
   errorText: {
@@ -132,27 +177,31 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
   },
-  loader: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    zIndex: 1,
-  },
   container: {
-    justifyContent: "center",
     backgroundColor: "black",
     borderRadius: 15,
     overflow: "hidden",
   },
-  youtubeContainer: {
-    height: "100%",
-    width: "100%",
-    overflow: "hidden",
+  videoWrapper: {
+    flex: 1,
+    position: 'relative',
+  },
+  videoContainer: {
+    flex: 1,
+    backgroundColor: 'black',
   },
   video: {
-    alignSelf: "center",
     width: "100%",
     height: "100%",
+  },
+  hidden: {
+    opacity: 0,
+  },
+  loaderContainer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "black",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
