@@ -16,11 +16,20 @@ import YoutubePlayer from "react-native-youtube-iframe";
 const VideoModal = ({ isVisible, videoUri, onClose }) => {
   const [isVideoReady, setIsVideoReady] = useState(false);
   const [error, setError] = useState(null);
+  const [status, setStatus] = useState({});
   const youtubePlayerRef = useRef(null);
   const video = useRef(null);
   const [showCloseButton, setShowCloseButton] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const loaderFadeAnim = useRef(new Animated.Value(1)).current;
+
+  const { width, height } = Dimensions.get("window");
+  const modalWidth = width;
+  const modalHeight = height - 250;
+  const isYouTubeUrl = videoUri.includes("youtube.com") || 
+                       videoUri.includes("youtu.be") || 
+                       videoUri.includes("shorts");
+  const videoId = extractVideoId(videoUri);
 
   useEffect(() => {
     if (isVisible) {
@@ -39,9 +48,13 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
       return () => {
         clearTimeout(timer);
         setIsVideoReady(false);
+        // Unload video when modal closes
+        if (video.current && !isYouTubeUrl) {
+          video.current.unloadAsync();
+        }
       };
     }
-  }, [isVisible]);
+  }, [isVisible, videoUri]);
 
   const handleReady = () => {
     setIsVideoReady(true);
@@ -61,13 +74,12 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
     ]).start();
   };
 
-  const { width, height } = Dimensions.get("window");
-  const modalWidth = width;
-  const modalHeight = height - 250;
-  const isYouTubeUrl = videoUri.includes("youtube.com") || 
-                       videoUri.includes("youtu.be") || 
-                       videoUri.includes("shorts");
-  const videoId = extractVideoId(videoUri);
+  const handlePlaybackStatusUpdate = (status) => {
+    setStatus(status);
+    if (status.isLoaded && !isVideoReady) {
+      handleReady();
+    }
+  };
 
   const renderVideoContent = () => {
     if (error) {
@@ -76,17 +88,12 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
 
     return (
       <View style={styles.videoWrapper}>
-        <Animated.View 
-          style={[
-            styles.videoContainer, 
-            { opacity: fadeAnim }
-          ]}
-        >
+        <Animated.View style={[styles.videoContainer, { opacity: fadeAnim }]}>
           {isYouTubeUrl && videoId ? (
             <YoutubePlayer
               ref={youtubePlayerRef}
-              height={height - 250}
-              width={width}
+              height={modalHeight}
+              width={modalWidth}
               videoId={videoId}
               play={isVisible}
               onReady={handleReady}
@@ -109,11 +116,10 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
               style={styles.video}
               source={{ uri: videoUri }}
               useNativeControls
-              resizeMode={ResizeMode.COVER}
+              resizeMode={ResizeMode.CONTAIN}
               isLooping
+              onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
               shouldPlay={isVisible}
-              onLoadStart={() => setIsVideoReady(false)}
-              onLoad={handleReady}
               onError={(error) => {
                 console.error("Video Error:", error);
                 setError("Failed to load video. Please try again later.");
@@ -121,15 +127,11 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
             />
           )}
         </Animated.View>
-        <Animated.View 
-          style={[
-            styles.loaderContainer,
-            { opacity: loaderFadeAnim },
-            isVideoReady && styles.loaderAbsolute
-          ]}
-        >
-          <ActivityIndicator size="large" color="#FFFFFF" />
-        </Animated.View>
+        {!isVideoReady && (
+          <Animated.View style={[styles.loaderContainer, { opacity: loaderFadeAnim }]}>
+            <ActivityIndicator size="large" color="#FFFFFF" />
+          </Animated.View>
+        )}
       </View>
     );
   };
@@ -148,22 +150,14 @@ const VideoModal = ({ isVisible, videoUri, onClose }) => {
       useNativeDriver={true}
       hideModalContentWhileAnimating={true}
     >
-      <Animated.View 
-        style={[
-          styles.container, 
-          { 
-            width: modalWidth, 
-            height: modalHeight,
-          }
-        ]}
-      >
+      <View style={[styles.container, { width: modalWidth, height: modalHeight }]}>
         {showCloseButton && (
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <AntDesign name="closecircle" size={24} color="white" />
           </TouchableOpacity>
         )}
         {renderVideoContent()}
-      </Animated.View>
+      </View>
     </Modal>
   );
 };
@@ -221,9 +215,6 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     justifyContent: "center",
     alignItems: "center",
-  },
-  loaderAbsolute: {
-    position: 'absolute',
   }
 });
 
